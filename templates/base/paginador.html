@@ -1,0 +1,24 @@
+<div id="paginador">
+    <div id="cantidadPaginas"><strong>{{page_obj.paginator.count}}</strong> <!--Registros #Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}#--></div>
+    {% if is_paginated %}
+    <ul class="pagination">
+        {% if page_obj.has_previous %}
+            <li><a href=".?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
+        {%else%}
+            <li class="disabled"><a href="#">&laquo;</a></li>
+        {% endif %}
+        {% for p in page_obj.paginator.page_range %}
+            {% ifequal p  page_obj.number %}
+                <li class="active" ><a href=".?page={{p}}">{{p}}</a></li>
+            {% else %}
+                <li ><a href=".?page={{p}}">{{p}}</a></li>
+            {% endifequal %}
+        {% endfor %}
+        {% if page_obj.has_next %}
+            <li><a href=".?page={{ page_obj.next_page_number }}">&raquo;</a></li>
+        {% else %}
+            <li class="disabled"><a href="#">&raquo;</a></li>
+        {% endif %}
+    </ul>
+    {% endif %}
+</div>

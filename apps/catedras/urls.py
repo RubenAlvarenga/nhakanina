@@ -1,0 +1,37 @@
+from django.conf.urls import patterns, url
+from .views import CursoSingleTableView, CursoDetailView, CursoCreateView, CursoUpdateView, CursoAlumnoCreateView, CarreraSingleTableView, CarreraCreateView, \
+	CarreraDetailView, CarreraUpdateView, CarreraDeleteView, MateriaSingleTableView, MateriaDetailView, MateriaCreateView, MateriaUpdateView, \
+    MateriaDeleteView, CursoDeleteView
+from django.views.generic import TemplateView
+from django.contrib.auth.decorators import login_required, permission_required
+from apps.decorators import custom_permission_required
+
+
+urlpatterns = patterns('',
+
+    url(r'^$', TemplateView.as_view(template_name='base/divided.html'), name='catedras'),
+
+    url(r'^cursos/$', custom_permission_required('catedras.list_curso')(CursoSingleTableView.as_view()), name ='lst_curso'),
+    url(r'^cursos/detCurso/(?P<pk>[\d]+)$', custom_permission_required('catedras.view_curso')(CursoDetailView.as_view()), name='det_curso'),
+    url(r'^cursos/addCurso/$', custom_permission_required('catedras.add_curso')(CursoCreateView.as_view()), name ='add_curso'),
+    url(r'^cursos/updCurso/(?P<pk>[\d]+)$', custom_permission_required('catedras.change_curso')(CursoUpdateView.as_view()), name='upd_curso'),
+    url(r'^cursos/delCurso/(?P<pk>[\d]+)$', custom_permission_required('catedras.delete_curso')(CursoDeleteView.as_view()), name='del_curso'),
+
+    url(r'^cursos/addCursoAlumno/$', custom_permission_required('catedras.add_cursoalumno')(CursoAlumnoCreateView.as_view()), name ='add_curso_alumno'),
+
+    url(r'^carreras/$', custom_permission_required('catedras.list_carrera')(CarreraSingleTableView.as_view()), name ='lst_carrera'),
+    url(r'^carreras/detCarrera/(?P<pk>[\d]+)$', custom_permission_required('catedras.view_carrera')(CarreraDetailView.as_view()), name='det_carrera'),
+    url(r'^carreras/addCarrera/$', custom_permission_required('catedras.add_carrera')(CarreraCreateView.as_view()), name ='add_carrera'),
+    url(r'^carreras/updCarrera/(?P<pk>[\d]+)$', custom_permission_required('catedras.change_carrera')(CarreraUpdateView.as_view()), name='upd_carrera'),
+    url(r'^carreras/delCarrera/(?P<pk>[\d]+)$', custom_permission_required('catedras.delete_carrera')(CarreraDeleteView.as_view()), name='del_carrera'),
+
+    url(r'^materias/$', custom_permission_required('catedras.list_materia')(MateriaSingleTableView.as_view()), name ='lst_materia'),
+    url(r'^materias/detMateria/(?P<pk>[\d]+)$', custom_permission_required('catedras.view_materia')(MateriaDetailView.as_view()), name='det_materia'),
+    url(r'^materias/addMateria/$', custom_permission_required('catedras.add_materia')(MateriaCreateView.as_view()), name ='add_materia'),
+    url(r'^materias/updMateria/(?P<pk>[\d]+)$', custom_permission_required('catedras.change_materia')(MateriaUpdateView.as_view()), name='upd_materia'),
+    url(r'^materias/delMateria/(?P<pk>[\d]+)$', custom_permission_required('catedras.delete_materia')(MateriaDeleteView.as_view()), name='del_materia'),
+
+
+)
+
+

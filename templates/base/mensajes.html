@@ -1,0 +1,26 @@
+{% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li{% if message.tags %} class="alert alert-{{ message.tags }}"{% endif %} role="alert">
+            {% ifequal message.tags 'success'%}
+                <span class="glyphicon glyphicon-ok-sign"></span>
+            {% endifequal %}
+            {% ifequal message.tags 'info'%}
+                <span class="glyphicon glyphicon-info-sign"></span>
+            {% endifequal %}
+            {% ifequal message.tags 'warning'%}
+                <span class="glyphicon glyphicon-exclamation-sign"></span>
+            {% endifequal %}
+            {% ifequal message.tags 'danger'%}
+                <span class="glyphicon glyphicon-remove-sign"></span>
+            {% endifequal %}
+            {% ifequal message.tags 'danger error'%}
+                <span class="glyphicon glyphicon-remove-sign"></span>
+            {% endifequal %}
+            {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %} <strong>Importante:</strong> {% endif %}
+            <!--<span class="glyphicon glyphicon-remove-sign"></span> -->
+            {{ message }}
+        </li>
+        {% endfor %}
+    </ul>
+{% endif %}

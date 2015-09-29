@@ -1,0 +1,60 @@
+{% extends "base/base.html" %}
+{% block container %}
+    {% if request.session.sistema %}
+        <div class="row" id="wrapper">
+            <div class="ladoizquierdo" id="sidebar-wrapper">
+                {% include "base/menuapp.html" %}
+            </div>
+            <ol class="breadcrumb">
+                {% block breadcrumbs %}{% endblock breadcrumbs %}
+                <li><a href="#menu-toggle" class="btn-xs" id="menu-toggle" title="Ver/Ocultar Menu"><span class="glyphicon glyphicon-list"></span></a></li>
+                <li><a href="/"><span class="glyphicon glyphicon-th"></span></a></li>
+                {% if sistema %}
+                    <li><a href="/{{sistema.index}}"><span class="{{sistema.icono}}"></span> {{sistema.titulo}}</a></li>
+                {% endif %}
+                {% if enlaces %}
+                    {% for e in enlaces %}
+                        {% if e.active == 'in' %}
+                           <li><strong><span class="{{e.grupo__icono}}"></span> {{e.grupo__grupo}}</strong></li> 
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+                <!--<li class="active">{{request.path}}</li>-->
+                {% for item in breadcrumbs %}
+                    <li> 
+                    {% ifequal request.path  item.url %}
+                        {{item.name}}
+                    {% else%}
+                        <a href="{{item.url}}">{{item.name}}</a>
+                    {% endifequal %}
+                    </li>
+                {% endfor %}
+                <li>{{ url_actual.url_name }}</li>
+            </ol>
+            <div id="page-content-wrapper" class="col-xs-12">
+                <div id="mensaje">
+                    {% include "base/mensajes.html" %}
+                </div>
+                <div class="row contenido">
+                    <div class="col-xs-12 blockcontent">{% block content %}{% endblock content %}</div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+{% endblock container %}
+
+
+{% block scripts %}
+    <!-- Menu Toggle Script -->
+    <script>
+    $("#menu-toggle").click(function(e) {
+        e.preventDefault();
+        $("#wrapper").toggleClass("toggled");
+    });
+    </script>
+{% endblock scripts %}
+
+
+
+
+    

@@ -1,0 +1,103 @@
+{% extends "base/divided.html" %}
+{% load verbose_name_tags %}
+{% load humanize %}
+{% block title %}Detalle {{ object|get_verbose_name|capfirst }}{% endblock title %}
+
+{% block content %}
+
+    <div class="titulo container-fluid"><h3>{{ object|get_verbose_name|capfirst }} {{object.name}} {% if object.estado == 'ANU' %} ANULADO {% endif %}</h3>
+    	<div class="align-right">
+            {% if object.estado == 'ANU' %}
+            {% else %}
+                {% if not object.get_planes.plan_pago.all %}
+                    <a href="{% url 'finanzas:apl_recibo_plan' object.id %}" class="btn btn-info btn-sm" role="button"><span class="glyphicon glyphicon-copy"></span> Aplicar a Plan</a>
+                {% endif %}    
+                <a href="../anularRecibo/{{object.id}}" class="btn btn-danger btn-sm" role="button"><span class="glyphicon glyphicon-remove-circle"></span> Anular este {{ object|get_verbose_name|capfirst }}</a>
+            {% endif %}
+            <a href="../add{{ object|get_verbose_name|capfirst }}" class="btn btn-primary btn-sm" role="button"><span class="glyphicon glyphicon-plus"></span> Agregar otro {{ object|get_verbose_name|capfirst }}</a>
+    	</div>
+    </div>
+
+
+    <div class="recibo-contenedor {% if object.estado == 'ANU' %}letrasgrises{% endif %}">
+    	<div class="cincuenta nro-recibo"><div class="align-left">{{object.serie}}-</div> {{object.nro_recibo}}</div>
+    	<div style="width:80%" class="subrayado-suave">Fecha: {{object.fecha}}</div>
+    	<div class="cincuenta subrayado-suave">Recibido de: 
+            {% if  object.persona.es_alumno %}
+                <a href="{% url 'finanzas:det_alumno' object.persona.es_alumno.codigo %}"><strong>{{object.persona.get_full_name}}</strong></a>
+            {% else %}
+                <strong>{{object.persona.get_full_name}}</strong>
+            {% endif %}
+        </div>
+        <div class="cincuenta subrayado-suave">C.I.: <strong>{{object.persona.cedula|intcomma}}</strong></div>
+		<div class="recibo-monto subrayado-suave">Guaranies: <strong>{{object.monto|intcomma}}</strong>  ({{totalenletras|capfirst}} Gs.)</div>
+		<div class="subrayado-suave">En Concepto de: <strong>{{object.cantidad}} {{object.concepto.concepto}}</strong></div>
+		<div class="subrayado-suave">Cajero: <strong>{{object.cajero.first_name}} {{object.cajero.last_name}}</strong></div>
+        <div class="recibo-detalle">
+		{% if object.get_planes and object.get_planes.plan_pago.all %}
+			<table  width="100%"class="table table-hover">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Cant</th>
+                    <th>Concepto</th>
+                    <th>Unitario</th>
+                    <th>Monto</th>
+                </tr>
+                </thead>
+                {% for plan in object.get_planes.plan_pago.all %}
+                <tr>
+                	<td style="color: #CCC"><small>{{plan.id}}</small></td>
+                	<td>{{plan.cantidad}}</td>
+                	<td>{{plan.concepto.concepto}}{% if plan.vencimiento %} | {{plan.vencimiento|date:"M"}}{% endif %}</td>
+                	<td>{{plan.concepto.monto|intcomma}}</td>
+                	<td>{{plan.monto|intcomma}}</td>
+                </tr>
+                {% endfor %}
+                <tr>
+                	<td align="right" colspan="4">{{totalenletras|capfirst}} Gs.</td>
+                	<td><strong>{{object.monto|intcomma}}</strong></td>
+                </tr>
+			</table>
+        {% else %}
+            <table  width="100%"class="table table-hover">
+                <thead>
+                <tr>
+                    <th>Cant</th>
+                    <th>Concepto</th>
+                    <th>Unitario</th>
+                    <th>Monto</th>
+                </tr>
+                </thead>
+                <tr>
+                    <td>{{object.cantidad}}</td>
+                    <td>{{object.concepto.concepto}}</td>
+                    <td>{{object.concepto.monto|intcomma}}</td>
+                    <td>{{object.monto|intcomma}}</td>
+                </tr>
+                <tr>
+                    <td align="right" colspan="3">{{totalenletras|capfirst}} Gs.</td>
+                    <td><strong>{{object.monto|intcomma}}</strong></td>
+                </tr>
+            </table>
+
+		{% endif %}
+        </div>
+        
+        {% if object.estado == 'ANU' %}
+            <div class="datos_recibo_anulado">
+                <table>
+                    <tr>
+                        <td rowspan="4" class="borrador-cuadrado"><span class="glyphicon glyphicon-trash size50"></span></td>
+                    </tr>
+                    <tr><td><strong>Anulado por: </strong>{{object.usuario_anulacion.first_name }} {{object.usuario_anulacion.last_name }} ({{object.usuario_anulacion }})</td></tr>
+                    <tr><td><strong>Fecha: </strong>{{object.fecha_anulacion }}</td></tr>
+                    <tr><td><strong>Motivo: </strong> {{object.motivo_anulacion}}</td></tr>
+                </table>
+            </div>
+        {% endif %}
+
+
+    </div>
+
+{% endblock content %}

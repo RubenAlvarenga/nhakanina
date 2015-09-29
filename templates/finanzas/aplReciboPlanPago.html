@@ -1,0 +1,39 @@
+{% extends "base/divided.html" %}
+{% load render_table from django_tables2 %}
+{% load verbose_name_tags %}
+{% load humanize %}
+{% block title %}Aplicar Recibo a Plan{% endblock title %}
+
+{% block content %}
+
+<div class="titulo container-fluid"><h3>Aplicar Recibo a Plan</h3></div>
+<div class="recibo-contenedor {% if dic.recibo.estado == 'ANU' %}letrasgrises{% endif %}">
+    <div class="cincuenta nro-recibo"><div class="align-left">{{dic.recibo.serie}}-</div> {{dic.recibo.nro_recibo}}</div>
+    <div style="width:80%" class="subrayado-suave">Fecha: {{dic.recibo.fecha}}</div>
+    <div class="cincuenta subrayado-suave">Recibido de: 
+        {% if  dic.recibo.persona.es_alumno %}
+            <a href="{% url 'finanzas:det_alumno' dic.recibo.persona.es_alumno.codigo %}"><strong>{{dic.recibo.persona.get_full_name}}</strong></a>
+        {% else %}
+            <strong>{{dic.recibo.persona.get_full_name}}</strong>
+        {% endif %}
+    </div>
+    <div class="cincuenta subrayado-suave">C.I.: <strong>{{dic.recibo.persona.cedula|intcomma}}</strong></div>
+    <div class="recibo-monto subrayado-suave">Guaranies: <strong>{{dic.recibo.monto|intcomma}}</strong></div>
+    <div class="subrayado-suave">En Concepto de: <strong>{{dic.recibo.cantidad}} {{dic.recibo.concepto.concepto}}</strong></div>
+    <div class="subrayado-suave">Cajero: <strong>{{dic.recibo.cajero.first_name}} {{dic.recibo.cajero.last_name}}</strong></div>
+
+    <form action="" method="post" accept-charset="utf-8">{% csrf_token %}
+        {% if planes %}
+            {% render_table dic.planes "base/mytable.html" %}
+        {% endif %}
+
+        <div class="form-group">
+            <div class="col-sm-offset-7 col-sm-5">
+                <button type="submit" class="btn btn-primary align-right"><span class="glyphicon glyphicon-ok-circle"></span> Aplicar</button>
+                <a href="/" type="submit" class="btn btn-default align-right"><span class="glyphicon glyphicon-remove-circle"></span> Cancelar</a>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock content %}
+<!--globos de ayuda-->

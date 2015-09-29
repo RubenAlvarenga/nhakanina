@@ -1,0 +1,7 @@
+*.pyc
+*.pyo
+media/*
+apps/*/migrations/
+apps/entidades/migraciones/
+iseapp/settins/
+*.jpg

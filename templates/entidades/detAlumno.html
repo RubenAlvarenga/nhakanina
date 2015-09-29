@@ -1,0 +1,34 @@
+{% extends "base/divided.html" %}
+{% load verbose_name_tags %}
+{% load humanize %}
+{% block title %}Detalle {{ object|get_verbose_name|capfirst }}{% endblock title %}
+
+{% block content %}
+
+    <div class="titulo container-fluid"><h3>{{ object|get_verbose_name|capfirst }} {{object.name}}</h3>
+    	<div class="align-right">
+
+			<a href="../upd{{ object|get_verbose_name|capfirst }}/{{object.codigo}}" class="btn btn-default btn-sm" role="button"><span class="glyphicon glyphicon-pencil"></span> Editar este {{ object|get_verbose_name|capfirst }}</a>
+
+            <a href="../del{{ object|get_verbose_name|capfirst }}/{{object.codigo}}" class="btn btn-danger btn-sm" role="button"><span class="glyphicon glyphicon-remove-circle"></span> Eliminar este {{ object|get_verbose_name|capfirst }}</a>
+            <a href="../add{{ object|get_verbose_name|capfirst }}" class="btn btn-primary btn-sm" role="button"><span class="glyphicon glyphicon-plus"></span> Agregar otro {{ object|get_verbose_name|capfirst }}</a>
+    	</div>
+    </div>
+
+<div class="detalles">
+	<div><div class="det_titulo">Nombre: </div><div class="det_contenido">{{object.get_full_name}}</div></div>
+	<div><div class="det_titulo">Cedula de Identidad: </div><div class="det_contenido">{{object.cedula|intcomma}}</div></div>
+	<div><div class="det_titulo">Fecha Nacimiento: </div><div class="det_contenido">{{object.fecha_nacimiento}}</div></div>
+
+	<div class="det_titulo">Cursos Activos</div>
+	<div>
+		<table class="table table-hover">
+		{% for curso in object.get_cursos_activos.all %}
+			<tr><td>{{curso.curso}}</td></tr>		
+		{% endfor %}
+		</table>
+	</div>
+</div>
+
+
+{% endblock content %}

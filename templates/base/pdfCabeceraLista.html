@@ -1,0 +1,8 @@
+{% load verbose_name_tags %}
+<div class="container-fluid titulo">
+    <div class="row">
+        <div class="col-md-12">
+            <h3>{{ table|queryset_verbose_name_plural|capfirst }}</h3>
+        </div>          
+    </div>
+</div>

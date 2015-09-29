@@ -1,0 +1,40 @@
+{% extends "base/full.html" %}
+{% load verbose_name_tags %}
+{% block title %}Perfil Usuario{% endblock title %}
+
+{% block content %}
+
+
+<div class="portada">
+    <div id="mensaje">{% include "base/mensajes.html" %}</div>
+
+    <div class="titulo container-fluid"><h3>Perfil Usuario</h3>
+        <div class="align-right">
+            <a href="{% url 'autorizaciones:password_change' %}" class="btn btn-danger btn-sm" role="button"><span class="glyphicon glyphicon-asterisk"></span> Cambiar Contraseña</a>
+
+            <a href="../updPerfil/{{object.id}}" class="btn btn-default btn-sm" role="button"><span class="glyphicon glyphicon-pencil"></span> Editar mis datos</a>
+        </div>
+    </div>
+<table class="table">
+	<tr>
+		<td width="140px">
+			<div class="avatar">
+			    {% if object.perfil.avatar.url_125x125 %}
+				    <img src="{{object.perfil.avatar.url_125x125}}"/>
+			    {% else %}
+			        <img src="{{MEDIA_URL}}/avatar_user/generic-user.125x125.png"/>
+			    {% endif %}
+			</div>
+		</td>
+		<td>
+			<div class="detalles" style="margin-top:5px">
+				<div><div class="det_titulo">Username: </div><div class="det_contenido">{{object.username}}</div></div>
+				<div><div class="det_titulo">Nombre: </div><div class="det_contenido">{{object.first_name}} {{object.last_name}}</div></div>
+				<div><div class="det_titulo">Mail: </div><div class="det_contenido">{{object.email}}</div></div>
+				<div><div class="det_titulo">Estado: </div><div class="det_contenido">{{object.is_active}}</div></div>
+			</div>			
+		</td>
+	</tr>
+</table>
+</div>
+{% endblock content %}

@@ -1,0 +1,28 @@
+{% for field in form %}
+<div class="form-group">
+    <div class="col-sm-3 control-label">
+        {{ field.label_tag }}
+        <div class="help-text"><small>{{field.help_text}}</small></div>     
+    </div>
+    <div class="col-sm-9">
+        {% if field.field.required %}
+            <div class="requerido">{{field}}</div>
+        {% else %}
+            <div class="norequerido">{{field}}</div>
+        {% endif %}
+
+    {% if field.errors %}
+        <div class="alert alert-danger" id="camporequerido" role="alert"><span class="glyphicon glyphicon-remove-sign align-left" id="errorlogin"></span> {{field.errors}}</div> 
+    {% endif %}
+    </div>
+</div>
+
+{% endfor %}
+<div class="form-group">
+    <div class="col-sm-offset-7 col-sm-5">
+        <button type="submit" class="btn btn-primary align-right"><span class="glyphicon glyphicon-ok-circle"></span> Registrar</button>
+        <a href="../" type="submit" class="btn btn-default align-right"><span class="glyphicon glyphicon-remove-circle"></span> Cancelar</a>
+    </div>
+</div>  
+
+

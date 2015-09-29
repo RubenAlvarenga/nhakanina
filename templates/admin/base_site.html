@@ -1,0 +1,24 @@
+{% extends "admin/base.html" %}
+{% load static from staticfiles %}
+    {% block headExtra %}
+    <link rel="stylesheet" href="{% static "admin/css/base.css" %}">
+    <link rel="stylesheet" href="{% static "admin/css/dashboard.css" %}">
+	<!--[if lte IE 7]><link rel="stylesheet" type="text/css" href="{% static "admin/css/ie.css" %}" /><![endif]-->
+	<!--
+	<script type="text/javascript">window.__admin_media_prefix__ = "/static/admin/";</script>
+	<script type="text/javascript">window.__admin_utc_offset__ = "0";</script>
+	<meta name="robots" content="NONE,NOARCHIVE">
+	-->
+    {% endblock headExtra %}
+
+{% block title %}{{ title }} | {{ site_title|default:_('Django site admin') }}{% endblock %}
+
+{% block branding %}
+<h1 id="site-name"><a href="{% url 'admin:index' %}"> <img width="40px" src="{% static "admin/img/iselogo.png" %}" alt="ISEApp"> <div id="isotipo">ISEAPP</div><!--# {{ site_header|default:_('Django administration') }} #--></a></h1>
+{% endblock %}
+
+{% block nav-global %}{% endblock %}
+
+
+
+

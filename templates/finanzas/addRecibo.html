@@ -1,0 +1,167 @@
+{% extends "base/divided.html" %}
+{% load static from staticfiles %}
+{% block headExtra %}
+	<script type="text/javascript" src="/static/admin/js/admin/RelatedObjectLookups.js"></script>
+	<script type="text/javascript" src="/static/admin/js/jquery.js"></script>
+	<script type="text/javascript" src="/static/admin/js/jquery.init.js"></script>
+	{{form.media}}
+    <style>
+    	.col-sm-3{width: 20%;}
+    	.col-sm-9{width: 80%;}
+        #id_persona, #id_concepto{
+            width: 10%;
+            height: 34px;
+            padding: 6px 12px;
+            font-size: 14px;
+            line-height: 1.42857143;
+            color: #555;
+            background-image: none;
+            border: 1px solid #79EFFF;
+            border-radius: 4px;
+            -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+                  box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+            -webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
+               -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+                  transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+        }
+        label{font-weight: bolder !important; color: #191919; }
+        .requerido strong{display: none;}
+        .id_persona, .id_concepto{background: #E5E5E5; padding: 8px; border-radius: 5px;}
+
+    </style>
+{% endblock headExtra %}
+{% load verbose_name_tags %}
+{% block title %}Registrar {{ form|form_model_name|capfirst }}{% endblock title %}
+
+{% block content %}
+    <div class="titulo container-fluid"><h3>Registrar {{ form|form_model_name|capfirst }}</h3></div>
+    <div class="formulario">    
+    	<form class="form-horizontal" role="form" action="/finanzas/recibos/addRecibo/" method="POST" enctype="multipart/form-data">{% csrf_token %}
+
+
+			<!-- FECHA -->
+			<div class="form-group">
+			    <label for="{{ form.fecha.auto_id }}" class="col-sm-3 control-label">{{ form.fecha.label_tag }}</label>
+			    <div class="col-sm-9">			    
+			        <div class="requerido">{{form.fecha}}</div>
+			    {% if form.fecha.errors %}
+			        <div class="alert alert-danger" id="camporequerido" role="alert"><span class="glyphicon glyphicon-remove-sign align-left" id="errorlogin"></span> {{form.fecha.errors}}</div> 
+			    {% endif %}
+			    </div>
+			</div>
+			<!-- SERIE y RECIBO -->
+			<div class="form-group">
+			    <label for="{{ form.nro_recibo.auto_id }}" class="col-sm-3 control-label">{{ form.nro_recibo.label_tag }}</label>
+			    <div class="col-sm-9">
+			        <div class="requerido"> <div style="width:5%; float:left" >{{form.serie}}</div> <div  style="width:95%; float:left" >{{form.nro_recibo}}</div></div>
+			    {% if form.serie.errors %}
+			        <div class="alert alert-danger" id="camporequerido" role="alert"><span class="glyphicon glyphicon-remove-sign align-left" id="errorlogin"></span> {{form.serie.errors}}</div> 
+			    {% endif %}
+			    {% if form.nro_recibo.errors %}
+			        <div class="alert alert-danger" id="camporequerido" role="alert"><span class="glyphicon glyphicon-remove-sign align-left" id="errorlogin"></span> {{form.nro_recibo.errors}}</div> 
+			    {% endif %}
+			    </div>
+			</div>
+			<!-- PERSONA -->
+			<div class="form-group">
+			    <label for="{{ form.persona.auto_id }}" class="col-sm-3 control-label">{{ form.persona.label_tag }}</label>
+			    <div class="col-sm-9">			    
+			        <div class="requerido get_full_name">{{form.persona}}  <span class="id_persona"></span></div>
+			    {% if form.persona.errors %}
+			        <div class="alert alert-danger" id="camporequerido" role="alert"><span class="glyphicon glyphicon-remove-sign align-left" id="errorlogin"></span> {{form.persona.errors}}</div> 
+			    {% endif %}
+			    </div>
+			</div>
+			<!-- ARANCEL -->
+			<div class="form-group">
+			    <label for="{{ form.cantidad.auto_id }}" class="col-sm-3 control-label">{{ form.cantidad.label_tag }}</label>
+			    <div class="col-sm-9">			    
+			        <div class="requerido">
+						{{form.cantidad}}
+			        </div>
+			    {% if form.cantidad.errors %}
+			        <div class="alert alert-danger" id="camporequerido" role="alert"><span class="glyphicon glyphicon-remove-sign align-left" id="errorlogin"></span> {{form.cantidad.errors}}</div> 
+			    {% endif %}
+			    </div>
+			</div>
+			<div class="form-group">
+			    <label for="{{ form.concepto.auto_id }}" class="col-sm-3 control-label">{{ form.concepto.label_tag }}</label>
+			    <div class="col-sm-9">			    
+			        <div class="requerido get_concepto">{{form.concepto}}  <span class="id_concepto"></span></div>
+			    {% if form.concepto.errors %}
+			        <div class="alert alert-danger" id="camporequerido" role="alert"><span class="glyphicon glyphicon-remove-sign align-left" id="errorlogin"></span> {{form.concepto.errors}}</div> 
+			    {% endif %}
+			    </div>
+			</div>
+
+			{% for field in form %}
+			{% endfor %}
+			<div class="form-group">
+			    <div class="col-sm-offset-7 col-sm-5">
+			        <button type="submit" class="btn btn-primary align-right"><span class="glyphicon glyphicon-ok-circle"></span> Registrar Recibo</button>
+			        <a href="../" type="submit" class="btn btn-default align-right"><span class="glyphicon glyphicon-remove-circle"></span> Cancelar</a>
+			    </div>
+			</div>
+
+
+
+    	</form>
+	</div>
+{% endblock content %}
+
+
+{% block scripts %}
+    <script type="text/javascript">
+        (function($) {
+            $(document).ready(function() {
+                get_full_name($('#id_persona').val()) 
+                get_concepto($('#id_concepto').val())
+
+
+                $('#lookup_id_persona').click(function(e) {
+                    e.preventDefault();
+                    showRelatedObjectLookupPopup(this);
+                    $('#id_persona').focus()
+                });
+                $('#lookup_id_concepto').click(function(e) {
+                    e.preventDefault();
+                    showRelatedObjectLookupPopup(this);
+                    $('#id_concepto').focus()
+                });
+
+
+                $('#id_persona').on("focus blur", function() {
+                    get_full_name($(this).val())
+                }); 
+                $('#id_concepto').on("focus blur", function() {
+                    get_concepto($(this).val())
+                }); 
+
+                function get_full_name(id){
+                    $.ajax({
+                        data : {'id_persona' : id  },
+                        url : '/entidades/personas/get_full_name-ajax/',
+                        type: 'get',
+                        success : function(data){
+                            $('.id_persona').html(data);
+                        }                                
+                    });
+                }
+                function get_concepto(id){
+                    $.ajax({
+                        data : {'id_arancel' : id  },
+                        url : '/finanzas/get_concepto_ajax/',
+                        type: 'get',
+                        success : function(data){
+                            $('.id_concepto').html(data);
+                        }                                
+                    });
+                }
+
+            });
+        })(django.jQuery);
+
+
+
+    </script>
+{% endblock scripts %}

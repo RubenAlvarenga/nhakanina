@@ -1,0 +1,154 @@
+{% extends "base/divided.html" %}
+{% load humanize %}
+{% load verbose_name_tags %}
+{% block title %}Detalle {{ object|get_verbose_name|capfirst }}{% endblock title %}
+{% block content %}
+
+    <div class="titulo container-fluid"><h3>Extracto</h3>
+        <div class="align-right">
+            <a href="{% url 'finanzas:det_persona' object.id %}"><button type="button" class="btn btn-primary"><span class="glyphicon glyphicon-check"></span> Plan Pago</button></a>
+        </div>
+    </div>
+    <div class="alumno-titulo">
+        <div id="nombre">Nombre: <strong>{{object.get_full_name}}</strong>
+        </div>
+        <div id="cedula">C.I.: <strong>{{object.cedula|intcomma}}</strong></div>
+    </div>
+    <div class="alumno-cursos">
+    {% for curso in object.get_cursos_activos %}
+            <div class="curso"><span class="glyphicon glyphicon-education"></span> Curso: <strong>{{curso.curso}}</strong>
+<!--                 <button type="submit" class="btn btn-primary btn-xs align-right"><span class="glyphicon glyphicon-ok-circle"></span> Recibo</button> -->
+            </div>
+            
+            {% if curso.get_planPago %}
+                <div id="frmOpciones{{curso.id}}"></div>
+                <table width="100%" class="table table-hover table-small">
+                <thead>
+                <tr>
+                    <!-- <th></th> -->
+                    <th>ID</th>
+                    <th>Cuota</th>
+                    <th>Concepto</th>
+                    <th>Vence</th>
+                    <th>Estado</th>
+                    <th>Monto</th>
+                    <th>Recibo</th>      
+                </tr>
+                </thead>
+                {% for plan in curso.get_planPago %}
+                    {% ifequal plan.estado 'PAG' %}
+                        <tr class="verde">
+                    {% else %}
+                        {% if plan.get_vencido %}
+                            <tr class="rojo">
+                        {% else %}
+                            <tr>    
+                        {% endif %}
+                    {% endifequal %}
+                        <!-- <td><input type="checkbox"></td> -->
+                        <td class="gris"><small>{{plan.id}}</small></td>
+                        {% ifequal plan.concepto.concepto.tipo_concepto.tipo_concepto.id 2 %}
+                            <td>{{plan.secuencia}}/{{plan.curso_alumno.curso.cantidad_cuotas}}</td>
+                        {% else %}
+                            {% ifequal plan.concepto.concepto.tipo_concepto.tipo_concepto.id 1 %}
+                                <td>{{plan.secuencia}}</td>
+                            {% else %}
+                                <td></td>
+                            {% endifequal %}
+                        {% endifequal %}
+                        <td>{{plan.cantidad}} {{plan.concepto.get_grupo_2}} {{plan.concepto.concepto}} 
+                            <span class="align-right">
+                                {% if plan.materia %}
+                                    <small>{{plan.materia}}</small>
+                                {% else %}
+                                    {% if plan.concepto.concepto.tipo_concepto.tipo_concepto.id == 2 %}
+                                        <small>{{plan.vencimiento|date:"M"}}</small>                                
+                                    {% else %}
+                                        {{plan.secuencia}}
+                                    {% endif %}
+                                {% endif %}
+                            </span>
+                        </td>
+                        <td>{{plan.vencimiento|date:"N-o" }}</td>
+                        <td>{% if plan.estado == 'PAG' %}{{plan.get_recibo.fecha|date:"d-m-y"}} {% else %} {{plan.estado}} {% endif %}</td>
+                        <td>{{plan.monto|intcomma}}</td>
+                        
+                        {% if plan.concepto.concepto.fraccionable and plan.monto == plan.concepto.monto  %}
+                            <td>
+                            <form class="frmFraccionar" action="/finanzas/fraccionar_planpago_ajax" method="POST">{% csrf_token %}
+                            <input type="hidden" name="id_planpago" value="{{plan.id}}">
+                            <input id="id_curso" type="hidden" name="id_curso" value="{{curso.id}}">
+                               <input class="input-small" type="text" name="cantidad" value="{{plan.concepto.concepto.fraccionable_hasta}}">  <button type="submit" class="btn btn-primary btn-xs">
+                                    <span class="glyphicon glyphicon-ok-circle"></span> Fraccionar
+                                </button>
+                            </form>
+                            </td>
+                        {% else %}
+                        <td>
+                        {% if plan.get_recibo %}
+                            <a title="{{plan.get_recibo.fecha|date:"d/m/y"}}" href="/finanzas/recibos/detRecibo/{{plan.get_recibo.id}}"><strong>{{plan.get_recibo.serie}}-{{plan.get_recibo.nro_recibo}}</strong></a>
+                        {% endif %}
+                        {% endif %}
+                        </td>
+                    </tr>
+                    
+                {% endfor %}                
+                </table>                
+            {% endif %}
+            
+    {% endfor %}
+    {% if recibossueltos %}
+        <div class="titulo"> <span class="glyphicon glyphicon-paperclip"></span><strong> Recibos sin Planes de Pagos</strong></div>
+        <table width="100%" class="table table-hover table-small">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Fecha</th>
+            <th>Cant</th>
+            <th>Concepto</th>
+            <th>Monto</th>
+            <th>Recibo</th>
+            <th></th>
+        </tr>
+        </thead>
+        {% for recibo in recibossueltos  %}
+        <tr valign="middle" class="verde">
+            <td>{{recibo.id}}</td>
+            <td>{{recibo.fecha|date:"d/m/y"}}</td>
+            <td>{{recibo.cantidad}}</td>
+            <td>{{recibo.concepto.concepto}}</td>
+            <td>{{recibo.monto|intcomma}}</td>
+            <td><a title="{{recibo.fecha|date:"d/m/y"}}" href="/finanzas/recibos/detRecibo/{{recibo.id}}"><strong>{{recibo.serie}}-{{recibo.nro_recibo}}</strong></a></td>
+            <td><a href="{% url 'finanzas:apl_recibo_plan' recibo.id %}"><button type="button" class="btn btn-info btn-xs align-right"><span class="glyphicon glyphicon-copy"></span> Aplicar Plan</button></a></td>
+
+        </tr>
+        {% endfor %}
+        </table>
+    {% endif %}
+    </div>
+{% endblock content %}
+
+
+{% block scripts %}
+    <script type="text/javascript">
+    $(document).on('ready', function(){
+        $('.frmFraccionar').submit(function() {
+            var id = $("#id_curso").val()              
+            $.ajax({ 
+                data: $(this).serialize(), 
+                type: $(this).attr('method'), 
+                url: $(this).attr('action'), 
+                success: function(response) { 
+                    if (response == "success")
+                        $(location).attr('href', '');
+                    else
+                        $('#frmOpciones' + id).html(response);
+                },
+            });
+            return false;
+        });
+     });
+    </script>
+{% endblock scripts %}
+
+

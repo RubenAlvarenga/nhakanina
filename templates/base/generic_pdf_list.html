@@ -1,0 +1,10 @@
+{% load render_table from django_tables2 %}
+{% load verbose_name_tags %}
+
+
+{% block content %}
+   {% include "base/pdfCabeceraLista.html" %}
+ 
+        {% render_table table "base/pdftable.html" %}
+
+{% endblock content %}

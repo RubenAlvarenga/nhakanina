@@ -1,0 +1,39 @@
+{% extends "base/divided.html" %}
+{% load humanize %}
+{% load verbose_name_tags %}
+{% block title %}Detalle {{ object|get_verbose_name|capfirst }}{% endblock title %}
+
+{% block content %}
+
+    <div class="titulo container-fluid"><h3>{{ object|get_verbose_name|capfirst }} {{object.name}}</h3>
+    	<div class="align-right">
+
+			<a href="../updPlanPago/{{object.id}}" class="btn btn-default btn-sm" role="button"><span class="glyphicon glyphicon-pencil"></span> Editar este {{ object|get_verbose_name|capfirst }}</a>
+
+            <a href="../delPlanPago/{{object.id}}" class="btn btn-danger btn-sm" role="button"><span class="glyphicon glyphicon-remove-circle"></span> Eliminar este {{ object|get_verbose_name|capfirst }}</a>
+            <a href="../addPlanPago" class="btn btn-primary btn-sm" role="button"><span class="glyphicon glyphicon-plus"></span> Agregar otro {{ object|get_verbose_name|capfirst }}</a>
+    	</div>
+    </div>
+
+
+
+<div class="detalles">
+	<div><div class="det_titulo">Alumno: </div><div class="det_contenido">{{object.curso_alumno.alumno.get_full_name}} <strong>C.I: {{object.curso_alumno.alumno.cedula|intcomma}}</strong></div></div>
+	<div><div class="det_titulo">Curso: </div><div class="det_contenido">{{object.curso_alumno.curso}}</div></div>
+	<div><div class="det_titulo">concepto: </div><div class="det_contenido">{{object.cantidad}} {{object.concepto.concepto}}  {{object.secuencia}}/{{object.total_cuotas}}</div></div>
+	<div><div class="det_titulo">Monto: </div><div class="det_contenido">{{object.monto|intcomma}}</div></div>
+	<div><div class="det_titulo">Vencimiento: </div><div class="det_contenido">{{object.vencimiento}}</div></div>
+	<div><div class="det_titulo">Estado: </div><div class="det_contenido">{{object.estado}}</div></div>
+	<div><div class="det_titulo">Materia: </div><div class="det_contenido">{{object.materia}}</div></div>
+	<div><div class="det_titulo">Creado por: </div><div class="det_contenido">{{object.created_by}}</div></div>
+	<div><div class="det_titulo">Autorizado por: </div><div class="det_contenido">{{object.authorized_by}}</div></div>
+	<div><div class="det_titulo">Observaciones: </div><div class="det_contenido">{{object.observaciones}}</div></div>
+
+
+</div>
+
+
+{% endblock content %}
+
+
+

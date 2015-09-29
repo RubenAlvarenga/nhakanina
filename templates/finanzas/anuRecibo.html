@@ -1,0 +1,64 @@
+{% extends "base/divided.html" %}
+{% load verbose_name_tags %}
+{% load humanize %}
+{% block title %}Anular 
+        {{ object|get_verbose_name|capfirst }}
+{% endblock title %}
+
+{% block content %}
+
+<div class="formulario">
+    <div class="titulo container-fluid"><h3>Anular {{ object|get_verbose_name|capfirst }}</h3></div>
+
+        <div class="advertencia_recibo_anulado">
+            <div class="align-left"><span class="glyphicon glyphicon-alert size25"></span></div>
+            <div style="font-size:20px; margin-left:50px">Está seguro que desea <strong>anular</strong> el Recibo?</div>
+        </div>
+
+        <form class="form-horizontal" role="form" method="POST" enctype="multipart/form-data">{% csrf_token %}
+        <input type="hidden" name="accion" value="Anular">
+        <input type="hidden" name="confirmar" value="True">
+
+
+
+        <div class="recibo-contenedor">
+            <div class="cincuenta nro-recibo"><div class="align-left">{{object.serie}}-</div> {{object.nro_recibo}}</div>
+            <div style="width:80%" class="subrayado-suave">Fecha: {{object.fecha}}</div>
+            <div class="cincuenta subrayado-suave">Recibido de: 
+                {% if  object.persona.es_alumno %}
+                    <a href="{% url 'finanzas:det_alumno' object.persona.es_alumno.id %}"><strong>{{object.persona.get_full_name}}</strong></a>
+                {% else %}
+                    <strong>{{object.persona.get_full_name}}</strong>
+                {% endif %}
+            </div>
+            <div class="cincuenta subrayado-suave">C.I.: <strong>{{object.persona.cedula|intcomma}}</strong></div>
+            <div class="recibo-monto subrayado-suave">Guaranies: <strong>{{object.monto|intcomma}}</strong>  ({{totalenletras|capfirst}} Gs.)</div>
+            <div class="subrayado-suave">En Concepto de: <strong>{{object.cantidad}} {{object.concepto.concepto}}</strong></div>
+            <div class="subrayado-suave">Cajero: <strong>{{object.cajero.first_name}} {{object.cajero.last_name}}</strong></div>
+        </div>
+
+
+        {% for field in form %}
+        <div class="form-group">
+            <label for="{{ field.auto_id }}" class="col-sm-3 control-label">{{ field.label_tag }}</label>
+            <div class="col-sm-9">
+                <div class="requerido">{{field}}</div>
+            </div>
+        </div>
+        {% endfor %}
+
+        <div class="form-group">
+            <div class="col-sm-offset-7 col-sm-5">
+                <button type="submit" class="btn btn-danger align-right"><span class="glyphicon glyphicon-ok-circle"></span> Anular</button>
+                {% if object %}
+                    <a href="../" type="submit" class="btn btn-default align-right"><span class="glyphicon glyphicon-remove-circle"></span> Cancelar</a>
+                {% else %}
+                    <a href="./" type="submit" class="btn btn-default align-right"><span class="glyphicon glyphicon-remove-circle"></span> Cancelar</a>
+                {% endif %}
+            </div>
+        </div>
+    	</form>
+
+</div>
+
+{% endblock content %}

@@ -1,0 +1,131 @@
+{% extends "base/divided.html" %}
+{% load humanize %}
+{% load verbose_name_tags %}
+{% block title %}Detalle {{ object|get_verbose_name|capfirst }}{% endblock title %}
+
+{% block content %}
+    <div class="titulo container-fluid"><h3>Plan de Pago Alumno</h3>
+    {% if object.es_alumno %}
+    	<div class="align-right">
+            <a href="{% url 'finanzas:det_alumno' object.es_alumno.codigo %}">
+            <button type="bbutton" class="btn btn-primary"><span class="glyphicon glyphicon-list-alt"></span> Extracto</button>
+            </a>
+    	</div>        
+    {% endif %}
+    </div>
+    <div class="alumno-titulo">
+    {% if object.es_alumno %}
+        <div id="nombre">Alumno: <strong>{{object.get_full_name}}</strong></div>
+    {% else %}	
+        <div id="nombre">Nombre: <strong>{{object.get_full_name}}</strong></div>
+    {% endif %}
+        <div id="cedula">C.I.: <strong>{{object.cedula|intcomma}}</strong></div>
+    </div>
+    <form class="frmRecibo" action="/finanzas/recibos/genRecibo/" method="POST">{% csrf_token %}
+        <div style="width: 89%; float: left;">
+        <input type="hidden" name="id_persona" value="{{object.id}}">
+        <select class="form-control select-small amarillo" name="id_arancel">
+            <option value=""><small>Todos los aranceles - Usar con precaución</small></option>
+            {% for arancel in aranceles %}
+                <option value="{{arancel.id}}">
+                    <small>{{arancel}}</small>
+                </option>
+            {% endfor %}
+        </select>
+        </div>
+        <div style="width: 10%; float: right;">
+            <button type="submit" class="btn btn-danger cienporciento"><span class="glyphicon glyphicon-alert"></span> Procesar</button>
+        </div>
+    </form>
+    <div class="alumno-cursos">
+    
+
+    {% for curso in object.es_alumno.get_cursos_activos %}
+			<form class="frmRecibo" action="/finanzas/recibos/genReciboPlanPago/" method="POST">{% csrf_token %}
+            <input type="hidden" name="id_persona" value="{{object.id}}">
+            <div class="curso"><span class="glyphicon glyphicon-education"></span> Curso: <strong>{{curso.curso}}</strong>
+                <button type="submit" class="btn btn-primary btn-xs align-right"><span class="glyphicon glyphicon-ok-circle"></span> Procesar Pago</button>
+            </div>
+            {% if curso.get_planPago %}
+                <table width="100%" class="table table-hover table-small quitarespaciopie">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>ID</th>
+                    <th>Cuota</th>
+                    <th>Concepto</th>
+                    <th>Vencimiento</th>
+                    <th>Estado</th>
+                    <th>Monto</th>     
+                </tr>
+                </thead>
+                {% for plan in curso.get_pendientes %}
+                    {% ifequal plan.estado 'PAG' %}
+                        <tr class="verde">
+                    {% else %}
+                        {% if plan.get_vencido %}
+                            <tr class="rojo">
+                        {% else %}
+                            <tr>    
+                        {% endif %}
+                    {% endifequal %}
+                        <td><input type="checkbox" name="plan_pago" value="{{plan.id}}"></td>
+                        <td class="gris"><small>{{plan.id}}</small></td>
+                        {% ifequal plan.concepto.concepto.tipo_concepto.tipo_concepto.id 2 %}
+                            <td>{{plan.secuencia}}/{{plan.curso_alumno.curso.cantidad_cuotas}}</td>
+                        {% else %}
+                            {% ifequal plan.concepto.concepto.tipo_concepto.tipo_concepto.id 1 %}
+                                <td>{{plan.secuencia}}/{{plan.total_cuotas}}</td>
+                            {% else %}
+                                <td></td>
+                            {% endifequal %}
+                        {% endifequal %}
+                        <td>{{plan.cantidad}} {{plan.concepto.get_grupo_2}} {{plan.concepto.concepto}} 
+                            <span class="align-right">
+                                {% if plan.materia %}
+                                    <small>{{plan.materia}}</small>
+                                {% else %}
+                                    {% if plan.concepto.concepto.tipo_concepto.tipo_concepto.id == 2 %}
+                                        <small>{{plan.vencimiento|date:"M"}}</small>                                
+                                    {% else %}
+                                        {{plan.secuencia}}
+                                    {% endif %}
+                                {% endif %}
+                            </span>
+                        </td>
+                        <td>{{plan.vencimiento|date:"N o" }}</td>
+                        <td>{{plan.estado}}</td>
+                        <td>{{plan.monto|intcomma}}</td>
+                    </tr>    
+                {% endfor %}                
+                </table>                
+            {% endif %}
+            </form>
+
+            <div style="width: 100%;">
+            <form class="frmRecibo" action="/finanzas/planes/genPlanPago/" method="POST">{% csrf_token %}
+                <div style="width: 89%; float: left;">
+                    <input type="hidden" name="id_cursoalumno" value="{{curso.id}}">
+                    <select class="form-control select-small" name="id_arancel">
+                    <option value=""><small>-</small></option>
+                    {% for arancel in curso.curso.aranceles.all %}
+                        <option value="{{arancel.id}}">
+                            {{arancel}}
+                        </option>
+                    {% endfor %}
+                    </select>
+                </div>
+                <div style="width: 10%; float: right;">
+                    <button type="submit" class="btn btn-default cienporciento"><span class="glyphicon glyphicon-pushpin"></span> A Plan</button>
+                </div>
+            </form>
+            </div>
+
+    {% endfor %}
+    </div>
+
+{% endblock content %}
+
+
+
+

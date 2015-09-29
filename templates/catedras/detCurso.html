@@ -1,0 +1,77 @@
+{% extends "base/divided.html" %}
+{% load verbose_name_tags %}
+{% block title %}Detalle {{ object|get_verbose_name|capfirst }}{% endblock title %}
+
+{% block content %}
+
+    <div class="titulo container-fluid"><h3>{{ object|get_verbose_name|capfirst }} {{object.name}}</h3>
+        <div class="align-right">
+
+            <a href="../upd{{ object|get_verbose_name|capfirst }}/{{object.id}}" class="btn btn-default btn-sm" role="button"><span class="glyphicon glyphicon-pencil"></span> Editar este {{ object|get_verbose_name|capfirst }}</a>
+
+            <a href="../del{{ object|get_verbose_name|capfirst }}/{{object.id}}" class="btn btn-danger btn-sm" role="button"><span class="glyphicon glyphicon-remove-circle"></span> Eliminar este {{ object|get_verbose_name|capfirst }}</a>
+            <a href="../add{{ object|get_verbose_name|capfirst }}" class="btn btn-primary btn-sm" role="button"><span class="glyphicon glyphicon-plus"></span> Agregar otro {{ object|get_verbose_name|capfirst }}</a>
+        </div>
+    </div>
+
+
+<div class="detalles">
+	<div><div class="det_titulo">Estado: </div><div class="det_contenido">{{object.estado}}</div></div>
+	<div><div class="det_titulo">Carrera: </div><div class="det_contenido">{{object.carrera}}</div></div>
+	<div><div class="det_titulo">Fecha Inicio: </div><div class="det_contenido">{{object.inicio}}</div></div>
+	<div><div class="det_titulo">Fecha Fin: </div><div class="det_contenido">{{object.fin}}</div></div>
+	<div><div class="det_titulo">Dias de Clase: </div><div class="det_contenido">{{object.dias.all}}</div></div>
+	<div><div class="det_titulo">Turno/Seccion: </div><div class="det_contenido">{{object.turno}}</div></div>
+	<div><div class="det_titulo">Monto Matricula: </div><div class="det_contenido">{{object.matricula}}</div></div>
+	<div><div class="det_titulo">Monto Matricula FPO: </div><div class="det_contenido">{{object.matricula_fpo}}</div></div>
+	<div><div class="det_titulo">Fecha tope de Matriculación: </div><div class="det_contenido">{{object.fecha_tope_matriculacion}}</div></div>
+	<div><div class="det_titulo">Monto Cuota: </div><div class="det_contenido">{{object.monto_cuota}}</div></div>
+	<div><div class="det_titulo">Cantidad de Cuotas:</div><div class="det_contenido">{{object.cantidad_cuotas}}</div></div>
+
+	<div><div class="det_titulo">Examen Ordinario:</div><div class="det_contenido">{{object.examen_ordinario}}</div></div>
+	
+
+	<div class="det_titulo">Materias</div>
+	<div>
+		<table class="table table-hover">
+		{% for materia in object.materias.all %}
+			<tr><td>{{materia}}</td></tr>		
+		{% endfor %}
+		</table>
+	</div>
+
+	<div class="det_titulo">Examenes</div>
+	<div>
+		<table class="table table-hover">
+		{% for examen in object.examen_extra.all %}
+			<tr><td>{{examen}}</td></tr>
+		{% endfor %}
+		</table>
+	</div>
+
+	<div class="det_titulo">Aranceles</div>
+	<div>
+		<table class="table table-hover">
+		{% for arancel in object.aranceles.all %}
+			<tr><td>{{arancel}}</td></tr>		
+		{% endfor %}
+		</table>
+	</div>
+
+	<div class="det_titulo">Alumnos</div>
+	<div>
+		<table class="table table-hover">
+		{% for alumno in object.get_alumnos.all %}
+			<tr><td>{{alumno.alumno}}</td></tr>		
+		{% endfor %}
+		</table>
+	</div>
+
+
+</div>
+
+
+
+
+
+{% endblock content %}

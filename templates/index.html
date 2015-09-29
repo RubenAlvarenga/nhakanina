@@ -1,0 +1,17 @@
+{% extends "base/full.html" %}
+{% block title %}
+{% if user.is_authenticated %}Inicio{% else %}Login{% endif %}
+{% endblock %}
+{% block content %}
+<div class="portada">
+    <div id="mensaje">{% include "base/mensajes.html" %}</div>
+    {% for item in sistemas %}
+        <a href="/{{item.app__index}}">
+            <div class="menu-ico">
+                <span class="glyphicon {{item.app__icono}} icono"></span>
+                <div class="abajo">{{item.app__titulo}}</div>
+            </div>
+        </a>
+    {% endfor %}
+</div>
+{% endblock content %}

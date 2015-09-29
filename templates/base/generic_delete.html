@@ -1,0 +1,56 @@
+{% extends "base/divided.html" %}
+{% load verbose_name_tags %}
+{% block title %}Eliminar 
+    {% if object %}
+        {{ object|get_verbose_name|capfirst }}
+    {% else %}
+        {{ object_list|queryset_verbose_name_plural|capfirst }}
+    {% endif %}
+{% endblock title %}
+
+{% block content %}
+
+<div class="formulario">
+    <div class="titulo container-fluid"><h3>Eliminar {% if object %}{{ object|get_verbose_name|capfirst }}{% else %}{{ object_list|queryset_verbose_name_plural|capfirst }}{% endif %}</h3></div>
+    {% if messages %}
+            <div class="form-group" style="margin-top:10px">
+                <div class="col-sm-offset-7 col-sm-5">
+                    <a href="../" type="submit" class="btn btn-default align-right"><span class="glyphicon glyphicon-remove-circle"></span> Volver</a>
+                </div>
+            </div>    
+    {% else %}    
+        <form class="form-horizontal" role="form" method="POST" enctype="multipart/form-data">{% csrf_token %}
+        <input type="hidden" name="accion" value="Eliminar">
+        <input type="hidden" name="confirmar" value="True">        
+            <p>Está seguro que desea eliminar los siguientes elementos?</p>
+            {% if  object_list%}
+            <table class="table table-striped">
+                <tbody>
+                {% for item in object_list %}
+                    <tr>
+                        <td width="10"><input type="checkbox" name="checks" checked value="{{item.id}}"></td>
+                        <td><strong>{{item}}</strong></td>
+                    </tr> 
+                {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+                <strong>{{ object }}</strong>
+            {% endif %}
+
+
+            <div class="form-group">
+                <div class="col-sm-offset-7 col-sm-5">
+                    <button type="submit" class="btn btn-danger align-right"><span class="glyphicon glyphicon-ok-circle"></span> Eliminar</button>
+                    {% if object %}
+                        <a href="../" type="submit" class="btn btn-default align-right"><span class="glyphicon glyphicon-remove-circle"></span> Cancelar</a>
+                    {% else %}
+                        <a href="./" type="submit" class="btn btn-default align-right"><span class="glyphicon glyphicon-remove-circle"></span> Cancelar</a>
+                    {% endif %}
+                </div>
+            </div>
+    	</form>
+    {% endif %}
+</div>
+
+{% endblock content %}

@@ -1,0 +1,98 @@
+{% extends "base/divided.html" %}
+{% load static from staticfiles %}
+{% block headExtra %}
+	<script type="text/javascript" src="/static/admin/js/admin/RelatedObjectLookups.js"></script>
+	<script type="text/javascript" src="/static/admin/js/jquery.js"></script>
+	<script type="text/javascript" src="/static/admin/js/jquery.init.js"></script>
+	{{form.media}}
+    <style>
+        #id_alumno{
+            width: 10%;
+            height: 34px;
+            padding: 6px 12px;
+            font-size: 14px;
+            line-height: 1.42857143;
+            color: #555;
+            background-image: none;
+            border: 1px solid #79EFFF;
+            border-radius: 4px;
+            -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+                  box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+            -webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
+               -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+                  transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+        }
+    </style>
+{% endblock headExtra %}
+{% load verbose_name_tags %}
+{% block title %}Registar {{ form|form_model_name|capfirst }}{% endblock title %}
+
+{% block content %}
+    <div class="titulo container-fluid"><h3>Registar {{ form|form_model_name|capfirst }}</h3></div>
+    <div class="formulario">    
+    	<form class="form-horizontal" id="cursoalumno_form" role="form" method="POST" enctype="multipart/form-data">{% csrf_token %}
+            {% for field in form %}
+            <div class="form-group">
+                <label for="{{ field.auto_id }}" class="col-sm-3 control-label">{{ field.label_tag }}</label>
+                <div class="col-sm-9">
+                    {% if field.field.required %}
+                        <div class="requerido {% if field.name == 'alumno' %}get_full_name{% endif %}">{{field}}
+                            {% if field.name == 'alumno' %} <strong></strong>{% endif %}
+                        </div> 
+                    {% else %}
+                        <div class="norequerido">{{field}}</div>
+                    {% endif %}
+                {% if field.errors %}
+                    <div class="alert alert-danger" id="camporequerido" role="alert"><span class="glyphicon glyphicon-remove-sign align-left" id="errorlogin"></span> {{field.errors}}</div> 
+                {% endif %}
+                </div>
+            </div>
+
+            {% endfor %}
+            <div class="form-group">
+                <div class="col-sm-offset-7 col-sm-5">
+                    <button type="submit" class="btn btn-primary align-right"><span class="glyphicon glyphicon-ok-circle"></span> Registrar</button>
+                    <a href="../" type="submit" class="btn btn-default align-right"><span class="glyphicon glyphicon-remove-circle"></span> Cancelar</a>
+                </div>
+            </div>     		
+    	</form>
+	</div>
+{% endblock content %}
+
+
+{% block scripts %}
+    <script type="text/javascript">
+        (function($) {
+            $(document).ready(function() {
+/*                $('.add-another').click(function(e) {
+                    e.preventDefault();
+                    showAddAnotherPopup(this);
+                });
+*/                $('.related-lookup').click(function(e) {
+                    e.preventDefault();
+                    showRelatedObjectLookupPopup(this);
+                    $('#id_alumno').focus()
+                });
+                $('#id_alumno').on("focus blur", function() {
+                    get_full_name($(this).val())
+                }); 
+                function get_full_name(id){
+                    console.log(id)
+                    $.ajax({
+                        data : {'id_alumno' : id  },
+                        url : '/entidades/alumnos/get_full_name-ajax/',
+                        type: 'get',
+                        success : function(data){
+                            console.log(data)
+                            $('.get_full_name strong').html(data);
+                        }                                
+                    });
+                }
+            });
+        })(django.jQuery);
+
+
+
+    </script>
+{% endblock scripts %}
+

@@ -1,0 +1,37 @@
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+  position: relative;
+  min-height: 100%;
+}
+body {
+  /* Margin bottom by footer height */
+  margin-bottom: 20px;
+}
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  /* Set the fixed height of the footer here */
+  height: 20px;
+  background: -webkit-linear-gradient(left, #EEE, #EEE, #CCC); /* For Safari 5.1 to 6.0 */
+  background: -o-linear-gradient(right, #EEE, #EEE, #CCC); /* For Opera 11.1 to 12.0 */
+  background: -moz-linear-gradient(right, #EEE, #EEE, #CCC); /* For Firefox 3.6 to 15 */
+  background: linear-gradient(to right, #EEE, #EEE, #CCC); /* Standard syntax */
+  margin-top: 30px;
+}
+
+
+/* Custom page CSS
+-------------------------------------------------- */
+/* Not required for template or sticky footer method. */
+
+.container {
+  width: auto;
+  max-width: 680px;
+  padding: 0 15px;
+}
+.container .text-muted {
+  margin: 20px 0;
+}
+

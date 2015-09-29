@@ -1,0 +1,43 @@
+{% load url from future %}
+<!--<aside><div class="well bs-sidebar affix" id="sidebar">-->
+<div class="nav nav-pills nav-stacked ">
+    <div class="panel-group" id="accordion">
+        {% for item in enlaces %}
+        <!--<div class="panel panel-default">                
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a class="list-group-item" data-toggle="collapse" data-parent="#accordion" href="#{{item.url}}">
+                        <span class="{{item.class}}"></span> {{item.grupo__grupo}}<div class="align-right"><span class="{{item.grupo__icono}}"></span></div>
+                    </a>
+                </h4>
+            </div>
+            <div id="{{item.url}}" class="panel-collapse collapse {{item.active}}">
+                <div class="panel-body">
+                    <ul class="menuinterno">
+                        {% for sub in item.enlaces %}
+                            <li><a class="list-group-item" href="{% url sub.enlace %}" {% if subitem1.active %}style="color:#FFFFFF; font-weight: bold"{% endif %}>{{sub}}</a></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>-->
+        {% for sub in item.enlaces %}
+
+        <div class="panel panel-default">                
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a class="list-group-item" href="{% url sub.enlace %}">
+                        <span class="{{item.class}}"></span> {{sub}}<div class="align-right"><span class="{{item.grupo__icono}}"></span></div>
+                    </a>
+                </h4>
+            </div>
+        </div>
+        
+        {% endfor %}
+
+
+        {% endfor %}
+    </div>
+</div>
+<!--</div></aside>--->
+
