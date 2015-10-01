@@ -1,12 +1,41 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
+from unipath import Path
+import subprocess
+BASE_DIR=Path(__file__).ancestor(2)
+saltolinea=chr(13)+chr(10)
 
 def imprimir_recibo(recibo):
-    pass
-    
+    filepath = BASE_DIR+'/tmp/recibos/'
+    file_name = 'impresion_%s.prt' % (unicode(recibo.nro_recibo))
+    f=open(filepath+file_name, "w")
+    fecha = unicode(recibo.fecha)
+    serie = unicode(recibo.serie)
+    nro_recibo = unicode(recibo.nro_recibo)
+    # estado = unicode(recibo.estado)
+    persona = unicode(recibo.persona)
+    cajero = unicode(recibo.cajero)
+    cantidad = unicode(recibo.cantidad)
+    monto = unicode(recibo.monto)
+    # rendido = unicode(recibo.rendido)
+    concepto = unicode(recibo.concepto)
+    # motivo_anulacion = recibo.motivo_anulacion
+    # fecha_anulacion = recibo.fecha_anulacion
+    # usuario_anulacion = recibo.usuario_anulacion
 
-
+    f.write(fecha+saltolinea)
+    f.write(serie+saltolinea)
+    f.write(nro_recibo+saltolinea)
+    f.write(persona+saltolinea)
+    f.write(cajero+saltolinea)
+    f.write(cantidad+saltolinea)
+    f.write(monto+saltolinea)
+    f.write(concepto+saltolinea)
+    f.close()
+    # cimpre='-d'+impre
+    impresora = '-dgico'
+    #subprocess.call(['lp', impresora,filepath+file_name])
+    return
 
 #Ejecucion del Proceso
 def py_imptck01(camovcom_id,usuario):

@@ -25,6 +25,7 @@ from apps.decorators import custom_permission_required
 from wkhtmltopdf.views import PDFTemplateResponse
 from django.forms.util import ErrorList
 from django.db import IntegrityError
+from apps.prints import imprimir_recibo
 
 
 class PersonaSingleTableView(SingleTableView):
@@ -180,6 +181,7 @@ class ReciboFormView(SuccessMessageMixin, FormView):
         instance.monto = instance.cantidad * instance.concepto.monto
         instance.cajero = self.request.user
         instance.save()
+        imprimir_recibo(instance)
         return self.get_success_url(instance)
         #return super(ReciboFormView, self).form_valid(form)
 
@@ -517,8 +519,8 @@ class PlanPagoSingleTableView(SingleTableView):
         table = super(PlanPagoSingleTableView, self).get_queryset()
         q=self.request.GET.get("q")
         if q: 
-            if q.isdigit(): return table.filter(cedula=q)#.order_by(sort)
-            else: return table.filter(Q(apellido1__icontains=q) | Q(apellido2__icontains=q) | Q(nombre1__icontains=q) | Q(nombre2__icontains=q))#.order_by(sort)
+            if q.isdigit(): return table.filter(curso_alumno__alumno__cedula=q)#.order_by(sort)
+            else: return table.filter(Q(curso_alumno__alumno__apellido1__icontains=q) | Q(curso_alumno__alumno__apellido2__icontains=q) | Q(curso_alumno__alumno__nombre1__icontains=q) | Q(curso_alumno__alumno__nombre2__icontains=q))#.order_by(sort)
         else: return table
 
     def get_context_data(self, **kwargs):

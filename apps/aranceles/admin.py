@@ -56,7 +56,7 @@ class PeriodoAdmin(admin.ModelAdmin):
 
 class ArancelAdmin(admin.ModelAdmin):
     list_display = ('id', 'monto', 'concepto')
-    search_fields = ['concepto__concepto']
+    search_fields = ['concepto__concepto', 'id']
     list_display_links = ('concepto',)    
 
     def save_model(self, request, obj, form, change): 

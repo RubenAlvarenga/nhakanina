@@ -474,3 +474,10 @@ a .menu-ico:hover{background:linear-gradient(#006C18, #0A1F0B); color:#FFF;}
 }
 
 .blockcontent{padding: 5px;}
+
+
+/*.container-fluid .titulo{
+    z-index: 1000;
+    position: fixed;
+    top:73px;
+}*/

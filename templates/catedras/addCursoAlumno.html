@@ -22,13 +22,17 @@
                -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
                   transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
         }
+        label{font-weight: bolder !important; color: #191919; }
+        .requerido strong{display: none;}
+        .id_alumno{background: #E5E5E5; padding: 8px; border-radius: 5px;}
+
     </style>
 {% endblock headExtra %}
 {% load verbose_name_tags %}
-{% block title %}Registar {{ form|form_model_name|capfirst }}{% endblock title %}
+{% block title %}Registrar {{ form|form_model_name|capfirst }}{% endblock title %}
 
 {% block content %}
-    <div class="titulo container-fluid"><h3>Registar {{ form|form_model_name|capfirst }}</h3></div>
+    <div class="titulo container-fluid"><h3>Registrar {{ form|form_model_name|capfirst }}</h3></div>
     <div class="formulario">    
     	<form class="form-horizontal" id="cursoalumno_form" role="form" method="POST" enctype="multipart/form-data">{% csrf_token %}
             {% for field in form %}
@@ -37,7 +41,7 @@
                 <div class="col-sm-9">
                     {% if field.field.required %}
                         <div class="requerido {% if field.name == 'alumno' %}get_full_name{% endif %}">{{field}}
-                            {% if field.name == 'alumno' %} <strong></strong>{% endif %}
+                            {% if field.name == 'alumno' %} <span class="{{ field.auto_id }}"></span>{% endif %}
                         </div> 
                     {% else %}
                         <div class="norequerido">{{field}}</div>
@@ -64,11 +68,14 @@
     <script type="text/javascript">
         (function($) {
             $(document).ready(function() {
+                get_full_name($('#id_alumno').val()) 
+
 /*                $('.add-another').click(function(e) {
                     e.preventDefault();
                     showAddAnotherPopup(this);
                 });
-*/                $('.related-lookup').click(function(e) {
+*/
+                $('.related-lookup').click(function(e) {
                     e.preventDefault();
                     showRelatedObjectLookupPopup(this);
                     $('#id_alumno').focus()
@@ -84,7 +91,7 @@
                         type: 'get',
                         success : function(data){
                             console.log(data)
-                            $('.get_full_name strong').html(data);
+                            $('.id_alumno').html(data);
                         }                                
                     });
                 }

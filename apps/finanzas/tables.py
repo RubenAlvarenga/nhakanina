@@ -55,7 +55,7 @@ class PlanPagoTable(tables.Table):
     borrar  = EnlaceColumn( accessor="id", verbose_name=" ", attrs={"td": {"width": "2%"}, "url":"delPlanPago/", "icono":"glyphicon-remove" }, )
     class Meta:
         model = PlanPago
-        exclude = ('created', 'modified', 'curso_alumno', 'observaciones', 'created_by', 'authorized_by', 'total_cuotas', 'secuencia', 'estado')
+        exclude = ('created', 'modified', 'curso_alumno', 'observaciones', 'created_by', 'authorized_by', 'total_cuotas', 'secuencia', 'estado', 'monto', 'materia')
         per_page=ITEM_POR_PAGINA
         attrs = {"class": "table table-striped table-hover table-small" }
         sequence = ("selection", "id", "alumno",  "...", )

@@ -1,6 +1,7 @@
 *.pyc
 *.pyo
 media/*
+tmp/*
 apps/*/migrations/
 apps/entidades/migraciones/
 iseapp/settins/

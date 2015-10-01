@@ -7,6 +7,8 @@
 
     <div class="titulo container-fluid"><h3>{{ object|get_verbose_name|capfirst }} {{object.name}} {% if object.estado == 'ANU' %} ANULADO {% endif %}</h3>
     	<div class="align-right">
+            <a href="" class="btn btn-default btn-sm" role="button"><span class="glyphicon glyphicon-print"></span> Imprimir</a>
+
             {% if object.estado == 'ANU' %}
             {% else %}
                 {% if not object.get_planes.plan_pago.all %}
