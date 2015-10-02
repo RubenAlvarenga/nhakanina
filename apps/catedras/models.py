@@ -86,6 +86,8 @@ class Curso(models.Model):
     def get_alumnos(self):
         return CursoAlumno.objects.filter(curso=self)
 
+
+
     
     # @property
     # def get_aranceles_extra(self):

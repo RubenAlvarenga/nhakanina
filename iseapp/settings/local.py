@@ -2,7 +2,7 @@ from .base import *
 import os
 
 DEBUG = True
-SESSION_COOKIE_AGE=1000
+#SESSION_COOKIE_AGE=1000
 
 TEMPLATE_DEBUG = True
 

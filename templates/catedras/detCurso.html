@@ -20,7 +20,7 @@
 	<div><div class="det_titulo">Carrera: </div><div class="det_contenido">{{object.carrera}}</div></div>
 	<div><div class="det_titulo">Fecha Inicio: </div><div class="det_contenido">{{object.inicio}}</div></div>
 	<div><div class="det_titulo">Fecha Fin: </div><div class="det_contenido">{{object.fin}}</div></div>
-	<div><div class="det_titulo">Dias de Clase: </div><div class="det_contenido">{{object.dias.all}}</div></div>
+	<div><div class="det_titulo">Dias de Clase: </div><div class="det_contenido">{% for item in  object.dias.all %} {{item}} {% endfor %}</div></div>
 	<div><div class="det_titulo">Turno/Seccion: </div><div class="det_contenido">{{object.turno}}</div></div>
 	<div><div class="det_titulo">Monto Matricula: </div><div class="det_contenido">{{object.matricula}}</div></div>
 	<div><div class="det_titulo">Monto Matricula FPO: </div><div class="det_contenido">{{object.matricula_fpo}}</div></div>

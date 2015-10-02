@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 import django_tables2 as tables
 from apps.entidades.models import Alumno, Persona
+from apps.catedras.models import Curso
+
 from .models import PlanPago, Recibo
 from django.utils.safestring import mark_safe
 from django.conf import settings
@@ -97,3 +99,17 @@ class RecibosTablePDF(tables.Table):
         model = Recibo
         exclude = ('created', 'modified', 'cajero', 'motivo_anulacion', 'fecha_anulacion', 'usuario_anulacion', 'rendido', 'concepto')
         per_page=ITEM_POR_PAGINA
+
+
+class CursosTable(tables.Table):
+    anho = tables.Column(accessor='inicio.year', verbose_name='Año', order_by=("inicio"))
+    selection = tables.CheckBoxColumn(accessor="pk", orderable=False, attrs = {"td": {"width": "2%"}, "th__input":{"onclick": "", "id":'todosLosCheck', "name":"option"}, "td__input":{"class":"checkboxList", "name":"checks"} } )
+    ver     = EnlaceColumn( accessor="id", verbose_name=" ", attrs={"td": {"width": "2%"}, "url":"detCurso/", "icono":"glyphicon-eye-open" }, )
+    class Meta:
+        model = Curso
+        exclude = ('inicio', 'fin', 'matricula', 'matricula_fpo', 'fecha_tope_matriculacion', 'monto_cuota', 'cantidad_cuotas', 'examen_ordinario')
+        per_page=ITEM_POR_PAGINA
+        attrs = {"class": "table table-striped table-hover" }
+        sequence = ("selection", "anho", "id", "...", "ver")
+
+

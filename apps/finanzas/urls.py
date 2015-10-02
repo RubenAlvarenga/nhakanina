@@ -1,8 +1,9 @@
 from django.conf.urls import patterns, url
 from .views import AlumnoSingleTableView, PersonaSingleTableView,  AlumnoDetailView, PersonaDetailView, fraccionar_planpago_ajax, ReciboCancelView, \
     ReciboSingleTableView, ReciboFormView, PlanPagoFormView, ReciboPlanPagoFormView, ReciboDetailView, total_recibo_plan_pago_ajax, PlanPagoSingleTableView, \
-    PlanPagoDetailView, PlanPagoUpdateView, PlanPagoDeleteView
+    PlanPagoDetailView, PlanPagoUpdateView, PlanPagoDeleteView, CursoExtractoSingleTableView, CursoDetailView
 from apps.entidades.views import AlumnoCreateView
+from apps.catedras.views import CursoCreateView
 from django.views.generic import TemplateView
 from django.contrib.auth.decorators import login_required, permission_required
 from apps.decorators import custom_permission_required
@@ -58,6 +59,12 @@ urlpatterns = patterns('',
     url(r'^get_curso_alumno_ajax', 'apps.finanzas.views.get_curso_alumno_ajax', name='get_cursoalumno'),
     url(r'^get_concepto_ajax', 'apps.finanzas.views.get_concepto_ajax', name='get_concepto'),
     url(r'^get_materias_ajax', 'apps.finanzas.views.get_materias_ajax', name='get_materias'),
+
+
+    url(r'^cursos/$', custom_permission_required('catedras.list_cursos')(CursoExtractoSingleTableView.as_view()), name ='lst_curso'),
+    url(r'^cursos/addCurso/$', custom_permission_required('catedras.add_curso')(CursoCreateView.as_view()), name ='add_curso'),
+    url(r'^cursos/detCurso/(?P<pk>[\d]+)$', custom_permission_required('catedras.det_curso')(CursoDetailView.as_view()), name ='det_curso'),
+
 )
 
 

@@ -16,9 +16,10 @@ from apps.entidades.models import Alumno, Persona
 from apps.finanzas.models import PlanPago, Recibo, ReciboPlanPago
 from apps.aranceles.models import Arancel
 from apps.catedras.models import CursoAlumno, Materia
-from .tables import AlumnosTable, PersonasTable, PlanPagoTable, PlanPagoAplReciboTable, RecibosTable, RecibosTablePDF
+from .tables import AlumnosTable, PersonasTable, PlanPagoTable, PlanPagoAplReciboTable, RecibosTable, RecibosTablePDF, CursosTable
 from .functions import fracionar_plan, msg_render, sumarTotalesPlanPago
 from .forms import ReciboPlanPagoForm, ReciboForm, PlanPagoForm, updPlanPagoForm
+from apps.catedras.models import Curso
 from apps.actions import export_as_csv, export_table_to_csv
 from django import forms
 from apps.decorators import custom_permission_required
@@ -529,18 +530,18 @@ class PlanPagoSingleTableView(SingleTableView):
         context['notbuttonlist'] = True
         return context
 
-    def post(self, request, *args, **kwargs):
-        checks = request.POST.getlist('checks')
-        if not checks:
-            mensaje = msg_render("<strong>Favor seleccione por lo menos un item</strong>")
-            messages.add_message(request, messages.INFO, mensaje)
-            url = request.META['HTTP_REFERER']
-            return HttpResponseRedirect(url)
+    # def post(self, request, *args, **kwargs):
+    #     checks = request.POST.getlist('checks')
+    #     if not checks:
+    #         mensaje = msg_render("<strong>Favor seleccione por lo menos un item</strong>")
+    #         messages.add_message(request, messages.INFO, mensaje)
+    #         url = request.META['HTTP_REFERER']
+    #         return HttpResponseRedirect(url)
 
-        sort=request.POST.get('sort')
-        ids = map(int, checks)
-        alumnos=Alumno.objects.filter(pk__in=ids)
-        accion=request.POST.get('accion')
+    #     sort=request.POST.get('sort')
+    #     ids = map(int, checks)
+    #     alumnos=Alumno.objects.filter(pk__in=ids)
+    #     accion=request.POST.get('accion')
 
 
 
@@ -628,3 +629,34 @@ def get_materias_ajax(request):
         else: data = "No existe"
         return HttpResponse(data, content_type='application/json')
 
+
+
+
+class CursoExtractoSingleTableView(SingleTableView):
+    template_name='base/generic_list.html'
+    model = Curso
+    table_class = CursosTable
+    def get_queryset(self):
+        table = super(CursoExtractoSingleTableView, self).get_queryset()
+        q=self.request.GET.get("q")
+        if q: return table.filter(carrera__nombre__icontains=q)#.order_by(sort)
+        else: return table
+
+    def get_context_data(self, **kwargs):
+        context = super(CursoExtractoSingleTableView, self).get_context_data(**kwargs)
+        context['sort']= self.request.GET.get("sort")
+        context['notbuttonlist'] = True
+        return context
+
+
+
+
+class CursoDetailView(DetailView):
+    model=Curso
+    template_name='finanzas/detCurso.html'
+    def get_context_data(self, **kwargs):
+        context = super(CursoDetailView, self).get_context_data(**kwargs)
+        context['matriculas'] = PlanPago.objects.filter(curso_alumno__curso=context['object'], concepto__concepto__tipo_concepto__tipo_concepto__id=1)
+        context['cuotas'] = PlanPago.objects.filter(curso_alumno__curso=context['object'], concepto__concepto__tipo_concepto__tipo_concepto__id=2).order_by('curso_alumno', 'secuencia')
+        context['evaluacion'] = PlanPago.objects.filter(curso_alumno__curso=context['object'], concepto__concepto__tipo_concepto__tipo_concepto__id=3)
+        return context
