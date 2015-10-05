@@ -1,0 +1,24 @@
+{% extends "base/divided.html" %}
+{% load verbose_name_tags %}
+{% block title %}Detalle {{ object|get_verbose_name|capfirst }}{% endblock title %}
+
+{% block content %}
+
+    <div class="titulo container-fluid"><h3>{{ object|get_verbose_name|capfirst }} {{object.name}}</h3>
+        <div class="align-right">
+
+            <a href="../upd{{ object|get_verbose_name|capfirst }}/{{object.id}}" class="btn btn-default btn-sm" role="button"><span class="glyphicon glyphicon-pencil"></span> Editar esta {{ object|get_verbose_name|capfirst }}</a>
+
+            <a href="../del{{ object|get_verbose_name|capfirst }}/{{object.id}}" class="btn btn-danger btn-sm" role="button"><span class="glyphicon glyphicon-remove-circle"></span> Eliminar esta {{ object|get_verbose_name|capfirst }}</a>
+            <a href="../add{{ object|get_verbose_name|capfirst }}" class="btn btn-primary btn-sm" role="button"><span class="glyphicon glyphicon-plus"></span> Agregar otra {{ object|get_verbose_name|capfirst }}</a>
+        </div>
+    </div>
+
+
+{{object}}
+
+
+
+
+
+{% endblock content %}

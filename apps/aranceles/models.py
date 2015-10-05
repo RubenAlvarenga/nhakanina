@@ -6,6 +6,8 @@ reload(sys)
 sys.setdefaultencoding('utf8')
 from django.db import models
 from django.contrib.auth.models import User
+from django.template.defaultfilters import truncatewords
+
 
 class TimeStampModel(models.Model):
     created_by = models.ForeignKey(User, editable=False)
@@ -24,8 +26,10 @@ class Periodo(TimeStampModel):
     fin = models.DateField(verbose_name='Fin', blank=True, null=True)
     estado = models.CharField(max_length=3, choices=ESTADO, default='ACT', unique=True)
     class Meta:
-        verbose_name = 'Periodo Arancel'
+        verbose_name = 'PeriodoArancel'
         verbose_name_plural = 'Periodos de Aranceles'
+        default_permissions = ('add', 'change', 'delete', 'view', 'list')
+
     def __unicode__(self):
         return u'%s [%s]' % (self.resolucion, self.estado)
 
@@ -35,6 +39,8 @@ class TipoCarrera(models.Model):
     class Meta:
         verbose_name = 'Tipo Carrera'
         verbose_name_plural = 'Tipos de Carreras'
+        default_permissions = ('add', 'change', 'delete', 'view', 'list')
+
     def __unicode__(self):
         return u'%s' % (self.titulo)
 
@@ -43,6 +49,8 @@ class TipoConcepto(models.Model):
     class Meta:
         verbose_name = 'Tipo Concepto'
         verbose_name_plural = 'Tipos de Conceptos'
+        default_permissions = ('add', 'change', 'delete', 'view', 'list')
+
     def __unicode__(self):
         return u'%s' % (self.titulo)
 
@@ -53,8 +61,10 @@ class TipoCarreraConcepto(models.Model):
         verbose_name = 'Carrera | Concepto'
         verbose_name_plural = 'Carreras | Conceptos'
         unique_together = (('tipo_carrera', 'tipo_concepto' ),)
+        default_permissions = ('add', 'change', 'delete', 'view', 'list')
+
     def __unicode__(self):
-        return u'%s | %s' % (self.tipo_carrera, self.tipo_concepto)
+        return u'%s| %s' % (unicode(self.tipo_carrera)[0:3], truncatewords(self.tipo_concepto, 1))
 
 
 class Concepto(models.Model):
@@ -69,6 +79,8 @@ class Concepto(models.Model):
         verbose_name_plural = 'Conceptos'
         unique_together = (('tipo_concepto', 'concepto' ),)
         ordering = ['tipo_concepto', 'id']
+        default_permissions = ('add', 'change', 'delete', 'view', 'list')
+
     def __unicode__(self):
         return u'[%s] %s' % (self.tipo_concepto, self.concepto)
 
@@ -81,6 +93,8 @@ class Arancel(TimeStampModel):
         verbose_name_plural = 'Aranceles'
         unique_together = (('resolucion', 'concepto' ),)
         ordering = ['concepto',]
+        default_permissions = ('add', 'change', 'delete', 'view', 'list')
+
     def __unicode__(self):
         return u'%s (%s)' % (self.concepto, str(self.monto))
 

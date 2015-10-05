@@ -32,6 +32,8 @@ urlpatterns = [
     url(r'^catedras/', include('apps.catedras.urls', namespace="catedras", app_name='catedras')),
     url(r'^entidades/', include('apps.entidades.urls', namespace="entidades", app_name='entidades')),
     url(r'^autorizaciones/', include('apps.autorizaciones.urls', namespace="autorizaciones", app_name='autorizaciones')),
+    url(r'^aranceles/', include('apps.aranceles.urls', namespace="aranceles", app_name='aranceles')),
+
 
 ]
 
