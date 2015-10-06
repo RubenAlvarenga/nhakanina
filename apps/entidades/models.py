@@ -30,6 +30,8 @@ class Persona(models.Model):
         default_permissions = ('add', 'change', 'delete', 'view', 'list')
 
     def save(self, *args, **kwargs):
+        cedula = getattr(self, 'cedula', False)
+        if cedula: setattr(self, 'cedula', cedula.strip())
         nombre1 = getattr(self, 'nombre1', False)
         if nombre1: setattr(self, 'nombre1', nombre1.capitalize())
         nombre2 = getattr(self, 'nombre2', False)

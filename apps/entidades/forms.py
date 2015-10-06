@@ -19,14 +19,16 @@ class PersonaForm(forms.ModelForm):
             'nacionalidad' : forms.Select(attrs = {'class':'form-control'}),
             'fecha_nacimiento' : SelectDateWidget(years=range(1930, datetime.now().date().year + 1, 1), attrs = {'class':'form-control', 'style':'width:100px; float:left'}), 
         }
+    def clean_cedula(self):
+        return self.cleaned_data['cedula'].strip()
     def clean_nombre1(self):
-        return self.cleaned_data['nombre1'].capitalize()
+        return self.cleaned_data['nombre1'].strip().capitalize()
     def clean_nombre2(self):
-        return self.cleaned_data['nombre2'].capitalize()
+        return self.cleaned_data['nombre2'].strip().capitalize()
     def clean_apellido1(self):
-        return self.cleaned_data['apellido1'].capitalize()
+        return self.cleaned_data['apellido1'].strip().capitalize()
     def clean_apellido2(self):
-        return self.cleaned_data['apellido2'].capitalize()
+        return self.cleaned_data['apellido2'].strip().capitalize()
 
 
 class AlumnoForm(PersonaForm):
@@ -42,14 +44,16 @@ class AlumnoForm(PersonaForm):
             'nacionalidad' : forms.Select(attrs = {'class':'form-control'}),
             'fecha_nacimiento' : SelectDateWidget(years=range(1930, datetime.now().date().year + 1, 1), attrs = {'class':'form-control', 'style':'width:100px; float:left'}), 
         }
+    def clean_cedula(self):
+        return self.cleaned_data['cedula'].strip()
     def clean_nombre1(self):
-        return self.cleaned_data['nombre1'].capitalize()
+        return self.cleaned_data['nombre1'].strip().capitalize()
     def clean_nombre2(self):
-        return self.cleaned_data['nombre2'].capitalize()
+        return self.cleaned_data['nombre2'].strip().capitalize()
     def clean_apellido1(self):
-        return self.cleaned_data['apellido1'].capitalize()
+        return self.cleaned_data['apellido1'].strip().capitalize()
     def clean_apellido2(self):
-        return self.cleaned_data['apellido2'].capitalize()
+        return self.cleaned_data['apellido2'].strip().capitalize()
 
 # class empresaForm(forms.ModelForm):
 #     class Meta:
