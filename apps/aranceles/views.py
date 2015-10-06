@@ -62,7 +62,7 @@ class PeriodoSingleTableView(SingleTableView):
     def get_queryset(self):
         table = super(PeriodoSingleTableView, self).get_queryset()
         q=self.request.GET.get("q")
-        if q: return table.filter(Q(concepto__icontains=q) | Q(tipo_concepto__tipo_concepto__titulo__icontains=q) )#.order_by(sort)
+        if q: return table.filter(resolucion=q)#.order_by(sort)
         else: return table
 
     def get_context_data(self, **kwargs):
@@ -97,7 +97,7 @@ class ArancelSingleTableView(SingleTableView):
     def get_queryset(self):
         table = super(ArancelSingleTableView, self).get_queryset()
         q=self.request.GET.get("q")
-        if q: return table.filter(Q(concepto__icontains=q) | Q(tipo_concepto__tipo_concepto__titulo__icontains=q) )#.order_by(sort)
+        if q: return table.filter(Q(concepto__concepto__icontains=q) | Q(concepto__tipo_concepto__tipo_concepto__titulo__icontains=q) )#.order_by(sort)
         else: return table
 
     def get_context_data(self, **kwargs):

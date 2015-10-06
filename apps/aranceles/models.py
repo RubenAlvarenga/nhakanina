@@ -24,7 +24,7 @@ class Periodo(TimeStampModel):
     resolucion = models.CharField(max_length=8, unique=True, verbose_name='Resolucion')
     inicio = models.DateField(verbose_name='Inicio')
     fin = models.DateField(verbose_name='Fin', blank=True, null=True)
-    estado = models.CharField(max_length=3, choices=ESTADO, default='ACT', unique=True)
+    estado = models.CharField(max_length=3, choices=ESTADO, default='ACT')
     class Meta:
         verbose_name = 'PeriodoArancel'
         verbose_name_plural = 'Periodos de Aranceles'
@@ -88,6 +88,7 @@ class Arancel(TimeStampModel):
     resolucion = models.ForeignKey(Periodo, verbose_name='Resolucion', on_delete=models.PROTECT)
     concepto = models.ForeignKey(Concepto, verbose_name='Concepto', on_delete=models.PROTECT)
     monto=models.DecimalField(max_digits=8, decimal_places=0, verbose_name='Monto', blank=False )
+    activo = models.BooleanField(default=True, verbose_name='Activo')
     class Meta:
         verbose_name = 'Arancel'
         verbose_name_plural = 'Aranceles'
