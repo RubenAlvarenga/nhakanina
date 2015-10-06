@@ -21,7 +21,7 @@ LOCAL_APPS = (
     'apps.catedras',
     'apps.finanzas',
     'apps.autorizaciones',
-    # 'apps.localizaciones', 
+    'apps.rendiciones', 
 )
 THIRD_PARTY_APPS = (
     'wkhtmltopdf',
