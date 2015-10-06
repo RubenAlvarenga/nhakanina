@@ -35,19 +35,21 @@ class ConceptoDetailView(DetailView):
     model=Concepto
     template_name='aranceles/detConcepto.html'
 
+
 class ConceptoCreateView(SuccessMessageMixin, CreateView):
     template_name='base/generic_add.html'
     form_class = ConceptoForm
-    success_message = msg_render("La Persona %(nombre1)s %(apellido1)s registrado con exito")
+    success_message = msg_render("El concepto %(concepto)s registrado con exito")
     def get_success_url(self):
         return reverse_lazy('aranceles:det_concepto', args=(self.object.id, ))
+
 
 class ConceptoUpdateView(SuccessMessageMixin, UpdateView):
     template_name='base/generic_update.html'
     model=Concepto
     form_class = ConceptoForm
     #success_url=reverse_lazy('localizaciones:lst_pais')
-    success_message = msg_render("Los datos del concepto %(nombre)s modificado con exito")
+    success_message = msg_render("Los datos del concepto %(concepto)s modificado con exito")
     def get_success_url(self):
         return reverse_lazy('aranceles:det_concepto', args=(self.object.id, ))
 
