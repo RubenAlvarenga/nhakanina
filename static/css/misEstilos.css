@@ -477,8 +477,8 @@ a .menu-ico:hover{background:linear-gradient(#006C18, #0A1F0B); color:#FFF;}
 .blockcontent{padding: 5px;}
 
 
-.grouper_cedula{width: 60px}
-.grouper_nombre{width: 180px}
+.grouper_cedula{width: 60px; white-space: nowrap;}
+.grouper_nombre{width: 180px; white-space: nowrap;}
 .cuota-secuencia{width: 110px; float: left; border-right: 1px solid #ddd;}
 .cuota-secuencia .rojo{padding: 3px;}
 .cuota-secuencia .verde{padding: 3px;}
@@ -496,4 +496,15 @@ a .menu-ico:hover{background:linear-gradient(#006C18, #0A1F0B); color:#FFF;}
 
 .pdftable{
   border: 1px solid #ccc;
+}
+
+.contenedor-extendible{
+  clear: both;
+  width: 100%;
+  overflow-x: scroll;
+}
+
+.contenedor-extendible table{
+  margin:0;
+  padding: 0;
 }

@@ -15,7 +15,7 @@ urlpatterns = patterns('',
 
     url(r'^personas/$', custom_permission_required('finanzas.add_recibo')(PersonaSingleTableView.as_view()), name ='lst_persona'),
     url(r'^personas/detPersona/(?P<pk>[\d]+)$', custom_permission_required('finanzas.add_recibo')(PersonaDetailView.as_view()), name='det_persona'),
-    url(r'^alumnos/detAlumno/(?P<pk>[\d]+)$', custom_permission_required('finanzas.view_recibo')(AlumnoDetailView.as_view()), name='det_alumno'),
+    url(r'^alumnos/detAlumno/(?P<pk>[\d]+)$', custom_permission_required('finanzas.view_planpago')(AlumnoDetailView.as_view()), name='det_alumno'),
 
 
 

@@ -45,8 +45,8 @@
 	</tbody>
 	</table>
 
-
 	<div class="grouper"><h6>{{cuotas.0.concepto.concepto.tipo_concepto.tipo_concepto}}</h6></div>
+	<div class="contenedor-extendible">
 	{% regroup cuotas by curso_alumno.alumno as alumnos %}
 	<table width="auto" class="table table-hover table-small">
 	<thead>
@@ -62,23 +62,30 @@
 			<td class="grouper_cedula">{{alumno.grouper.alumno.cedula}}</td>
 			<td class="grouper_nombre">{{alumno.grouper.alumno}}</td>
 			<td class="grouper_pago">
-			{% for secuencia in alumno.list %}
-				<div class="cuota-secuencia">
-				{% if secuencia.estado = 'PAG' %}
-					<div class="verde">{{secuencia.get_recibo.fecha|date:"d-m-y"}} <a href="{% url 'finanzas:det_recibo' secuencia.get_recibo.id %}"><strong>{{secuencia.get_recibo.get_recibo}}</strong></a></div>
-				{% else %}
-					<div {% if secuencia.get_vencido %}class="rojo"{% else %}class="gris"{% endif %}>{{secuencia.estado}} <small>{{secuencia.vencimiento|date:"M"}}</small></div> 
-				{% endif %}
-				</div>
-			{% endfor %}
+				<table>
+					<tr>
+					{% for secuencia in alumno.list %}
+						<td>
+							<div class="cuota-secuencia">
+							{% if secuencia.estado = 'PAG' %}
+								<div class="verde">{{secuencia.get_recibo.fecha|date:"d-m-y"}} <a href="{% url 'finanzas:det_recibo' secuencia.get_recibo.id %}"><strong>{{secuencia.get_recibo.get_recibo}}</strong></a></div>
+							{% else %}
+								<div {% if secuencia.get_vencido %}class="rojo"{% else %}class="gris"{% endif %}>{{secuencia.estado}} <small>{{secuencia.vencimiento|date:"M"}}</small></div> 
+							{% endif %}
+							</div>		
+						</td>
+					{% endfor %}
+					</tr>
+				</table>			
 			</td>
 		</tr>
 	{% endfor %}		
 	</tbody>
 	</table>
-
+	</div>
 
 	<div class="grouper"><h6>{{evaluacion.0.concepto.concepto.tipo_concepto.tipo_concepto}}</h6></div>
+	<div class="contenedor-extendible">
 	{% regroup evaluacion by curso_alumno.alumno as alumnos %}
 	<table width="auto" class="table table-hover table-small">
 	<thead>
@@ -94,20 +101,27 @@
 			<td class="grouper_cedula">{{alumno.grouper.alumno.cedula}}</td>
 			<td class="grouper_nombre">{{alumno.grouper.alumno}}</td>
 			<td class="grouper_pago">
-			{% for secuencia in alumno.list %}
-				<div class="cuota-secuencia">
-				{% if secuencia.estado = 'PAG' %}
-					<div class="verde"><small>{{secuencia.materia}}</small> <a href="{% url 'finanzas:det_recibo' secuencia.get_recibo.id %}"><strong>{{secuencia.get_recibo.get_recibo}}</strong></a></div>
-				{% else %}
-					<div {% if secuencia.get_vencido %}class="rojo"{% else %}class="gris"{% endif %}> <small>{{secuencia.materia}}</small> {{secuencia.estado}}</div> 
-				{% endif %}
-				</div>
-			{% endfor %}
+			<table>
+				<tr>		
+				{% for secuencia in alumno.list %}
+					<td style="vertical-align: top">
+						<div class="cuota-secuencia">
+						{% if secuencia.estado = 'PAG' %}
+							<div class="verde"><small>{{secuencia.materia}}</small> <a href="{% url 'finanzas:det_recibo' secuencia.get_recibo.id %}"><strong>{{secuencia.get_recibo.get_recibo}}</strong></a></div>
+						{% else %}
+							<div {% if secuencia.get_vencido %}class="rojo"{% else %}class="gris"{% endif %}> <small>{{secuencia.materia}}</small> {{secuencia.estado}}</div> 
+						{% endif %}
+						</div>
+					</td>
+				{% endfor %}
+				</tr>
+			</table>
 			</td>
 		</tr>
 	{% endfor %}		
 	</tbody>
 	</table>
+	</div>
 
-
+</div>
 {% endblock content %}

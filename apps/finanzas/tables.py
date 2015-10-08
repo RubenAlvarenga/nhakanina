@@ -51,7 +51,8 @@ class PlanPagoTable(tables.Table):
     get_concepto_abreviado = tables.Column(verbose_name='Concepto')
     vencimiento = tables.DateColumn(verbose_name='Vence')
     get_cuotasecuencia = tables.Column(verbose_name='Sec')
-    alumno = tables.Column(accessor='curso_alumno.alumno')
+    alumno = tables.LinkColumn('finanzas:det_alumno', args=[A('curso_alumno.alumno.codigo')], accessor='curso_alumno.alumno', verbose_name='Alumno', order_by=("curso_alumno.alumno"), attrs={'style':"font-weight:bold"})
+    cedula = tables.Column(verbose_name='Cedula', accessor='curso_alumno.alumno.cedula')
     ver     = EnlaceColumn( accessor="id", verbose_name=" ", attrs={"td": {"width": "2%"}, "url":"detPlanPago/", "icono":"glyphicon-eye-open" }, )
     editar  = EnlaceColumn( accessor="id", verbose_name=" ", attrs={"td": {"width": "2%"}, "url":"updPlanPago/", "icono":"glyphicon-pencil" }, )
     borrar  = EnlaceColumn( accessor="id", verbose_name=" ", attrs={"td": {"width": "2%"}, "url":"delPlanPago/", "icono":"glyphicon-remove" }, )
@@ -60,7 +61,7 @@ class PlanPagoTable(tables.Table):
         exclude = ('created', 'modified', 'curso_alumno', 'observaciones', 'created_by', 'authorized_by', 'total_cuotas', 'secuencia', 'estado', 'monto', 'materia', 'concepto', 'cantidad')
         per_page=ITEM_POR_PAGINA
         attrs = {"class": "table table-striped table-hover table-small" }
-        sequence = ("selection", "id", "alumno", "get_cuotasecuencia", "get_concepto_abreviado",  "...", )
+        sequence = ("selection", "id", "cedula", "alumno", "get_cuotasecuencia", "get_concepto_abreviado",  "...", )
 
 
 
