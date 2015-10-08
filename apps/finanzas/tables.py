@@ -48,19 +48,21 @@ class PersonasTable(tables.Table):
 
 class PlanPagoTable(tables.Table):
     selection = tables.CheckBoxColumn(accessor="pk", orderable=False, attrs = {"td": {"width": "2%"}, "th__input":{"onclick": "", "id":'todosLosCheck', "name":"option"}, "td__input":{"class":"checkboxList", "name":"checks"} } )
-    vencimiento = tables.DateColumn(verbose_name='Vencimiento')
-    cantidad = tables.Column(verbose_name='Cant')
-    concepto = tables.Column(accessor='concepto.concepto')
+    get_concepto_abreviado = tables.Column(verbose_name='Concepto')
+    vencimiento = tables.DateColumn(verbose_name='Vence')
+    get_cuotasecuencia = tables.Column(verbose_name='Sec')
     alumno = tables.Column(accessor='curso_alumno.alumno')
     ver     = EnlaceColumn( accessor="id", verbose_name=" ", attrs={"td": {"width": "2%"}, "url":"detPlanPago/", "icono":"glyphicon-eye-open" }, )
     editar  = EnlaceColumn( accessor="id", verbose_name=" ", attrs={"td": {"width": "2%"}, "url":"updPlanPago/", "icono":"glyphicon-pencil" }, )
     borrar  = EnlaceColumn( accessor="id", verbose_name=" ", attrs={"td": {"width": "2%"}, "url":"delPlanPago/", "icono":"glyphicon-remove" }, )
     class Meta:
         model = PlanPago
-        exclude = ('created', 'modified', 'curso_alumno', 'observaciones', 'created_by', 'authorized_by', 'total_cuotas', 'secuencia', 'estado', 'monto', 'materia')
+        exclude = ('created', 'modified', 'curso_alumno', 'observaciones', 'created_by', 'authorized_by', 'total_cuotas', 'secuencia', 'estado', 'monto', 'materia', 'concepto', 'cantidad')
         per_page=ITEM_POR_PAGINA
         attrs = {"class": "table table-striped table-hover table-small" }
-        sequence = ("selection", "id", "alumno",  "...", )
+        sequence = ("selection", "id", "alumno", "get_cuotasecuencia", "get_concepto_abreviado",  "...", )
+
+
 
 class PlanPagoAplReciboTable(tables.Table):
     selection = tables.CheckBoxColumn(accessor="pk", orderable=False, attrs = {"td": {"width": "2%"}, "th__input":{"onclick": "", "id":'todosLosCheck', "name":"option"}, "td__input":{"class":"checkboxList", "name":"checks"} } )

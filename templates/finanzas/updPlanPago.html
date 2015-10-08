@@ -43,6 +43,8 @@
 {% endblock content %}
 {% block scripts %}
     <script type="text/javascript">
+        var seleccionado = $( "#id_materia option:selected" ).val();
+
         $(document).ready(function() {
             var id_curso_alumno = $('#id_curso_alumno option:selected').val();
             get_materias(id_curso_alumno)
@@ -54,7 +56,11 @@
                     success : function(data){
                         var html = '<select><option value="">-------</option>';
                         for (var i=0 ; i < data.length ; i++){
-                            html = html + '<option value="'+ data[i].pk +'">'+ data[i].fields.nombre +'</option>'  
+                            if (seleccionado == data[i].pk){
+                                html = html + '<option selected="selected" value="'+ data[i].pk +'">'+ data[i].fields.nombre +'</option>'
+                            }else{
+                                html = html + '<option value="'+ data[i].pk +'">'+ data[i].fields.nombre +'</option>'
+                            }
                         }
                         html = html + '</select>'
                         $('#id_materia').html(html);
