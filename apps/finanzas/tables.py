@@ -113,3 +113,21 @@ class CursosTable(tables.Table):
         sequence = ("selection", "anho", "id", "...", "ver")
 
 
+
+
+class ExtractoCursoAlumnoTable(tables.Table):
+    get_concepto_abreviado = tables.Column(verbose_name='Concepto')
+    vencimiento = tables.DateColumn(verbose_name='Vence')
+    cantidad = tables.Column(verbose_name='Cant')
+    get_recibo = tables.Column(verbose_name='No Recibo')
+    get_cuotasecuencia = tables.Column(verbose_name='Sec')
+    class Meta:
+        model = PlanPago
+        exclude = ('id', 'curso_alumno', 'concepto', 'materia', 'created_by', 'authorized_by', 'observaciones', 'created', 'modified', 'secuencia', 'total_cuotas')
+        attrs = {"class": "table table-striped table-hover table-small" }
+        sequence = ( "cantidad", "get_cuotasecuencia", "get_concepto_abreviado", "monto", "...",)
+    def render_get_recibo(self, value):
+        return "%s-%s" % (value.serie, unicode(value.nro_recibo))
+    def render_monto(self, value):
+        return intcomma(value)
+

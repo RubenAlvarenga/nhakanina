@@ -56,6 +56,12 @@ class Recibo(TimeStampModel):
         except: pass
         return concepto
 
+    @property
+    def get_estado(self):
+        from apps.rendiciones.models import Rendicion
+        try: return Rendicion.objects.filter(recibos=self.id)
+        except: return False
+
 
     @property
     def get_planes(self):
@@ -108,6 +114,19 @@ class PlanPago(TimeStampModel):
     def get_recibo(self):
         try: return ReciboPlanPago.objects.get(plan_pago = self)
         except: return None
+    @property
+    def get_concepto_abreviado(self):
+        if self.concepto.concepto.tipo_concepto.tipo_concepto.id==2 or self.concepto.concepto.tipo_concepto.tipo_concepto.id==1:
+            concepto_abreviado = "%s %s" % (unicode(self.concepto.concepto.tipo_concepto.tipo_concepto.titulo), unicode(self.concepto.concepto.concepto) )
+        else:
+            concepto_abreviado = "%s" % (unicode(self.concepto.concepto.concepto) )
+        if self.materia:
+            concepto_abreviado = concepto_abreviado +" ("+ unicode(self.materia.nombre)+")"
+        return concepto_abreviado
+
+    @property
+    def get_cuotasecuencia(self):
+        return "%s/%s" % (unicode(self.secuencia), unicode(self.total_cuotas))
 
 
     def clean(self):

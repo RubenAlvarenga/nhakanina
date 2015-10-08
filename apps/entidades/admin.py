@@ -7,7 +7,7 @@ from apps.finanzas.models import PlanPago
 
 class AlumnoAdmin(admin.ModelAdmin):
     list_display = ('codigo', 'cedula', 'get_full_name')
-    search_fields = ['cedula']
+    search_fields = ['cedula', 'apellido1', 'apellido2', 'nombre1', 'nombre2']
     list_display_links = ('get_full_name',)
 
 class PersonaAdmin(admin.ModelAdmin):

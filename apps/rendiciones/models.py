@@ -20,10 +20,10 @@ class Rendicion(TimeStampModel):
         ('APR', 'Aprobado'),        
     )   
     nro_rendicion = models.DecimalField(max_digits=8, decimal_places=0, verbose_name='Nro Rendicion', unique=True )
-    fecha_aprobacion = models.DateField(verbose_name='Aprobado el')
+    fecha_aprobacion = models.DateField(verbose_name='Aprobado el', blank=True, null=True)
     aprobado_por = models.ForeignKey(User, editable=False, verbose_name='Aprobado por', related_name='aprobadopor_rendiciones', blank=True, null=True, on_delete=models.PROTECT)
     estado = models.CharField(max_length=3, choices=ESTADO, default='PEN', verbose_name='Estado')
-    total = models.DecimalField(max_digits=10, decimal_places=0, verbose_name='Total' )
+    total = models.DecimalField(max_digits=10, decimal_places=0, verbose_name='Total', blank=True, null=True )
     recibos = models.ManyToManyField(Recibo, verbose_name='Recibos a rendir', help_text="Seleccione los recibos a rendir")
 
     class Meta:

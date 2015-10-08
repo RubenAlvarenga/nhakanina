@@ -25,7 +25,7 @@ class UsersTable(tables.Table):
     username=tables.Column(verbose_name='usuario')
     email=tables.Column(verbose_name='e-mail')
     last_login=tables.DateTimeColumn(verbose_name="ultimo ingreso")
-    is_superuser=tables.BooleanColumn(verbose_name='admin')
+    #is_superuser=tables.BooleanColumn(verbose_name='admin')
     is_staff=tables.BooleanColumn(verbose_name='staff')
     get_full_name = tables.Column(verbose_name='nombres', order_by =("first_name"))
     perfil=ImageColumn(verbose_name='avatar', accessor="perfil.avatar")
@@ -38,7 +38,7 @@ class UsersTable(tables.Table):
     class Meta:
         model = User
         per_page=ITEM_POR_PAGINA
-        exclude = ('password', 'last_name', 'first_name', 'date_joined')
+        exclude = ('password', 'last_name', 'first_name', 'date_joined', 'is_superuser')
         attrs = {"class": "table table-striped table-hover" }
         sequence = ("selection","perfil", "id", 'username', 'email', 'get_full_name'  )
 

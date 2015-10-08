@@ -98,7 +98,20 @@
                 </table>
             </div>
         {% endif %}
-
+        {% if object.get_estado %}
+            {% for rendicion in object.get_estado %}
+                <div class="datos_recibo_anulado">
+                    <table>
+                        <tr>
+                            <td rowspan="4" class="borrador-cuadrado"><span class="glyphicon glyphicon-briefcase size50"></span></td>
+                        </tr>
+                        <tr><td><strong>Estado Rendicion: </strong> {{rendicion.estado}}</td></tr>
+                        <tr><td><strong>Fecha: </strong>{{rendicion.fecha_aprobacion }}</td></tr>
+                        <tr><td><strong>Usuario: </strong> {{rendicion.created_by}}</td></tr>
+                    </table>
+                </div>                
+            {% endfor %}
+        {% endif %}
 
     </div>
 

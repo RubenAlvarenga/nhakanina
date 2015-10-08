@@ -58,7 +58,7 @@ ul.menuinterno{margin-bottom:0;}
 .navbar-inverse .navbar-brand{color: #FCF078}
 
 .navbar-brand img{float: right;}
-#nombreapp{padding-top: 3px; padding-right: 10px; float: left; font-family: "Verdana"}
+#nombreapp{padding-top: 3px; padding-right: 10px; float: left; font-family: "Verdana", "Helvetica Neue",Helvetica,Arial,sans-serif;}
 
 .navbar-inverse .navbar-nav>li>a{color: #FCF078;}
 
@@ -229,7 +229,6 @@ height: 28px;
   border-bottom: 1px solid #CCC;
 }
 
-
 .input-small{width: 20px; border: 0; padding: 1px 3px; background-color: #eee;}
 
 .select-small{font-size: 0.9em; margin-bottom: 15px;}
@@ -334,16 +333,8 @@ a .menu-ico:hover{background:linear-gradient(#006C18, #0A1F0B); color:#FFF;}
     position: absolute;
     vertical-align:text-bottom;
     margin: 3px;
-
-    font-size: 1.5em;
+    font-size: 1.3em;
 }
-
-
-
-
-
-
-
 
 
 
@@ -501,3 +492,8 @@ a .menu-ico:hover{background:linear-gradient(#006C18, #0A1F0B); color:#FFF;}
 
 
 .get_recibo{white-space: nowrap;}
+
+
+.pdftable{
+  border: 1px solid #ccc;
+}

@@ -4,8 +4,11 @@
 {% block title %}Detalle {{ object|get_verbose_name|capfirst }}{% endblock title %}
 {% block content %}
 
+<form class="form-horizontal" role="form" action="/finanzas/alumnos/prtExtracto/" method="POST" enctype="multipart/form-data">{% csrf_token %}
+
     <div class="titulo container-fluid"><h3>Extracto</h3>
         <div class="align-right">
+            <button type="submit" class="btn btn-default" onclick="this.form.target='_blank'; return true;"><span class="glyphicon glyphicon-print"></span> A pdf</button>
             <a href="{% url 'finanzas:det_persona' object.id %}"><button type="button" class="btn btn-primary"><span class="glyphicon glyphicon-check"></span> Plan Pago</button></a>
         </div>
     </div>
@@ -16,9 +19,8 @@
     </div>
     <div class="alumno-cursos">
     {% for curso in object.get_cursos_activos %}
-            <div class="curso"><span class="glyphicon glyphicon-education"></span> Curso: <strong>{{curso.curso}}</strong>
-<!--                 <button type="submit" class="btn btn-primary btn-xs align-right"><span class="glyphicon glyphicon-ok-circle"></span> Recibo</button> -->
-            </div>
+            
+            <div class="curso"><input type="checkbox" name="curso_alumno_id" value="{{curso.id}}"> <strong><span class="glyphicon glyphicon-education"></span> {{curso.curso}}</strong></div>
             
             {% if curso.get_planPago %}
                 <div id="frmOpciones{{curso.id}}"></div>
@@ -126,12 +128,14 @@
         </table>
     {% endif %}
     </div>
+
+</form>
 {% endblock content %}
 
 
-{% block scripts %}
+
     <script type="text/javascript">
-    $(document).on('ready', function(){
+/*    $(document).on('ready', function(){
         $('.frmFraccionar').submit(function() {
             var id = $("#id_curso").val()              
             $.ajax({ 
@@ -147,8 +151,8 @@
             });
             return false;
         });
-     });
+     });*/
     </script>
-{% endblock scripts %}
+
 
 

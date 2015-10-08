@@ -16,7 +16,8 @@ from apps.entidades.models import Alumno, Persona
 from apps.finanzas.models import PlanPago, Recibo, ReciboPlanPago
 from apps.aranceles.models import Arancel
 from apps.catedras.models import CursoAlumno, Materia
-from .tables import AlumnosTable, PersonasTable, PlanPagoTable, PlanPagoAplReciboTable, RecibosTable, RecibosTablePDF, CursosTable
+from .tables import AlumnosTable, PersonasTable, PlanPagoTable, PlanPagoAplReciboTable, RecibosTable, RecibosTablePDF, \
+    CursosTable, ExtractoCursoAlumnoTable
 from .functions import fracionar_plan, msg_render, sumarTotalesPlanPago
 from .forms import ReciboPlanPagoForm, ReciboForm, PlanPagoForm, updPlanPagoForm
 from apps.catedras.models import Curso
@@ -461,7 +462,7 @@ def fraccionar_planpago_ajax(request):
 from .forms import AnularReciboForm
 class ReciboCancelView(SuccessMessageMixin, DeleteView):
     """
-    Clase IMportante no modificar
+    Clase Importante no modificar
     Afecta la anulacion de recibos a planes de pago
     """
     template_name='finanzas/anuRecibo.html'
@@ -489,6 +490,7 @@ class ReciboCancelView(SuccessMessageMixin, DeleteView):
                     self.object.motivo_anulacion = request.POST['motivo']
                     self.object.fecha_anulacion = datetime.now()
                     self.object.usuario_anulacion = request.user
+                    self.object.monto = 0
                     self.object.save()
 
                 else:
@@ -496,6 +498,7 @@ class ReciboCancelView(SuccessMessageMixin, DeleteView):
                     self.object.motivo_anulacion = request.POST['motivo']
                     self.object.fecha_anulacion = datetime.now()
                     self.object.usuario_anulacion = request.user
+                    self.object.monto = 0
                     self.object.save()
                 success_message = msg_render("El recibo <strong>"+str(self.object)+"</strong> ha sido anulado")
                 messages.add_message(request, messages.SUCCESS, success_message )
@@ -660,3 +663,31 @@ class CursoDetailView(DetailView):
         context['cuotas'] = PlanPago.objects.filter(curso_alumno__curso=context['object'], concepto__concepto__tipo_concepto__tipo_concepto__id=2).order_by('curso_alumno', 'secuencia')
         context['evaluacion'] = PlanPago.objects.filter(curso_alumno__curso=context['object'], concepto__concepto__tipo_concepto__tipo_concepto__id=3)
         return context
+
+
+def imprimirExtracto(request):
+    pdf_name = 'finanzas/reportes/pdfExtracto.html'
+    checks = request.POST.getlist('curso_alumno_id')
+    if not checks:
+        mensaje = msg_render("<strong>Favor seleccione por lo menos un item</strong>")
+        messages.add_message(request, messages.INFO, mensaje)
+        url = request.META['HTTP_REFERER']
+        return HttpResponseRedirect(url)
+    else:
+        dic={}
+        dic['impresoel']=datetime.now()
+        dic['impresopor'] = request.user
+        curso_planes = []
+        ids = map(int, checks)
+        for id in ids:
+            planes=PlanPago.objects.filter(curso_alumno=id).order_by("vencimiento", "concepto__concepto__tipo_concepto__tipo_concepto__id")
+            table = ExtractoCursoAlumnoTable(planes)
+            table.curso=unicode(planes[0].curso_alumno.curso)
+            RequestConfig(request).configure(table)            
+            curso_planes.append(table)
+
+        dic['alumno'] = PlanPago.objects.filter(curso_alumno__in=ids).distinct('curso_alumno__alumno')[0].curso_alumno.alumno
+        dic['curso_planes'] = curso_planes
+        
+        return PDFTemplateResponse(request, pdf_name, dic)
+        
