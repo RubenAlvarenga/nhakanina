@@ -1,6 +1,6 @@
 from django.conf.urls import patterns, url
 from .views import ConceptoSingleTableView, ConceptoUpdateView, ConceptoDetailView, ConceptoCreateView, PeriodoSingleTableView, PeriodoCreateView, \
-	PeriodoDetailView, ArancelSingleTableView, ArancelDetailView, ArancelCreateView
+	PeriodoDetailView, ArancelSingleTableView, ArancelDetailView, ArancelCreateView, TipoConceptoSingleTableView
 from django.views.generic import TemplateView
 from django.contrib.auth.decorators import login_required, permission_required
 from apps.decorators import custom_permission_required
@@ -23,5 +23,8 @@ urlpatterns = patterns('',
     url(r'^aranceles/$', custom_permission_required('aranceles.lst_arancel')(ArancelSingleTableView.as_view()), name ='lst_arancel'),
 	url(r'^aranceles/addArancel/$', custom_permission_required('aranceles.add_arancel')(ArancelCreateView.as_view()), name='add_arancel'),
     url(r'^aranceles/detArancel/(?P<pk>[\d]+)$', custom_permission_required('aranceles.view_arancel')(ArancelDetailView.as_view()), name='det_arancel'),
+
+    url(r'^tipos/$', custom_permission_required('aranceles.lst_tipoconcepto')(TipoConceptoSingleTableView.as_view()), name ='lst_tipoconcepto'),
+
 
 )

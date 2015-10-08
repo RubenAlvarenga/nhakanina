@@ -107,6 +107,8 @@ class RecibosTablePDF(tables.Table):
 class CursosTable(tables.Table):
     anho = tables.Column(accessor='inicio.year', verbose_name='Año', order_by=("inicio"))
     selection = tables.CheckBoxColumn(accessor="pk", orderable=False, attrs = {"td": {"width": "2%"}, "th__input":{"onclick": "", "id":'todosLosCheck', "name":"option"}, "td__input":{"class":"checkboxList", "name":"checks"} } )
+    carrera = tables.LinkColumn('finanzas:det_curso', args=[A('pk')], verbose_name='carrera',  attrs={'style':"font-weight:bold"})    
+
     ver     = EnlaceColumn( accessor="id", verbose_name=" ", attrs={"td": {"width": "2%"}, "url":"detCurso/", "icono":"glyphicon-eye-open" }, )
     class Meta:
         model = Curso

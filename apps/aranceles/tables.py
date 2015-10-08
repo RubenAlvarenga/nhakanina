@@ -7,7 +7,7 @@ from django_tables2  import  A
 from django.utils.html import escape
 from django.contrib.humanize.templatetags.humanize import intcomma
 
-from .models import Concepto, Periodo, Arancel
+from .models import Concepto, Periodo, Arancel, TipoConcepto
 
 ITEM_POR_PAGINA = 50
 
@@ -33,17 +33,16 @@ class ConceptosTable(tables.Table):
 
 class PeriodosTable(tables.Table):
     selection = tables.CheckBoxColumn(accessor="pk", orderable=False, attrs = {"th__input":{"onclick": "", "id":'todosLosCheck', "name":"option"}, "td__input":{"class":"checkboxList", "name":"checks"} } )
-
     ver     = EnlaceColumn( accessor="id", verbose_name=" ", attrs={"td": {"width": "2%"}, "url":"./detPeriodo/", "icono":"glyphicon-eye-open" }, )
-    editar  = EnlaceColumn( accessor="id", verbose_name=" ", attrs={"td": {"width": "2%"}, "url":"./updPeriodo/", "icono":"glyphicon-pencil" }, )
-    borrar  = EnlaceColumn( accessor="id", verbose_name=" ", attrs={"td": {"width": "2%"}, "url":"./delPeriodo/", "icono":"glyphicon-remove" }, )
+    # editar  = EnlaceColumn( accessor="id", verbose_name=" ", attrs={"td": {"width": "2%"}, "url":"./updPeriodo/", "icono":"glyphicon-pencil" }, )
+    # borrar  = EnlaceColumn( accessor="id", verbose_name=" ", attrs={"td": {"width": "2%"}, "url":"./delPeriodo/", "icono":"glyphicon-remove" }, )
 
     class Meta:
         model = Periodo
         per_page=ITEM_POR_PAGINA
         exclude = ()
         attrs = {"class": "table table-striped table-hover table-small" }
-        sequence = ("selection", "...", "ver", "editar", "borrar"  )
+        sequence = ("selection", "...", "ver")
 
 
 class ArancelesTable(tables.Table):
@@ -59,3 +58,18 @@ class ArancelesTable(tables.Table):
         exclude = ('created', 'modified', 'created_by')
         attrs = {"class": "table table-striped table-hover table-small" }
         sequence = ("selection", "...", "ver", "editar", "borrar"  )
+
+
+class TiposConceptosTable(tables.Table):
+    selection = tables.CheckBoxColumn(accessor="pk", orderable=False, attrs = {"th__input":{"onclick": "", "id":'todosLosCheck', "name":"option"}, "td__input":{"class":"checkboxList", "name":"checks"} } )
+    ver     = EnlaceColumn( accessor="id", verbose_name=" ", attrs={"td": {"width": "2%"}, "url":"./detArancel/", "icono":"glyphicon-eye-open" }, )
+    editar  = EnlaceColumn( accessor="id", verbose_name=" ", attrs={"td": {"width": "2%"}, "url":"./updArancel/", "icono":"glyphicon-pencil" }, )
+    borrar  = EnlaceColumn( accessor="id", verbose_name=" ", attrs={"td": {"width": "2%"}, "url":"./delArancel/", "icono":"glyphicon-remove" }, )
+
+    class Meta:
+        model = TipoConcepto
+        per_page=ITEM_POR_PAGINA
+        exclude = ()
+        attrs = {"class": "table table-striped table-hover table-small" }
+        sequence = ("selection", "...", "ver", "editar", "borrar"  )
+

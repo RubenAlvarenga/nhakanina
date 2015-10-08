@@ -1,4 +1,5 @@
 {% extends "base/divided.html" %}
+{% load humanize %}
 {% load verbose_name_tags %}
 {% block title %}Detalle {{ object|get_verbose_name|capfirst }}{% endblock title %}
 
@@ -7,18 +8,42 @@
     <div class="titulo container-fluid"><h3>{{ object|get_verbose_name|capfirst }} {{object.name}}</h3>
         <div class="align-right">
 
-            <a href="../upd{{ object|get_verbose_name|capfirst }}/{{object.id}}" class="btn btn-default btn-sm" role="button"><span class="glyphicon glyphicon-pencil"></span> Editar esta {{ object|get_verbose_name|capfirst }}</a>
+            <a href="../upd{{ object|get_verbose_name|capfirst }}/{{object.id}}" class="btn btn-default btn-sm" role="button"><span class="glyphicon glyphicon-pencil"></span> Editar este {{ object|get_verbose_name|capfirst }}</a>
 
-            <a href="../del{{ object|get_verbose_name|capfirst }}/{{object.id}}" class="btn btn-danger btn-sm" role="button"><span class="glyphicon glyphicon-remove-circle"></span> Eliminar esta {{ object|get_verbose_name|capfirst }}</a>
-            <a href="../add{{ object|get_verbose_name|capfirst }}" class="btn btn-primary btn-sm" role="button"><span class="glyphicon glyphicon-plus"></span> Agregar otra {{ object|get_verbose_name|capfirst }}</a>
+            <a href="../del{{ object|get_verbose_name|capfirst }}/{{object.id}}" class="btn btn-danger btn-sm" role="button"><span class="glyphicon glyphicon-remove-circle"></span> Eliminar este {{ object|get_verbose_name|capfirst }}</a>
+            <a href="../add{{ object|get_verbose_name|capfirst }}" class="btn btn-primary btn-sm" role="button"><span class="glyphicon glyphicon-plus"></span> Agregar otro {{ object|get_verbose_name|capfirst }}</a>
         </div>
     </div>
 
 
-{{object}}
-
-
-
+<div class="detalles">
+	<div><div class="det_titulo">Resolución: </div><div class="det_contenido">{{object.resolucion}}</div></div>
+	<div><div class="det_titulo">Inicio: </div><div class="det_contenido">{{object.inicio}}</div></div>
+	<div><div class="det_titulo">Fin: </div><div class="det_contenido">{{object.fin}}</div></div>
+	<div><div class="det_titulo">Estado: </div><div class="det_contenido">{{object.estado}}</div></div>
+</div>
+    
+<div class="aranceles">
+	<div class="det_titulo">Aranceles</div>
+	{% regroup aranceles by concepto.tipo_concepto.tipo_carrera as tipo_carrera %}
+	{% for arancel in tipo_carrera %}
+		<div class="grouper"><h6>{{arancel.grouper}}</h6></div>
+		{% regroup arancel.list by concepto.tipo_concepto.tipo_concepto as tipo_conceptos %}
+		{% for tipo in tipo_conceptos %}
+			<div class="grouper"><h6>{{tipo.grouper}}</h6></div>
+				<table  width="auto" class="table table-hover table-small">
+				{% for ara in tipo.list  %}
+					<tr>
+					<td>{{ara.concepto.concepto}}</td>
+					<td width="100" >{{ara.concepto.fraccionable|yesno}}</td>
+					<td width="100" >{{ara.concepto.fraccionable_hasta|intcomma}}</td>
+					<td width="100" align="right">{{ara.monto|intcomma}}</td>
+					</tr>
+				{% endfor %}
+			</table>
+		{% endfor %}
+	{% endfor %}
+</div>
 
 
 {% endblock content %}

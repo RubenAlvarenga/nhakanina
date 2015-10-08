@@ -191,7 +191,7 @@ border-top-right-radius: 0;
 .table .verde{background: #CBF9CE}
 .table .rojo{background: #FFCACA}
 .table .gris{color: #888;}
-
+th.titulo, td.titulo{background: none}
 
 /*mensajes*/
 ul.messages{margin:0; padding: 0; list-style-type: none;}
@@ -291,8 +291,6 @@ height: 28px;
 
 h2.selector-available{background: yellow}
 
-.detalles{
-}
 
 .detalles .det_titulo{
   width: 20%;
@@ -302,6 +300,16 @@ h2.selector-available{background: yellow}
   margin-top: 5px;
   padding: 3px 5px;
 }
+
+.aranceles .det_titulo{
+  clear: both;
+  width: 20%;
+  background: #E1E1E1;
+  font-weight: bold;
+  padding: 3px 5px;
+}
+
+
 .detalles .det_contenido{
   width: 80%;
   float: left;
@@ -320,10 +328,12 @@ h2.selector-available{background: yellow}
   margin-bottom: 0px;
 }
 
-.extracto{
+.extracto, .aranceles{
   clear: both;
   padding-top: 20px
 }
+
+
 
 .menu-ico{position: relative; width:100px; height:100px; float:left; background:#DDD; margin:10px; border-radius:7px; padding:8px; vertical-align:text-bottom; font-size: 10px; font-weight: bold;}
 a .menu-ico:hover{background:linear-gradient(#006C18, #0A1F0B); color:#FFF;}

@@ -8,8 +8,8 @@ from django_tables2 import SingleTableView, RequestConfig
 from django.core.urlresolvers import reverse_lazy, reverse
 
 
-from .models import Concepto, Periodo, Arancel
-from .tables import ConceptosTable, PeriodosTable, ArancelesTable
+from .models import Concepto, Periodo, Arancel, TipoConcepto
+from .tables import ConceptosTable, PeriodosTable, ArancelesTable, TiposConceptosTable
 from .forms import ConceptoForm, PeriodoForm, ArancelForm
 from apps.functions import msg_render
 
@@ -75,6 +75,10 @@ class PeriodoSingleTableView(SingleTableView):
 class PeriodoDetailView(DetailView):
     model=Periodo
     template_name='aranceles/detPeriodo.html'
+    def get_context_data(self, **kwargs):
+        context = super(PeriodoDetailView, self).get_context_data(**kwargs)
+        context['aranceles'] = Arancel.objects.filter(resolucion=context['periodo'])
+        return context
 
 
 class PeriodoCreateView(SuccessMessageMixin, CreateView):
@@ -122,3 +126,20 @@ class ArancelCreateView(SuccessMessageMixin, CreateView):
         instance.created_by = self.request.user
         instance.save()
         return super(ArancelCreateView, self).form_valid(form)
+
+
+class TipoConceptoSingleTableView(SingleTableView):
+    template_name='base/generic_list.html'
+    model = TipoConcepto
+    table_class = TiposConceptosTable
+    def get_queryset(self):
+        table = super(TipoConceptoSingleTableView, self).get_queryset()
+        q=self.request.GET.get("q")
+        if q: return table.filter(Q(concepto__icontains=q) | Q(tipo_concepto__tipo_concepto__titulo__icontains=q) )#.order_by(sort)
+        else: return table
+
+    def get_context_data(self, **kwargs):
+        context = super(TipoConceptoSingleTableView, self).get_context_data(**kwargs)
+        context['sort']= self.request.GET.get("sort")
+        context['notbuttonlist'] = True
+        return context
