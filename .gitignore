@@ -3,5 +3,5 @@
 media/*
 tmp/*
 apps/entidades/migraciones/
-iseapp/settins/
+iseapp/settings/
 *.jpg

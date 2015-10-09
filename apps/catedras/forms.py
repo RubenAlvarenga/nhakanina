@@ -19,13 +19,13 @@ class CursoForm(forms.ModelForm):
         exclude=[]
         widgets = {
             'carrera' : forms.Select(attrs = {'class':'form-control'}),            
-            'inicio': SelectDateWidget(years=range(datetime.now().date().year, datetime.now().date().year + 3, 1), attrs = {'class':'form-control', 'style':'width:100px; float:left'}),
-            'fin': SelectDateWidget(years=range(datetime.now().date().year, datetime.now().date().year + 3, 1), attrs = {'class':'form-control', 'style':'width:100px; float:left'}),
+            'inicio': SelectDateWidget(years=range(datetime.now().date().year - 5, datetime.now().date().year + 3, 1), attrs = {'class':'form-control', 'style':'width:100px; float:left'}),
+            'fin': SelectDateWidget(years=range(datetime.now().date().year - 5, datetime.now().date().year + 3, 1), attrs = {'class':'form-control', 'style':'width:100px; float:left'}),
             'dias' : forms.CheckboxSelectMultiple(),
             'turno' : forms.TextInput(attrs = {'class':'form-control'}),
             'matricula' : forms.Select(attrs = {'class':'form-control'}),
             'matricula_fpo' : forms.Select(attrs = {'class':'form-control'}),
-            'fecha_tope_matriculacion': SelectDateWidget(years=range(datetime.now().date().year, datetime.now().date().year + 3, 1), attrs = {'class':'form-control', 'style':'width:100px; float:left'}),
+            'fecha_tope_matriculacion': SelectDateWidget(years=range(datetime.now().date().year - 5, datetime.now().date().year + 3, 1), attrs = {'class':'form-control', 'style':'width:100px; float:left'}),
             'monto_cuota' : forms.Select(attrs = {'class':'form-control'}),            
             'cantidad_cuotas' : forms.TextInput(attrs = {'class':'form-control'}),
             'examen_ordinario' : forms.Select(attrs = {'class':'form-control'}),
