@@ -71,15 +71,12 @@
                     {% endifequal %}
                         <td><input type="checkbox" name="plan_pago" value="{{plan.id}}"></td>
                         <td class="gris"><small>{{plan.id}}</small></td>
-                        {% ifequal plan.concepto.concepto.tipo_concepto.tipo_concepto.id 2 %}
-                            <td>{{plan.secuencia}}/{{plan.curso_alumno.curso.cantidad_cuotas}}</td>
-                        {% else %}
-                            {% ifequal plan.concepto.concepto.tipo_concepto.tipo_concepto.id 1 %}
-                                <td>{{plan.secuencia}}/{{plan.total_cuotas}}</td>
-                            {% else %}
-                                <td></td>
-                            {% endifequal %}
-                        {% endifequal %}
+                        <td>
+                            {{plan.get_cuotasecuencia}}
+                            {% if plan.concepto.concepto.fraccionable and not plan.secuencia  %}
+                                <a href="{% url 'finanzas:fra_planpago' plan.id %}" class="btn btn-info btn-xs" role="button"><span class="glyphicon glyphicon-scissors"></span> Fraccionar</a>
+                            {% endif %}
+                        </td>
                         <td>{{plan.cantidad}} {{plan.concepto.get_grupo_2}} {{plan.concepto.concepto}} 
                             <span class="align-right">
                                 {% if plan.materia %}

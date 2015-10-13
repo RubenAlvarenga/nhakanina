@@ -158,6 +158,11 @@ border-top-right-radius: 0;
   margin: 20px auto;
 }
 
+.buscador select{
+  float: left;
+  height: 30px;
+  background: #DDD;
+}
 
 .scrollup{
     width:40px;
@@ -230,6 +235,16 @@ height: 28px;
 }
 
 .input-small{width: 20px; border: 0; padding: 1px 3px; background-color: #eee;}
+.input-fraccionar-hasta{
+  width: 80px;
+  height: 25px;
+  padding: 6px 12px;
+  font-size: 14px;
+  color: #555;
+  border: 1px solid #79EFFF;
+  border-radius: 4px;
+}
+
 
 .select-small{font-size: 0.9em; margin-bottom: 15px;}
 .select-small .ochenta{width: 80%}
@@ -503,6 +518,7 @@ a .menu-ico:hover{background:linear-gradient(#006C18, #0A1F0B); color:#FFF;}
 
 .get_recibo{white-space: nowrap;}
 
+.odd .alumno{white-space: nowrap;}
 
 .pdftable{
   border: 1px solid #ccc;
@@ -518,3 +534,4 @@ a .menu-ico:hover{background:linear-gradient(#006C18, #0A1F0B); color:#FFF;}
   margin:0;
   padding: 0;
 }
+

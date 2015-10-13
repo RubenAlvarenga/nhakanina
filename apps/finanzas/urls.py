@@ -1,7 +1,7 @@
 from django.conf.urls import patterns, url
 from .views import AlumnoSingleTableView, PersonaSingleTableView,  AlumnoDetailView, PersonaDetailView, fraccionar_planpago_ajax, ReciboCancelView, \
     ReciboSingleTableView, ReciboFormView, PlanPagoFormView, ReciboPlanPagoFormView, ReciboDetailView, total_recibo_plan_pago_ajax, PlanPagoSingleTableView, \
-    PlanPagoDetailView, PlanPagoUpdateView, PlanPagoDeleteView, CursoExtractoSingleTableView, CursoDetailView
+    PlanPagoDetailView, PlanPagoUpdateView, PlanPagoDeleteView, CursoExtractoSingleTableView, CursoDetailView, FraccionarPlanFormView
 from apps.entidades.views import AlumnoCreateView
 from apps.catedras.views import CursoCreateView
 from django.views.generic import TemplateView
@@ -16,7 +16,6 @@ urlpatterns = patterns('',
     url(r'^personas/$', custom_permission_required('finanzas.add_recibo')(PersonaSingleTableView.as_view()), name ='lst_persona'),
     url(r'^personas/detPersona/(?P<pk>[\d]+)$', custom_permission_required('finanzas.add_recibo')(PersonaDetailView.as_view()), name='det_persona'),
     url(r'^alumnos/detAlumno/(?P<pk>[\d]+)$', custom_permission_required('finanzas.view_planpago')(AlumnoDetailView.as_view()), name='det_alumno'),
-
 
 
     url(r'^fraccionar_planpago_ajax', 'apps.finanzas.views.fraccionar_planpago_ajax', name='fraccionar_planpago'),
@@ -54,6 +53,9 @@ urlpatterns = patterns('',
     url(r'^planes/detPlanPago/(?P<pk>[\d]+)$', custom_permission_required('finanzas.view_planpago')(PlanPagoDetailView.as_view()), name='det_planpago'),
     url(r'^planes/updPlanPago/(?P<pk>[\d]+)$', custom_permission_required('catedras.change_planpago')(PlanPagoUpdateView.as_view()), name='upd_planpago'),
     url(r'^planes/delPlanPago/(?P<pk>[\d]+)$', custom_permission_required('finanzas.delete_planpago')(PlanPagoDeleteView.as_view()), name ='del_planpago'),
+    url(r'^planes/fraPlanPago/(?P<pk>[\d]+)$', custom_permission_required('finanzas.add_planpago')(FraccionarPlanFormView.as_view()), name='fra_planpago'),
+
+    url(r'^planes/$', custom_permission_required('finanzas.list_planpago')(PlanPagoSingleTableView.as_view()), name ='lst_planpago'),
 
 
     url(r'^get_curso_alumno_ajax', 'apps.finanzas.views.get_curso_alumno_ajax', name='get_cursoalumno'),

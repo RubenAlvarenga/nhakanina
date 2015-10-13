@@ -19,7 +19,7 @@ from apps.catedras.models import CursoAlumno, Materia
 from .tables import AlumnosTable, PersonasTable, PlanPagoTable, PlanPagoAplReciboTable, RecibosTable, RecibosTablePDF, \
     CursosTable, ExtractoCursoAlumnoTable
 from .functions import fracionar_plan, msg_render, sumarTotalesPlanPago
-from .forms import ReciboPlanPagoForm, ReciboForm, PlanPagoForm, updPlanPagoForm
+from .forms import ReciboPlanPagoForm, ReciboForm, PlanPagoForm, updPlanPagoForm, fracPlanPagoForm
 from apps.catedras.models import Curso
 from apps.actions import export_as_csv, export_table_to_csv
 from django import forms
@@ -183,7 +183,7 @@ class ReciboFormView(SuccessMessageMixin, FormView):
         instance.monto = instance.cantidad * instance.concepto.monto
         instance.cajero = self.request.user
         instance.save()
-        imprimir_recibo(instance)
+        #imprimir_recibo(instance)
         return self.get_success_url(instance)
         #return super(ReciboFormView, self).form_valid(form)
 
@@ -432,7 +432,28 @@ class ReciboPlanPagoFormView(SuccessMessageMixin, FormView):
 
 
 
-  
+@custom_permission_required('finanzas.add_planpago')
+def fraccionar_planpago(request):
+    import pdb; pdb.set_trace()
+    if request.is_ajax():
+        if request.POST['id_planpago']:
+            plan_pago = PlanPago.objects.get(pk=int(request.POST['id_planpago']))
+            cantidad = int(request.POST['cantidad'])
+            mensaje=''
+            if cantidad > plan_pago.concepto.concepto.fraccionable_hasta or cantidad==1:
+                mensaje = "La cantidad máxima para este concepto es: "+str(plan_pago.concepto.concepto.fraccionable_hasta)+' cuotas'
+            else:
+                if not plan_pago.vencimiento:
+                    mensaje = "Error: El Plan de pago debe tener fecha del 1er vencimiento"
+                else:
+                    fraccionado = fracionar_plan(plan_pago, cantidad, request.user)
+                    if not fraccionado: 
+                        mensaje = "Ocurrio un Error Inesperado"
+                    else:
+                        return HttpResponse("success")
+        template='finanzas/fraccionar_form.html'
+    return render_to_response(template, {'mensaje': mensaje})  
+
 
 
 @custom_permission_required('finanzas.add_planpago')
@@ -522,7 +543,8 @@ class PlanPagoSingleTableView(SingleTableView):
     def get_queryset(self):
         table = super(PlanPagoSingleTableView, self).get_queryset()
         q=self.request.GET.get("q")
-        if q: 
+        if q:
+            import pdb; pdb.set_trace()
             if q.isdigit(): return table.filter(curso_alumno__alumno__cedula=q)#.order_by(sort)
             else: return table.filter(Q(curso_alumno__alumno__apellido1__icontains=q) | Q(curso_alumno__alumno__apellido2__icontains=q) | Q(curso_alumno__alumno__nombre1__icontains=q) | Q(curso_alumno__alumno__nombre2__icontains=q))#.order_by(sort)
         else: return table
@@ -530,6 +552,11 @@ class PlanPagoSingleTableView(SingleTableView):
     def get_context_data(self, **kwargs):
         context = super(PlanPagoSingleTableView, self).get_context_data(**kwargs)
         context['sort']= self.request.GET.get("sort")
+        context['selectoptions'] = {
+            'cedula'    : ['cedula', True],
+            'concepto'  : ['concepto'],
+            'ced_con'   : ['cedula concepto']
+        }
         context['notbuttonlist'] = True
         return context
 
@@ -691,3 +718,70 @@ def imprimirExtracto(request):
         
         return PDFTemplateResponse(request, pdf_name, dic)
         
+
+class FraccionarPlanFormView(SuccessMessageMixin, FormView):
+    template_name='finanzas/fracPlanPago.html'
+    form_class = fracPlanPagoForm
+    def get_context_data(self, **kwargs):
+        context = super(FraccionarPlanFormView, self).get_context_data(**kwargs)
+        context['plan'] = PlanPago.objects.get(pk=int(self.kwargs['pk']))
+        return context
+
+    def get_success_url(self, instance):
+        success_message = msg_render("El Plan Pago <strong>Fraccionado</strong> exitosamente")
+        messages.success(self.request, success_message)
+        url = reverse('finanzas:det_persona', kwargs={'pk': instance.alumno.id})
+        return redirect(url)
+
+    def get_form(self, form_class):
+        form = super(FraccionarPlanFormView,self).get_form(form_class) #instantiate using parent
+        plan = PlanPago.objects.get(pk=int(self.kwargs['pk']))
+        if plan.secuencia:
+            messages.info(self.request,"El Plan ya esta fraccionado", extra_tags='danger')
+            url = self.request.META['HTTP_REFERER']
+            return HttpResponseRedirect(url)
+        if plan.estado == 'PAG':
+            messages.info(self.request,"El Plan ya esta PAGADO", extra_tags='danger')
+            url = self.request.META['HTTP_REFERER']
+            return HttpResponseRedirect(url)
+        form.fields['hasta'].initial = plan.concepto.concepto.fraccionable_hasta
+        form.fields['vencimiento'].initial = plan.vencimiento
+        form.fields['vencimiento'].label = "Fecha del Primer Vencimiento"
+        return form
+
+    def form_valid(self, form):
+        if not form.cleaned_data.get('vencimiento'):
+            messages.info(self.request,"La fecha del Primer vencimiento es obligatorio", extra_tags='danger')
+            url = self.request.META['HTTP_REFERER']
+            return HttpResponseRedirect(url)
+        else:
+            plan_pago = PlanPago.objects.get(pk=int(self.request.POST['id_planpago']))
+            cantidad = int(self.request.POST['hasta'])
+            mensaje=''
+            if cantidad > plan_pago.concepto.concepto.fraccionable_hasta or cantidad==1:
+                mensaje = "La cantidad máxima para este concepto es: "+str(plan_pago.concepto.concepto.fraccionable_hasta)+' cuotas'
+                messages.info(self.request, mensaje, extra_tags='danger')
+                url = self.request.META['HTTP_REFERER']
+                return HttpResponseRedirect(url)
+            else:
+                plan_pago.vencimiento = form.cleaned_data['vencimiento']
+                plan_pago.save()
+                fraccionado = fracionar_plan(plan_pago, cantidad, self.request.user)
+                if not fraccionado: 
+                    mensaje = "Ocurrio un Error Inesperado"
+                    messages.info(self.request, mensaje, extra_tags='danger')
+                    url = self.request.META['HTTP_REFERER']
+                    return HttpResponseRedirect(url)
+                else:
+                    #return super(FraccionarPlanFormView, self).form_valid(form)
+                    return self.get_success_url(plan_pago.curso_alumno)
+
+
+
+
+    
+    def form_invalid(self, form):
+        if not form.cleaned_data.get('vencimiento'):
+            messages.info(self.request,"La fecha del Primer vencimiento es obligatorio", extra_tags='danger')
+        return super(FraccionarPlanFormView, self).form_invalid(form)
+

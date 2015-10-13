@@ -126,7 +126,8 @@ class PlanPago(TimeStampModel):
 
     @property
     def get_cuotasecuencia(self):
-        return "%s/%s" % (unicode(self.secuencia), unicode(self.total_cuotas))
+        if self.secuencia: return "%s/%s" % (unicode(self.secuencia), unicode(self.total_cuotas))
+        else: return ""
 
 
     def clean(self):

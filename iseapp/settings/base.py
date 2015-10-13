@@ -30,10 +30,6 @@ THIRD_PARTY_APPS = (
 )
 INSTALLED_APPS = DJANGO_APPS + LOCAL_APPS + THIRD_PARTY_APPS
 
-WKHTMLTOPDF_CMD='/usr/local/bin/wkhtmltopdf'
-WKHTMLTOPDF_CMD_OPTIONS = {
-   'quiet':True,
-}
 
 # from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS as TCP
 # TEMPLATE_CONTEXT_PROCESSORS = TCP + (

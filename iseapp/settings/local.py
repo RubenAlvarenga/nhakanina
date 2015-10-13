@@ -1,6 +1,11 @@
 from .base import *
 import os
 
+WKHTMLTOPDF_CMD='/usr/local/bin/wkhtmltopdf'
+WKHTMLTOPDF_CMD_OPTIONS = {
+   'quiet':True,
+}
+
 DEBUG = True
 #SESSION_COOKIE_AGE=1000
 

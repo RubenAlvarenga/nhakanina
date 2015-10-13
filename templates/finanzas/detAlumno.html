@@ -49,15 +49,15 @@
                     {% endifequal %}
                         <!-- <td><input type="checkbox"></td> -->
                         <td class="gris"><small>{{plan.id}}</small></td>
-                        {% ifequal plan.concepto.concepto.tipo_concepto.tipo_concepto.id 2 %}
+                        {% if plan.concepto.concepto.tipo_concepto.tipo_concepto.id == 2 %}
                             <td>{{plan.secuencia}}/{{plan.curso_alumno.curso.cantidad_cuotas}}</td>
                         {% else %}
                             {% ifequal plan.concepto.concepto.tipo_concepto.tipo_concepto.id 1 %}
                                 <td>{{plan.secuencia}}</td>
                             {% else %}
-                                <td></td>
+                                <td>{{plan.get_cuotasecuencia}}</td>
                             {% endifequal %}
-                        {% endifequal %}
+                        {% endif %}
                         <td>{{plan.cantidad}} {{plan.concepto.get_grupo_2}} {{plan.concepto.concepto}} 
                             <span class="align-right">
                                 {% if plan.materia %}
@@ -76,7 +76,7 @@
                         <td>{{plan.monto|intcomma}}</td>
                         
                         {% if plan.concepto.concepto.fraccionable and plan.monto == plan.concepto.monto  %}
-                            <td>
+                            <!--<td>
                             <form class="frmFraccionar" action="/finanzas/fraccionar_planpago_ajax" method="POST">{% csrf_token %}
                             <input type="hidden" name="id_planpago" value="{{plan.id}}">
                             <input id="id_curso" type="hidden" name="id_curso" value="{{curso.id}}">
@@ -84,7 +84,7 @@
                                     <span class="glyphicon glyphicon-ok-circle"></span> Fraccionar
                                 </button>
                             </form>
-                            </td>
+                            </td>-->
                         {% else %}
                         <td>
                         {% if plan.get_recibo %}

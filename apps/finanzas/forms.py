@@ -39,6 +39,7 @@ class updPlanPagoForm(forms.ModelForm):
             'observaciones' : forms.Textarea(attrs = { 'class':'form-control'} ),
         }
 
+    
 
 class ReciboPlanPagoForm(forms.ModelForm):
     class Meta:
@@ -115,3 +116,11 @@ class AnularReciboForm(forms.Form):
     def clean_motivo(self):
         import pdb; pdb.set_trace()
 
+class fracPlanPagoForm(forms.ModelForm):
+    hasta = forms.CharField(widget=forms.TextInput(attrs = { 'class':'form-control'} ), label='Fraccionar en:', required=True)
+    class Meta:
+        model = PlanPago
+        fields = ('hasta', 'vencimiento')
+        widgets = {
+            'vencimiento': SelectDateWidget(years=range(2000, datetime.now().date().year + 2, 1), attrs = {'class':'form-control', 'style':'width:100px; float:left'}),
+        }

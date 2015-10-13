@@ -1,0 +1,50 @@
+{% extends "base/divided.html" %}
+{% load verbose_name_tags %}
+{% load humanize %}
+{% block title %}Fraccionar Plan Pago{% endblock title %}
+
+{% block content %}
+    <div class="titulo container-fluid"><h3>Fraccionar Plan Pago</h3></div>
+
+
+<div class="detalles">
+	<div><div class="det_titulo">Alumno: </div><div class="det_contenido">{{plan.curso_alumno.alumno.get_full_name}} <strong>C.I: {{plan.curso_alumno.alumno.cedula|intcomma}}</strong></div></div>
+	<div><div class="det_titulo">Curso: </div><div class="det_contenido">{{plan.curso_alumno.curso}}</div></div>
+	<div><div class="det_titulo">concepto: </div><div class="det_contenido">{{plan.cantidad}} {{plan.concepto.concepto}}  {{plan.secuencia}}/{{plan.total_cuotas}}</div></div>
+	<div><div class="det_titulo">Monto: </div><div class="det_contenido">{{plan.monto|intcomma}}</div></div>
+	<div><div class="det_titulo">Vencimiento: </div><div class="det_contenido">{{plan.vencimiento}}</div></div>
+	<div><div class="det_titulo">Estado: </div><div {% if plan.estado == 'PAG' %}style="background: #CBF9CE"{% endif %} class="det_contenido">{{plan.estado}}</div></div>
+
+	<form class="form-horizontal" role="form" method="POST" enctype="multipart/form-data">{% csrf_token %}
+	<input type="hidden" name="id_planpago" value="{{plan.id}}">
+
+
+	{% for field in form %}
+    <div class="det_titulo">
+        {{ field.label_tag }}
+        <div class="help-text"><small>{{field.help_text}}</small></div>     
+    </div>
+    <div class="det_contenido" style="height:50px; margin-top:0">
+        {% if field.field.required %}
+            <div class="requerido">{{field}}</div>
+        {% else %}
+            <div class="norequerido">{{field}}</div>
+        {% endif %}
+
+    {% if field.errors %}
+        <div class="alert alert-danger" id="camporequerido" role="alert"><span class="glyphicon glyphicon-remove-sign align-left" id="errorlogin"></span> {{field.errors}}</div> 
+    {% endif %}
+    </div>
+
+	{% endfor %}
+	<div class="form-group">
+	    <div class="col-sm-offset-7 col-sm-5">
+	        <button type="submit" class="btn btn-primary align-right"><span class="glyphicon glyphicon-ok-circle"></span> Registrar</button>
+	        <a href="../" type="submit" class="btn btn-default align-right"><span class="glyphicon glyphicon-remove-circle"></span> Cancelar</a>
+	    </div>
+	</div>  
+	</form>
+</div>
+
+
+{% endblock content %}

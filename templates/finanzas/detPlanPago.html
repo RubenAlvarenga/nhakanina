@@ -4,10 +4,13 @@
 {% block title %}Detalle {{ object|get_verbose_name|capfirst }}{% endblock title %}
 
 {% block content %}
-
+	
     <div class="titulo container-fluid"><h3>{{ object|get_verbose_name|capfirst }} {{object.name}}</h3>
     	<div class="align-right">
 
+            {% if object.concepto.concepto.fraccionable and not object.secuencia and not object.estado == 'PAG'  %}
+                <a href="../fraPlanPago/{{object.id}}" class="btn btn-info btn-sm" role="button"><span class="glyphicon glyphicon-scissors"></span> Fraccionar {{ object|get_verbose_name|capfirst }}</a>
+            {% endif %}
 			<a href="../updPlanPago/{{object.id}}" class="btn btn-default btn-sm" role="button"><span class="glyphicon glyphicon-pencil"></span> Editar este {{ object|get_verbose_name|capfirst }}</a>
 
             <a href="../delPlanPago/{{object.id}}" class="btn btn-danger btn-sm" role="button"><span class="glyphicon glyphicon-remove-circle"></span> Eliminar este {{ object|get_verbose_name|capfirst }}</a>
@@ -15,16 +18,15 @@
     	</div>
     </div>
 
-
-{{object.get_concepto_abreviado}}
-
 <div class="detalles">
+	<div><div class="det_titulo">Fraccionable: </div><div class="det_contenido">{{object.concepto.concepto.fraccionable}}</div></div>
+
 	<div><div class="det_titulo">Alumno: </div><div class="det_contenido">{{object.curso_alumno.alumno.get_full_name}} <strong>C.I: {{object.curso_alumno.alumno.cedula|intcomma}}</strong></div></div>
 	<div><div class="det_titulo">Curso: </div><div class="det_contenido">{{object.curso_alumno.curso}}</div></div>
 	<div><div class="det_titulo">concepto: </div><div class="det_contenido">{{object.cantidad}} {{object.concepto.concepto}}  {{object.secuencia}}/{{object.total_cuotas}}</div></div>
 	<div><div class="det_titulo">Monto: </div><div class="det_contenido">{{object.monto|intcomma}}</div></div>
 	<div><div class="det_titulo">Vencimiento: </div><div class="det_contenido">{{object.vencimiento}}</div></div>
-	<div><div class="det_titulo">Estado: </div><div class="det_contenido">{{object.estado}}</div></div>
+	<div><div class="det_titulo">Estado: </div><div {% if object.estado == 'PAG' %}style="background: #CBF9CE"{% endif %} class="det_contenido">{{object.estado}}</div></div>
 	<div><div class="det_titulo">Materia: </div><div class="det_contenido">{{object.materia}}</div></div>
 	<div><div class="det_titulo">Creado por: </div><div class="det_contenido">{{object.created_by}}</div></div>
 	<div><div class="det_titulo">Autorizado por: </div><div class="det_contenido">{{object.authorized_by}}</div></div>
@@ -34,7 +36,28 @@
 </div>
 
 
+
 {% endblock content %}
 
 
-
+{% block script %}
+    <script type="text/javascript">
+    $(document).on('ready', function(){
+        $('.frmFraccionar').submit(function() {
+            var id = $("#id_curso").val()              
+            $.ajax({ 
+                data: $(this).serialize(), 
+                type: $(this).attr('method'), 
+                url: $(this).attr('action'), 
+                success: function(response) { 
+                    if (response == "success")
+                        $(location).attr('href', '');
+                    else
+                        $('#frmOpciones' + id).html(response);
+                },
+            });
+            return false;
+        });
+     });
+    </script>
+{% endblock script %}

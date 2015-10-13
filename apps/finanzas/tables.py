@@ -19,6 +19,13 @@ class CobrarColumn(tables.Column):
     def render(self, value): return mark_safe('<a href="'+str(self.attrs["url"])+str(value)+'"><button type="button" class="btn btn-info btn-xs"><span class="glyphicon '+str(self.attrs["icono"])+'"></span> '+str(self.attrs["texto"])+'</button></a>')
 
 
+class FraccionarColumn(tables.Column):
+    def render(self, value): 
+        plan = PlanPago.objects.get(pk=value)
+        if plan.concepto.concepto.fraccionable and not plan.secuencia and not plan.estado == 'PAG': return mark_safe('<a href="'+str(self.attrs["url"])+str(value)+'"><button type="button" class="btn btn-info btn-xs"><span class="glyphicon '+str(self.attrs["icono"])+'"></span> '+str(self.attrs["texto"])+'</button></a>')
+        else: return "-"
+
+
 class AlumnosTable(tables.Table):
     selection = tables.CheckBoxColumn(accessor="pk", orderable=False, attrs = {"td": {"width": "2%"}, "th__input":{"onclick": "", "id":'todosLosCheck', "name":"option"}, "td__input":{"class":"checkboxList", "name":"checks"} } )
     get_full_name = tables.Column(verbose_name='nombres', order_by =("apellido1"))    
@@ -48,7 +55,7 @@ class PersonasTable(tables.Table):
 
 class PlanPagoTable(tables.Table):
     selection = tables.CheckBoxColumn(accessor="pk", orderable=False, attrs = {"td": {"width": "2%"}, "th__input":{"onclick": "", "id":'todosLosCheck', "name":"option"}, "td__input":{"class":"checkboxList", "name":"checks"} } )
-    get_concepto_abreviado = tables.Column(verbose_name='Concepto')
+    get_concepto_abreviado = tables.LinkColumn('finanzas:det_planpago', args=[A('pk')],  verbose_name='Concepto', orderable=False)
     vencimiento = tables.DateColumn(verbose_name='Vence')
     get_cuotasecuencia = tables.Column(verbose_name='Sec')
     alumno = tables.LinkColumn('finanzas:det_alumno', args=[A('curso_alumno.alumno.codigo')], accessor='curso_alumno.alumno', verbose_name='Alumno', order_by=("curso_alumno.alumno"), attrs={'style':"font-weight:bold"})
@@ -56,23 +63,27 @@ class PlanPagoTable(tables.Table):
     ver     = EnlaceColumn( accessor="id", verbose_name=" ", attrs={"td": {"width": "2%"}, "url":"detPlanPago/", "icono":"glyphicon-eye-open" }, )
     editar  = EnlaceColumn( accessor="id", verbose_name=" ", attrs={"td": {"width": "2%"}, "url":"updPlanPago/", "icono":"glyphicon-pencil" }, )
     borrar  = EnlaceColumn( accessor="id", verbose_name=" ", attrs={"td": {"width": "2%"}, "url":"delPlanPago/", "icono":"glyphicon-remove" }, )
+    fraccionar  = FraccionarColumn( accessor="id", verbose_name=" ", attrs={"td": {"width": "2%"}, "url":"fraPlanPago/", "icono":"glyphicon-scissors", "texto":"Fraccionar" }, )
+
     class Meta:
         model = PlanPago
         exclude = ('created', 'modified', 'curso_alumno', 'observaciones', 'created_by', 'authorized_by', 'total_cuotas', 'secuencia', 'estado', 'monto', 'materia', 'concepto', 'cantidad')
         per_page=ITEM_POR_PAGINA
         attrs = {"class": "table table-striped table-hover table-small" }
-        sequence = ("selection", "id", "cedula", "alumno", "get_cuotasecuencia", "get_concepto_abreviado",  "...", )
+        sequence = ("selection", "id", "cedula", "alumno", "get_cuotasecuencia", "get_concepto_abreviado",  "...", "fraccionar")
 
 
 
-class PlanPagoAplReciboTable(tables.Table):
+class PlanPagoAplReciboTable(tables.Table):    
     selection = tables.CheckBoxColumn(accessor="pk", orderable=False, attrs = {"td": {"width": "2%"}, "th__input":{"onclick": "", "id":'todosLosCheck', "name":"option"}, "td__input":{"class":"checkboxList", "name":"checks"} } )
+    cantidad = tables.Column(verbose_name='Cant')
+    concepto = tables.Column(verbose_name='Concepto', accessor="concepto.concepto")
     vencimiento = tables.Column(verbose_name='Vencimiento')
     class Meta:
         model = PlanPago
         exclude = ('created', 'modified', 'curso_alumno', 'observaciones', 'created_by', 'authorized_by', 'total_cuotas', 'secuencia')
         per_page=ITEM_POR_PAGINA
-        attrs = {"class": "table table-striped table-hover" }
+        attrs = {"class": "table table-striped table-hover table-small" }
         sequence = ("selection", "id","...", )
 
 
