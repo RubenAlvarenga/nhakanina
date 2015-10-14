@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 from django.db.models.signals import post_save
 from .models import CursoAlumno
-from apps.finanzas.models import PlanPago
 from apps.aranceles.models import Arancel
 from .functions import ultimo_dia_del_mes, sumar_mes
 from datetime import datetime, date
@@ -12,6 +11,7 @@ from django.contrib.auth.models import User
 
 
 def esInscripto(sender, **kwargs): 
+    from apps.finanzas.models import PlanPago
     p_curso_alumno = kwargs["instance"]
     monto_cuota = p_curso_alumno.curso.monto_cuota.monto
     cantidad_cuotas = p_curso_alumno.curso.cantidad_cuotas

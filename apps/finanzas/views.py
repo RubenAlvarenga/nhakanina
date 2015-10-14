@@ -543,19 +543,24 @@ class PlanPagoSingleTableView(SingleTableView):
     def get_queryset(self):
         table = super(PlanPagoSingleTableView, self).get_queryset()
         q=self.request.GET.get("q")
+        filtro = self.request.GET.get("selector")
         if q:
-            import pdb; pdb.set_trace()
-            if q.isdigit(): return table.filter(curso_alumno__alumno__cedula=q)#.order_by(sort)
-            else: return table.filter(Q(curso_alumno__alumno__apellido1__icontains=q) | Q(curso_alumno__alumno__apellido2__icontains=q) | Q(curso_alumno__alumno__nombre1__icontains=q) | Q(curso_alumno__alumno__nombre2__icontains=q))#.order_by(sort)
+            if filtro == 'ced_con':
+                cedula, concepto=q.split("-")
+                return table.filter(curso_alumno__alumno__cedula=cedula, concepto__concepto__concepto__icontains=concepto)
+            else:
+                if q.isdigit(): return table.filter(curso_alumno__alumno__cedula=q)#.order_by(sort)
+                else: return table.filter(Q(curso_alumno__alumno__apellido1__icontains=q) | Q(curso_alumno__alumno__apellido2__icontains=q) | Q(curso_alumno__alumno__nombre1__icontains=q) | Q(curso_alumno__alumno__nombre2__icontains=q))#.order_by(sort)
         else: return table
 
     def get_context_data(self, **kwargs):
         context = super(PlanPagoSingleTableView, self).get_context_data(**kwargs)
         context['sort']= self.request.GET.get("sort")
         context['selectoptions'] = {
-            'cedula'    : ['cedula', True],
-            'concepto'  : ['concepto'],
-            'ced_con'   : ['cedula concepto']
+            'cedula'    : ['por cedula', True],
+            'apellido'  : ['por apellido'],
+            'concepto'  : ['por concepto'],
+            'ced_con'   : ['por cedula y concepto']
         }
         context['notbuttonlist'] = True
         return context

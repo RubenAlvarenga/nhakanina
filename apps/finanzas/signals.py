@@ -46,12 +46,3 @@ def borraPlanPagoExamenOrdinarioPorAlumno(sender, instance, **kwargs):
             aborrar.delete()
         except:
             pass
-
-
-
-
-
-
-
-
-

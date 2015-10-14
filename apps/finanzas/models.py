@@ -105,6 +105,7 @@ class PlanPago(TimeStampModel):
         verbose_name_plural = 'Planes'
         unique_together = (('curso_alumno', 'concepto', 'secuencia', 'materia'), )
         default_permissions = ('add', 'change', 'delete', 'view', 'list')
+        ordering = ['-estado', '-id']
 
     @property
     def get_vencido(self):
