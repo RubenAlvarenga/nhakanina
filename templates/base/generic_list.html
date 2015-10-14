@@ -27,8 +27,16 @@
                 }else{
                     $(this).parent().parent().css("background", "None");
                 };
+            });
+            $('#todosLosCheck').click(function() {
+                if ($(this).prop('checked')) {
+                    $('.odd').css("background", "#FDF887");
+                    $('.even').css("background", "#FDF887");
+                }else{
+                    $('.odd').css("background", "None");
+                    $('.even').css("background", "None");
+                };
             }); 
-
         });
         $(function () {
             $('[data-toggle="tooltip"]').tooltip()
