@@ -79,10 +79,20 @@
 
 {% endblock content %}
 <!--globos de ayuda-->
-{% block script %}
-    <script>
+{% block scripts %}
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('.checkboxList').click(function() {
+                if ($(this).prop('checked')) {
+                    $(this).parent().parent().css("background", "#FDF887");
+                }else{
+                    $(this).parent().parent().css("background", "None");
+                };
+            }); 
+
+        });
         $(function () {
             $('[data-toggle="tooltip"]').tooltip()
-        })
+        });
     </script>
-{% endblock script %}
+{% endblock scripts %}
