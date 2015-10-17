@@ -540,3 +540,15 @@ a .menu-ico:hover{background:linear-gradient(#006C18, #0A1F0B); color:#FFF;}
   margin:0;
   padding: 0;
 }
+
+.azulazul{
+  position: fixed;
+  bottom:15px;
+  left: 22px;
+  z-index: 10000;
+  background: red;
+  color: yellow;
+  padding: 3px 5px;
+  margin: 0 auto;
+  border-radius: 5px;
+}

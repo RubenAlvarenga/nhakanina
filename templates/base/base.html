@@ -81,7 +81,10 @@
                 {% endif %}
             </div>
         </div>
-    </nav>    
+    </nav>
+    {% if request.session.database_name != 'iseapp_produccion' %}
+        <div class="azulazul">{{request.session.database_name}}</div>
+    {% endif %}
 </header>
 <div class="container-fluid">
     <div class="row">

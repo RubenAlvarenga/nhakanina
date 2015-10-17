@@ -8,12 +8,13 @@ import datetime
 import uuid
 from django.core import serializers
 from apps.autorizaciones.models import Perfil
-
+from django.conf import settings
 
 class RequestAddSessionVars(object):
     def process_view(self, request, view_func, view_args, view_kwargs):
         try: sistema = MenuApp.objects.get(app_name=resolve(request.path).app_name).id
         except: sistema = False
+        request.session["database_name"]=settings.DATABASES['default']['NAME']
         request.session["sistema"]=sistema
 
 
