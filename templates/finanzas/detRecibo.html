@@ -13,8 +13,10 @@
             {% else %}
                 {% if not object.get_planes.plan_pago.all %}
                     <a href="{% url 'finanzas:apl_recibo_plan' object.id %}" class="btn btn-info btn-sm" role="button"><span class="glyphicon glyphicon-copy"></span> Aplicar a Plan</a>
-                {% endif %}    
-                <a href="../anularRecibo/{{object.id}}" class="btn btn-danger btn-sm" role="button"><span class="glyphicon glyphicon-remove-circle"></span> Anular este {{ object|get_verbose_name|capfirst }}</a>
+                {% endif %}
+                {% if not object.rendido %}
+                    <a href="../anularRecibo/{{object.id}}" class="btn btn-danger btn-sm" role="button"><span class="glyphicon glyphicon-remove-circle"></span> Anular este {{ object|get_verbose_name|capfirst }}</a>                    
+                {% endif %}
             {% endif %}
             <a href="../add{{ object|get_verbose_name|capfirst }}" class="btn btn-primary btn-sm" role="button"><span class="glyphicon glyphicon-plus"></span> Agregar otro {{ object|get_verbose_name|capfirst }}</a>
     	</div>
@@ -98,16 +100,17 @@
                 </table>
             </div>
         {% endif %}
+
         {% if object.get_estado %}
             {% for rendicion in object.get_estado %}
-                <div class="datos_recibo_anulado">
+                <div class="datos_recibo_rendido">
                     <table>
                         <tr>
-                            <td rowspan="4" class="borrador-cuadrado"><span class="glyphicon glyphicon-briefcase size50"></span></td>
+                            <td rowspan="4" class="maletin-cuadrado {% if object.rendido == False %}datos_recibo_rendido_pendiente{% endif %}"><a href="{% url 'rendiciones:det_rendicion' rendicion.id %}"><span class="glyphicon glyphicon-briefcase size50"></span></a></td>
                         </tr>
+                        <tr><td><strong>Nro. Rendicion: </strong><a href="{% url 'rendiciones:det_rendicion' rendicion.id %}"><strong>{{rendicion.nro_rendicion}}</a></strong></td></tr>
                         <tr><td><strong>Estado Rendicion: </strong> {{rendicion.estado}}</td></tr>
-                        <tr><td><strong>Fecha: </strong>{{rendicion.fecha_aprobacion }}</td></tr>
-                        <tr><td><strong>Usuario: </strong> {{rendicion.created_by}}</td></tr>
+                        <tr><td><strong>Usuario: </strong>{{rendicion.aprobado_por.first_name}} {{rendicion.aprobado_por.last_name}}({{rendicion.aprobado_por}}) <strong>Fecha: </strong>{{rendicion.fecha_aprobacion }}</td></tr>
                     </table>
                 </div>                
             {% endfor %}

@@ -87,7 +87,7 @@ WSGI_APPLICATION = 'iseapp.wsgi.application'
 
 LANGUAGE_CODE = 'es-py'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Asuncion'
 
 USE_I18N = True
 

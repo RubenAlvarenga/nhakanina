@@ -8,6 +8,7 @@ from django.utils.html import escape
 from django.contrib.humanize.templatetags.humanize import intcomma
 
 from .models import Rendicion
+from apps.finanzas.models import Recibo
 
 ITEM_POR_PAGINA = 50
 
@@ -28,3 +29,27 @@ class RendicionesTable(tables.Table):
         attrs = {"class": "table table-striped table-hover table-small" }
         sequence = ("selection", "...", "ver", "editar", "borrar"  )
 
+
+
+class RecibosTable(tables.Table):
+    #selection = tables.CheckBoxColumn(accessor="pk", orderable=False, attrs = {"td": {"width": "2%"}, "th__input":{"onclick": "", "id":'todosLosCheck', "name":"option"}, "td__input":{"class":"checkboxList", "name":"checks"} } )    
+    get_recibo = tables.LinkColumn('finanzas:det_recibo', args=[A('pk')], verbose_name='Recibo', order_by=("serie", "nro_recibo"), attrs={'style':"font-weight:bold"})
+    cantidad = tables.Column(verbose_name='Can')
+    get_concepto_planpago = tables.Column(verbose_name='Concepto', orderable=False)
+    monto = tables.Column(attrs={"td": {"class": "campo-align-right"}})
+    #ver     = EnlaceColumn( accessor="id", verbose_name=" ", attrs={"td": {"width": "2%"}, "url":"detRecibo/", "icono":"glyphicon-eye-open" }, )
+    def render_monto(self, value):
+        return intcomma(value)
+    class Meta:
+        model = Recibo
+        exclude = ('created', 'modified', 'cajero', 'motivo_anulacion', 'fecha_anulacion', 'usuario_anulacion', 'serie', 'nro_recibo', 'rendido', 'persona', 'concepto')
+        per_page=1000
+        attrs = {"class": "table table-striped table-hover table-small" }
+        sequence = ("id", "get_recibo",  "fecha",  "...", "monto")
+
+
+class RecibosTablePDF(tables.Table):
+    get_concepto_planpago = tables.Column(verbose_name='Concepto')
+    class Meta:
+        model = Recibo
+        exclude = ('created', 'modified', 'cajero', 'motivo_anulacion', 'fecha_anulacion', 'usuario_anulacion', 'rendido', 'concepto')

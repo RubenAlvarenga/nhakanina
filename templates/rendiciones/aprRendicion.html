@@ -1,0 +1,39 @@
+{% extends "base/divided.html" %}
+{% load humanize %}
+{% load render_table from django_tables2 %}
+{% load verbose_name_tags %}
+{% block title %}Detalle {{ object|get_verbose_name|capfirst }}{% endblock title %}
+
+{% block content %}
+
+<form class="form-horizontal" role="form" method="POST" enctype="multipart/form-data">{% csrf_token %}
+    <div class="titulo container-fluid"><h3>Aprobar {{ object|get_verbose_name|capfirst }} {{object.name}}</h3>
+        <div class="align-right">
+
+            {{form}}
+            <button type="submit" class="btn btn-success align-right"><span class="glyphicon glyphicon-thumbs-up"></span> Aprobar</button>
+            <a href="{% url 'rendiciones:det_rendicion' object.id %}" type="submit" class="btn btn-default align-right"><span class="glyphicon glyphicon-remove-circle"></span> Cancelar</a>
+        </div>
+    </div>
+        <div class="advertencia_recibo_anulado">
+            <div class="align-left"><span class="glyphicon glyphicon-alert size25"></span></div>
+            <div style="font-size:20px; margin-left:50px">Está seguro que desea <strong>Aprobar</strong> la Rendicion?</div>
+        </div>
+
+
+</form>
+
+<div class="detalles">
+    <div><div class="det_titulo">Nro Rendicion</div><div class="det_contenido">{{object.nro_rendicion}}</div></div>
+    <div><div class="det_titulo">Creado el</div><div class="det_contenido">{{object.created}}</div></div>
+    <div><div class="det_titulo">Por</div><div class="det_contenido">{{object.created_by.first_name}} {{object.created_by.last_name}} ({{object.created_by}})</div></div>
+    <div><div class="det_titulo">Fecha Aprobacion</div><div class="det_contenido">{{date}}</div></div>
+    <div><div class="det_titulo">Aprobado por</div><div class="det_contenido">{{user.first_name}} {{user.last_name}} ({{user}})</div></div>
+    <div><div class="det_titulo">Estado</div><div class="det_contenido">{{object.estado}}</div></div>
+    <div><div class="det_titulo">Total</div><div class="det_contenido">{{object.total|intcomma}}</div></div>
+    <div class="det_titulo">Recibos</div>
+    <div>
+        {% render_table table "base/mytable.html" %}
+    </div>
+</div>
+{% endblock content %}

@@ -283,12 +283,16 @@ height: 28px;
 .recibo-detalle table th{background: #ddd}
 #id_plan_pago{ list-style: none;}
 .letrasgrises{color:#777; font-style: italic;}
-.datos_recibo_anulado{
-  border:1px solid #8D8D8D;
+.datos_recibo_anulado, .datos_recibo_rendido{
+  border:1px solid #C5C5C5;
   border-radius: 4px;
   padding: 10px;
 }
-.borrador-cuadrado{
+.datos_recibo_rendido_pendiente span{
+  color: yellow;
+}
+
+.borrador-cuadrado, .maletin-cuadrado{
   margin-right: 10px;
   width: 70px;
   height: 70px;
@@ -314,6 +318,7 @@ h2.selector-available{background: yellow}
   float: left;
   margin-top: 5px;
   padding: 3px 5px;
+  border-bottom: 1px solid #ddd;
 }
 
 .aranceles .det_titulo{
@@ -334,6 +339,7 @@ h2.selector-available{background: yellow}
 
 .det_contenido{
   height: 25px;
+  border-bottom: 1px solid #ddd;
 }
 
 .grouper h6{

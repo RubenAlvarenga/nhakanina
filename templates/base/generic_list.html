@@ -25,7 +25,8 @@
                 if ($(this).prop('checked')) {
                     $(this).parent().parent().css("background", "#FDF887");
                 }else{
-                    $(this).parent().parent().css("background", "None");
+                    $(this).parent().parent('.odd').css("background", "#f9f9f9");
+                    $(this).parent().parent('.even').css("background", "None");
                 };
             });
             $('#todosLosCheck').click(function() {
@@ -33,7 +34,7 @@
                     $('.odd').css("background", "#FDF887");
                     $('.even').css("background", "#FDF887");
                 }else{
-                    $('.odd').css("background", "None");
+                    $('.odd').css("background", "#f9f9f9");
                     $('.even').css("background", "None");
                 };
             }); 

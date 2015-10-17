@@ -40,6 +40,12 @@ class Recibo(TimeStampModel):
         return u'%s-%s' % (self.serie, self.nro_recibo)
 
     @property
+    def get_rendido(self):
+        from apps.rendiciones.models import Rendicion
+        if Rendicion.objects.filter(recibos=self): return True
+        else: return False
+
+    @property
     def get_concepto_planpago(self):
         concepto = unicode(self.concepto.concepto.tipo_concepto.tipo_carrera.titulo[:3] +'|'+ unicode(self.concepto.concepto.tipo_concepto.tipo_concepto)) +' '+unicode(self.concepto.concepto.concepto)
         extra=''

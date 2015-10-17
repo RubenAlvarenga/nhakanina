@@ -1,4 +1,6 @@
 {% extends "base/divided.html" %}
+{% load humanize %}
+{% load render_table from django_tables2 %}
 {% load verbose_name_tags %}
 {% block title %}Detalle {{ object|get_verbose_name|capfirst }}{% endblock title %}
 
@@ -7,6 +9,12 @@
     <div class="titulo container-fluid"><h3>{{ object|get_verbose_name|capfirst }} {{object.name}}</h3>
         <div class="align-right">
 
+            <a href="../csv{{ object|get_verbose_name|capfirst }}/{{object.id}}" class="btn btn-info btn-sm" role="button"><span class="glyphicon glyphicon-list-alt"></span> A CSV</a>
+			
+			{% if object.estado == 'PEN' %}
+	            <a href="../apr{{ object|get_verbose_name|capfirst }}/{{object.id}}" class="btn btn-success btn-sm" role="button"><span class="glyphicon glyphicon-thumbs-up"></span> Aprobar</a>				
+			{% endif %}
+
             <a href="../upd{{ object|get_verbose_name|capfirst }}/{{object.id}}" class="btn btn-default btn-sm" role="button"><span class="glyphicon glyphicon-pencil"></span> Editar esta {{ object|get_verbose_name|capfirst }}</a>
 
             <a href="../del{{ object|get_verbose_name|capfirst }}/{{object.id}}" class="btn btn-danger btn-sm" role="button"><span class="glyphicon glyphicon-remove-circle"></span> Eliminar esta {{ object|get_verbose_name|capfirst }}</a>
@@ -14,21 +22,17 @@
         </div>
     </div>
 
-
-{{object}}
-
-
 <div class="detalles">
+	<div><div class="det_titulo">Nro Rendicion</div><div class="det_contenido">{{object.nro_rendicion}}</div></div>
+	<div><div class="det_titulo">Creado el</div><div class="det_contenido">{{object.created}}</div></div>
+	<div><div class="det_titulo">Por</div><div class="det_contenido">{{object.created_by.first_name}} {{object.created_by.last_name}} ({{object.created_by}})</div></div>
+	<div><div class="det_titulo">Fecha Aprobacion</div><div class="det_contenido">{{object.fecha_aprobacion}}</div></div>
+	<div><div class="det_titulo">Aprobado por</div><div class="det_contenido">{{object.aprobado_por.first_name}} {{object.aprobado_por.last_name}} ({{object.aprobado_por}})</div></div>
+	<div><div class="det_titulo">Estado</div><div class="det_contenido">{{object.estado}}</div></div>
+	<div><div class="det_titulo">Total</div><div class="det_contenido">{{object.total|intcomma}}</div></div>
 	<div class="det_titulo">Recibos</div>
 	<div>
-		<table class="table table-hover">
-		{% for recibo in object.recibos.all %}
-			<tr>
-				<td>{{recibo}}</td>
-				<td><a href="{% url 'finanzas:det_recibo' recibo.id %}"><strong>{{recibo.serie}}-{{recibo.nro_recibo}}</strong></a></td>
-			</tr>		
-		{% endfor %}
-		</table>
+		{% render_table table "base/mytable.html" %}
 	</div>
 </div>
 {% endblock content %}

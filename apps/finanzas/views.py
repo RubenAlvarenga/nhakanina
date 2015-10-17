@@ -497,11 +497,13 @@ class ReciboCancelView(SuccessMessageMixin, DeleteView):
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
         if self.object.rendido:
-            print "ya esta rendido"
+            mensaje = msg_render("<strong>El recibo ya esta Rendido imposible Anular</strong>")
+            messages.add_message(request, messages.ERROR, mensaje, extra_tags='danger')
+            return HttpResponseRedirect(request.META['HTTP_REFERER'])  
         else:
             if not request.POST['motivo'].strip():
                 mensaje = msg_render("<strong>Favor introduzca el motivo de la anulacion</strong>")
-                messages.add_message(request, messages.INFO, mensaje)
+                messages.add_message(request, messages.ERROR, mensaje, extra_tags='danger')
                 return HttpResponseRedirect(request.META['HTTP_REFERER'])  
             else:
                 if self.object.get_planes:
@@ -718,7 +720,8 @@ def imprimirExtracto(request):
             RequestConfig(request).configure(table)            
             curso_planes.append(table)
 
-        dic['alumno'] = PlanPago.objects.filter(curso_alumno__in=ids).distinct('curso_alumno__alumno')[0].curso_alumno.alumno
+        #dic['alumno'] = PlanPago.objects.filter(curso_alumno__in=ids).distinct('curso_alumno__alumno')[0].curso_alumno.alumno
+        dic['alumno'] = PlanPago.objects.filter(curso_alumno__in=ids)[0].curso_alumno.alumno
         dic['curso_planes'] = curso_planes
         
         return PDFTemplateResponse(request, pdf_name, dic)

@@ -114,16 +114,19 @@
         </tr>
         </thead>
         {% for recibo in recibossueltos  %}
-        <tr valign="middle" class="verde">
-            <td>{{recibo.id}}</td>
-            <td>{{recibo.fecha|date:"d/m/y"}}</td>
-            <td>{{recibo.cantidad}}</td>
-            <td>{{recibo.concepto.concepto}}</td>
-            <td>{{recibo.monto|intcomma}}</td>
-            <td><a title="{{recibo.fecha|date:"d/m/y"}}" href="/finanzas/recibos/detRecibo/{{recibo.id}}"><strong>{{recibo.serie}}-{{recibo.nro_recibo}}</strong></a></td>
-            <td><a href="{% url 'finanzas:apl_recibo_plan' recibo.id %}"><button type="button" class="btn btn-info btn-xs align-right"><span class="glyphicon glyphicon-copy"></span> Aplicar Plan</button></a></td>
+        {% if recibo.estado == 'PRO' %}
 
-        </tr>
+            <tr valign="middle" class="verde">
+                <td>{{recibo.id}}</td>
+                <td>{{recibo.fecha|date:"d/m/y"}}</td>
+                <td>{{recibo.cantidad}}</td>
+                <td>{{recibo.concepto.concepto}}</td>
+                <td>{{recibo.monto|intcomma}}</td>
+                <td><a title="{{recibo.fecha|date:"d/m/y"}}" href="/finanzas/recibos/detRecibo/{{recibo.id}}"><strong>{{recibo.serie}}-{{recibo.nro_recibo}}</strong></a></td>
+                <td><a href="{% url 'finanzas:apl_recibo_plan' recibo.id %}"><button type="button" class="btn btn-info btn-xs align-right"><span class="glyphicon glyphicon-copy"></span> Aplicar Plan</button></a></td>
+            </tr>
+            
+        {% endif %}
         {% endfor %}
         </table>
     {% endif %}

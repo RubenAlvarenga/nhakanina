@@ -24,7 +24,9 @@
 
     <form action="" method="post" accept-charset="utf-8">{% csrf_token %}
         {% if planes %}
+        <div style="font-size:0.9em">            
             {% render_table dic.planes "base/mytable.html" %}
+        </div>
         {% endif %}
 
         <div class="form-group">
