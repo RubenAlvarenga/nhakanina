@@ -1,10 +1,42 @@
 {% load render_table from django_tables2 %}
 {% load verbose_name_tags %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <style>
+        .table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th {
+        padding: 2px;
+        vertical-align: top;
+        border-top: 1px solid #ddd;
+        }
+        .table{width: 100%}
+        body{
+        font-size: 0.5em;
+        font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+        }
+        .titulo{
+        padding-top: 10px;
+        line-height: 0.7em;
+        width: 80%;
+        float: left;
+        }
+        .derecha{
+        width: 20%;
+        float: right;
+        }
+        .contenido{
+        clear: both;
+        }
+        h3{
+        padding-top: 30px;
+        }
+    </style>
+</head>
 
-
-{% block content %}
-   {% include "base/pdfCabeceraLista.html" %}
- 
+<body>
+    {% block content %}
+        {% include "base/pdfCabeceraLista.html" %}
         {% render_table table "base/pdftable.html" %}
-
-{% endblock content %}
+    {% endblock content %}  
+</body>
+</html>

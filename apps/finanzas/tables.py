@@ -53,6 +53,19 @@ class PersonasTable(tables.Table):
         sequence = ("selection", "id", "get_full_name", "cedula", "...", "cobrar")
 
 
+class EstadoDeCuentaTable(tables.Table):
+    selection = tables.CheckBoxColumn(accessor="pk", orderable=False, attrs = {"td": {"width": "2%"}, "th__input":{"onclick": "", "id":'todosLosCheck', "name":"option"}, "td__input":{"class":"checkboxList", "name":"checks"} } )
+    get_full_name = tables.LinkColumn('finanzas:det_alumno', args=[A('pk')], verbose_name='nombres', order_by =("apellido1", "apellido2"), attrs={'style':"font-weight:bold"})    
+    estadoCuenta     = CobrarColumn( accessor="id", verbose_name=" ", attrs={"td": {"width": "2%"}, "url":"../alumnos/detAlumno/", "icono":"glyphicon glyphicon-list-alt", "texto":"Estado" }, )
+    class Meta:
+        model = Persona
+        exclude = ('apellido1', 'apellido2', 'nombre1', 'nombre2', 'persona')
+        per_page=ITEM_POR_PAGINA
+        attrs = {"class": "table table-striped table-hover" }
+        sequence = ("selection", "id", "get_full_name", "cedula", "...", "estadoCuenta")
+
+
+
 class PlanPagoTable(tables.Table):
     selection = tables.CheckBoxColumn(accessor="pk", orderable=False, attrs = {"td": {"width": "2%"}, "th__input":{"onclick": "", "id":'todosLosCheck', "name":"option"}, "td__input":{"class":"checkboxList", "name":"checks"} } )
     get_concepto_abreviado = tables.LinkColumn('finanzas:det_planpago', args=[A('pk')],  verbose_name='Concepto', orderable=False)
@@ -147,4 +160,5 @@ class ExtractoCursoAlumnoTable(tables.Table):
         return "%s-%s" % (value.serie, unicode(value.nro_recibo))
     def render_monto(self, value):
         return intcomma(value)
+
 

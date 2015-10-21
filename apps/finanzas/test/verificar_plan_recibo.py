@@ -11,4 +11,4 @@ from apps.finanzas.models import PlanPago
 planes = PlanPago.objects.filter(estado='PAG')
 for plan in planes:
 	if plan.get_recibo==None:
-		print plan
+		print plan.curso_alumno

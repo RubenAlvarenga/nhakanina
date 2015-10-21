@@ -15,12 +15,13 @@
     	</div>
     </div>
 
-<div class="detalles">
-	<div><div class="det_titulo">Nombre: </div><div class="det_contenido">{{object.get_full_name}}</div></div>
-	<div><div class="det_titulo">Cedula de Identidad: </div><div class="det_contenido">{{object.cedula|intcomma}}</div></div>
-	<div><div class="det_titulo">Fecha Nacimiento: </div><div class="det_contenido">{{object.fecha_nacimiento}}</div></div>
+	<div class="linea100"><div class="linea20">Nombre: </div><div class="linea80">{{object.get_full_name}}</div></div>
+	<div class="linea100"><div class="linea20">Cedula de Identidad: </div><div class="linea80">{{object.cedula|intcomma}}</div></div>
+	<div class="linea100"><div class="linea20">Fecha Nacimiento: </div><div class="linea80">{{object.fecha_nacimiento}}</div></div>
 
-	<div class="det_titulo">Cursos Activos</div>
+	<div class="linea100"><div class="linea20">Cursos Activos </div><div class="linea80">&nbsp;</div></div>
+
+
 	<div>
 		<table class="table table-hover">
 		{% for curso in object.get_cursos_activos.all %}
@@ -28,7 +29,6 @@
 		{% endfor %}
 		</table>
 	</div>
-</div>
 
 
 {% endblock content %}

@@ -22,17 +22,16 @@
         </div>
     </div>
 
-<div class="detalles">
-	<div><div class="det_titulo">Nro Rendicion</div><div class="det_contenido">{{object.nro_rendicion}}</div></div>
-	<div><div class="det_titulo">Creado el</div><div class="det_contenido">{{object.created}}</div></div>
-	<div><div class="det_titulo">Por</div><div class="det_contenido">{{object.created_by.first_name}} {{object.created_by.last_name}} ({{object.created_by}})</div></div>
-	<div><div class="det_titulo">Fecha Aprobacion</div><div class="det_contenido">{{object.fecha_aprobacion}}</div></div>
-	<div><div class="det_titulo">Aprobado por</div><div class="det_contenido">{{object.aprobado_por.first_name}} {{object.aprobado_por.last_name}} ({{object.aprobado_por}})</div></div>
-	<div><div class="det_titulo">Estado</div><div class="det_contenido">{{object.estado}}</div></div>
-	<div><div class="det_titulo">Total</div><div class="det_contenido">{{object.total|intcomma}}</div></div>
-	<div class="det_titulo">Recibos</div>
+	<div class="linea100"><div class="linea20">Nro Rendicion</div><div class="linea80">{{object.nro_rendicion}}</div></div>
+	<div class="linea100"><div class="linea20">Creado el</div><div class="linea80">{{object.created}}</div></div>
+	<div class="linea100"><div class="linea20">Por</div><div class="linea80">{{object.created_by.first_name}} {{object.created_by.last_name}} ({{object.created_by}})</div></div>
+	<div class="linea100"><div class="linea20">Fecha Aprobacion</div><div class="linea80">{{object.fecha_aprobacion}}</div></div>
+	<div class="linea100"><div class="linea20">Aprobado por</div><div class="linea80">{{object.aprobado_por.first_name}} {{object.aprobado_por.last_name}} ({{object.aprobado_por}})</div></div>
+	<div class="linea100"><div class="linea20">Estado</div><div class="linea80">{{object.estado}}</div></div>
+	<div class="linea100"><div class="linea20">Total</div><div class="linea80">{{object.total|intcomma}}</div></div>
+
+	<div class="linea20">Recibos</div>
 	<div>
 		{% render_table table "base/mytable.html" %}
 	</div>
-</div>
 {% endblock content %}

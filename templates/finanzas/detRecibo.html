@@ -39,7 +39,7 @@
 		<div class="subrayado-suave">Cajero: <strong>{{object.cajero.first_name}} {{object.cajero.last_name}}</strong></div>
         <div class="recibo-detalle">
 		{% if object.get_planes and object.get_planes.plan_pago.all %}
-			<table  width="100%"class="table table-hover">
+			<table  width="100%"class="table table-hover table-small">
                 <thead>
                 <tr>
                     <th>ID</th>
@@ -64,7 +64,7 @@
                 </tr>
 			</table>
         {% else %}
-            <table  width="100%"class="table table-hover">
+            <table  width="100%"class="table table-hover table-small">
                 <thead>
                 <tr>
                     <th>Cant</th>

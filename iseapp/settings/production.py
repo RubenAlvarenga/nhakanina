@@ -36,4 +36,4 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 STATIC_ROOT = '/'#os.path.join(BASE_DIR, 'static')
 STATIC_URL = '/static/'
 #AUTH_PROFILE_MODULE = 'apps.autorizaciones.perfil'
-MEDIA_URL = 'http://127.0.0.1:8000/media/'
+MEDIA_URL = 'http://127.0.0.1/media/'

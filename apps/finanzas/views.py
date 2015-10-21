@@ -17,7 +17,7 @@ from apps.finanzas.models import PlanPago, Recibo, ReciboPlanPago
 from apps.aranceles.models import Arancel
 from apps.catedras.models import CursoAlumno, Materia
 from .tables import AlumnosTable, PersonasTable, PlanPagoTable, PlanPagoAplReciboTable, RecibosTable, RecibosTablePDF, \
-    CursosTable, ExtractoCursoAlumnoTable
+    CursosTable, ExtractoCursoAlumnoTable, EstadoDeCuentaTable
 from .functions import fracionar_plan, msg_render, sumarTotalesPlanPago
 from .forms import ReciboPlanPagoForm, ReciboForm, PlanPagoForm, updPlanPagoForm, fracPlanPagoForm
 from apps.catedras.models import Curso
@@ -44,6 +44,38 @@ class PersonaSingleTableView(SingleTableView):
 
     def get_context_data(self, **kwargs):
         context = super(PersonaSingleTableView, self).get_context_data(**kwargs)
+        context['sort']= self.request.GET.get("sort")
+        context['notbuttonlist'] = True
+        return context
+
+    def post(self, request, *args, **kwargs):
+        checks = request.POST.getlist('checks')
+        if not checks:
+            mensaje = msg_render("<strong>Favor seleccione por lo menos un item</strong>")
+            messages.add_message(request, messages.INFO, mensaje)
+            url = request.META['HTTP_REFERER']
+            return HttpResponseRedirect(url)
+
+        sort=request.POST.get('sort')
+        ids = map(int, checks)
+        alumnos=Alumno.objects.filter(pk__in=ids)
+        accion=request.POST.get('accion')
+
+
+class EstadoDeCuentaSingleTableView(SingleTableView):
+    template_name='base/generic_list.html'
+    model = Persona
+    table_class = EstadoDeCuentaTable
+    def get_queryset(self):
+        table = super(EstadoDeCuentaSingleTableView, self).get_queryset()
+        q=self.request.GET.get("q")
+        if q: 
+            if q.isdigit(): return table.filter(cedula=q)#.order_by(sort)
+            else: return table.filter(Q(apellido1__icontains=q) | Q(apellido2__icontains=q) | Q(nombre1__icontains=q) | Q(nombre2__icontains=q))#.order_by(sort)
+        else: return table
+
+    def get_context_data(self, **kwargs):
+        context = super(EstadoDeCuentaSingleTableView, self).get_context_data(**kwargs)
         context['sort']= self.request.GET.get("sort")
         context['notbuttonlist'] = True
         return context
@@ -687,15 +719,35 @@ class CursoExtractoSingleTableView(SingleTableView):
 
 
 
-
+from django.db.models.functions import Coalesce
 class CursoDetailView(DetailView):
     model=Curso
     template_name='finanzas/detCurso.html'
+
+
     def get_context_data(self, **kwargs):
         context = super(CursoDetailView, self).get_context_data(**kwargs)
         context['matriculas'] = PlanPago.objects.filter(curso_alumno__curso=context['object'], concepto__concepto__tipo_concepto__tipo_concepto__id=1)
         context['cuotas'] = PlanPago.objects.filter(curso_alumno__curso=context['object'], concepto__concepto__tipo_concepto__tipo_concepto__id=2).order_by('curso_alumno', 'secuencia')
         context['evaluacion'] = PlanPago.objects.filter(curso_alumno__curso=context['object'], concepto__concepto__tipo_concepto__tipo_concepto__id=3)
+
+        materias = self.object.materias.all()
+        alumnos = self.object.get_alumnos.all()
+        data =[]
+        linea = ['Alumno']
+        for m in materias: linea.append(m)
+        data.append(linea)
+
+        for alumno in alumnos:
+            linea = []
+            linea.append(alumno.alumno) 
+            for materia in materias:
+                try: linea.append(context['evaluacion'].get(curso_alumno=alumno, materia=materia))
+                except: linea.append('Desconocido')
+            data.append( linea )
+
+        context['ordinario']=data
+
         return context
 
 

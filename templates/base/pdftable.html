@@ -1,11 +1,16 @@
 {% spaceless %}
 {% load django_tables2 %}
 {% load i18n %}
+<div class="derecha">
+    <small>Impreso el: </small>{% now "d-M-y" %}    
+    <br/><small>por: </small>{{request.user.first_name}} {{request.user.last_name}}({{request.user}})
+</div> 
+<div class="contenido">
 {% if table.page %}
 <div class="table-container">
 {% endif %}
 {% block table %}
-<table border="2">
+<table class="table">
     {% nospaceless %}
     {% block table.thead %}
     <thead>
@@ -67,4 +72,5 @@
 {% endwith %}
 </div>
 {% endif %}
+</div>
 {% endspaceless %}

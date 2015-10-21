@@ -76,3 +76,4 @@ class MateriasTablePDF(tables.Table):
     class Meta:
         model = Materia
         exclude = ()
+        per_page=ITEM_POR_PAGINA

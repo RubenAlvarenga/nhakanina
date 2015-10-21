@@ -1,92 +1,105 @@
 {% extends "base/divided.html" %}
+{% load render_table from django_tables2 %}
 {% load verbose_name_tags %}
 {% block title %}Detalle {{ object|get_verbose_name|capfirst }}{% endblock title %}
 
 {% block content %}
 
 <div class="titulo container-fluid"><h3>{{ object|get_verbose_name|capfirst }} {{object.name}}</h3></div>
-<div class="detalles">
-	<div><div class="det_titulo">Carrera: </div><div class="det_contenido">{{object.carrera}}</div></div>
-	<div><div class="det_titulo">Turno/Seccion: </div><div class="det_contenido">{{object.turno}}</div></div>
-	<div><div class="det_titulo">Estado: </div><div class="det_contenido">{{object.estado}}</div></div>
-	<div><div class="det_titulo">Fecha Inicio: </div><div class="det_contenido">{{object.inicio}}</div></div>
-	<div><div class="det_titulo">Dias de Clase: </div><div class="det_contenido">{% for item in  object.dias.all %} {{item}} {% endfor %}</div></div>
-</div>
+<div class="linea100">
+	<div class="linea20">Curso: </div>
+		<div class="linea80">
+			<a href="{% url 'catedras:det_curso' object.id %}">
+			<strong>{{object.carrera}} {{object.turno}}</strong>
+			</a>
+		</div>
+	</div>
+<div class="linea100"><div class="linea20">Estado: </div><div class="linea80">{{object.estado}}</div></div>
+<div class="linea100"><div class="linea20">Fecha Inicio: </div><div class="linea80">{{object.inicio}}</div></div>
+<div class="linea100"><div class="linea20">Dias de Clase: </div><div class="linea80">{% for item in  object.dias.all %} {{item}} {% endfor %}</div></div>
 
 <div class="extracto">
-	<div class="grouper"><h6>{{matriculas.0.concepto.concepto.tipo_concepto.tipo_concepto}}</h6></div>
-	{% regroup matriculas by curso_alumno.alumno as alumnos %}
-	<table width="auto" class="table table-hover table-small">
-	<thead>
-	<tr>
-		<th>Cedula</th>
-		<th>Alumno</th>
-		<th>Fecha/Recibo</th>
-	</tr>
-	</thead>
-	<tbody>
-	{% for alumno in alumnos %}
-		<tr>
-			<td class="grouper_cedula">{{alumno.grouper.alumno.cedula}}</td>
-			<td class="grouper_nombre">{{alumno.grouper.alumno}}</td>
-			<td class="grouper_pago">
-			{% for secuencia in alumno.list %}
-				<div class="cuota-secuencia">
-				{% if secuencia.estado = 'PAG' %}
-					<div class="verde">{{secuencia.get_recibo.fecha|date:"d-m-y"}} <a href="{% url 'finanzas:det_recibo' secuencia.get_recibo.id %}"><strong>{{secuencia.get_recibo.get_recibo}}</strong></a></div>
-				{% else %}
-					<div {% if secuencia.get_vencido %}class="rojo"{% endif %}>{{secuencia.estado}}</div> 
-				{% endif %}
-				</div>
-			{% endfor %}
-			</td>
-		</tr>
-	{% endfor %}		
-	</tbody>
-	</table>
 
-	<div class="grouper"><h6>{{cuotas.0.concepto.concepto.tipo_concepto.tipo_concepto}}</h6></div>
-	<div class="contenedor-extendible">
-	{% regroup cuotas by curso_alumno.alumno as alumnos %}
-	<table width="auto" class="table table-hover table-small">
-	<thead>
-	<tr>
-		<th>Cedula</th>
-		<th>Alumno</th>
-		<th>Fecha/Recibo</th>
-	</tr>
-	</thead>
-	<tbody>
-	{% for alumno in alumnos %}
+	{% if matriculas.0.concepto.concepto.tipo_concepto.tipo_concepto %}
+		<div class="grouper"><h6>{{matriculas.0.concepto.concepto.tipo_concepto.tipo_concepto}}</h6></div>
+		{% regroup matriculas by curso_alumno.alumno as alumnos %}
+		<table width="auto" class="table table-hover table-small">
+		<thead>
 		<tr>
-			<td class="grouper_cedula">{{alumno.grouper.alumno.cedula}}</td>
-			<td class="grouper_nombre">{{alumno.grouper.alumno}}</td>
-			<td class="grouper_pago">
-				<table>
-					<tr>
-					{% for secuencia in alumno.list %}
-						<td>
-							<div class="cuota-secuencia">
-							{% if secuencia.estado = 'PAG' %}
-								<div class="verde">{{secuencia.get_recibo.fecha|date:"d-m-y"}} <a href="{% url 'finanzas:det_recibo' secuencia.get_recibo.id %}"><strong>{{secuencia.get_recibo.get_recibo}}</strong></a></div>
-							{% else %}
-								<div {% if secuencia.get_vencido %}class="rojo"{% else %}class="gris"{% endif %}>{{secuencia.estado}} <small>{{secuencia.vencimiento|date:"M"}}</small></div> 
-							{% endif %}
-							</div>		
-						</td>
-					{% endfor %}
-					</tr>
-				</table>			
-			</td>
+			<th>Cedula</th>
+			<th>Alumno</th>
+			<th>Fecha/Recibo</th>
 		</tr>
-	{% endfor %}		
-	</tbody>
-	</table>
-	</div>
+		</thead>
+		<tbody>
+		{% for alumno in alumnos %}
+			<tr>
+				<td class="grouper_cedula">{{alumno.grouper.alumno.cedula}}</td>
+				<td class="grouper_nombre">{{alumno.grouper.alumno}}</td>
+				<td class="grouper_pago">
+				{% for secuencia in alumno.list %}
+					<div class="cuota-secuencia">
+					{% if secuencia.estado = 'PAG' %}
+						<div class="verde">{{secuencia.get_recibo.fecha|date:"d-m-y"}} <a href="{% url 'finanzas:det_recibo' secuencia.get_recibo.id %}"><strong>{{secuencia.get_recibo.get_recibo}}</strong></a></div>
+					{% else %}
+						<div {% if secuencia.get_vencido %}class="rojo"{% endif %}>{{secuencia.estado}}</div> 
+					{% endif %}
+					</div>
+				{% endfor %}
+				</td>
+			</tr>
+		{% endfor %}		
+		</tbody>
+		</table>		
+	{% endif %}
 
+	{% if cuotas.0.concepto.concepto.tipo_concepto.tipo_concepto %}
+		<div class="grouper"><h6>{{cuotas.0.concepto.concepto.tipo_concepto.tipo_concepto}}</h6></div>
+		<div class="contenedor-extendible">
+		{% regroup cuotas by curso_alumno.alumno as alumnos %}
+		<table width="auto" class="table table-hover table-small">
+		<thead>
+		<tr>
+			<th>Cedula</th>
+			<th>Alumno</th>
+			<th>Fecha/Recibo</th>
+		</tr>
+		</thead>
+		<tbody>
+		{% for alumno in alumnos %}
+			<tr>
+				<td class="grouper_cedula">{{alumno.grouper.alumno.cedula}}</td>
+				<td class="grouper_nombre">{{alumno.grouper.alumno}}</td>
+				<td class="grouper_pago">
+					<table>
+						<tr>
+						{% for secuencia in alumno.list %}
+							<td>
+								<div class="cuota-secuencia">
+								{% if secuencia.estado = 'PAG' %}
+									<div class="verde">{{secuencia.get_recibo.fecha|date:"d-m-y"}} <a href="{% url 'finanzas:det_recibo' secuencia.get_recibo.id %}"><strong>{{secuencia.get_recibo.get_recibo}}</strong></a></div>
+								{% else %}
+									<div {% if secuencia.get_vencido %}class="rojo"{% else %}class="gris"{% endif %}>{{secuencia.estado}} <small>{{secuencia.vencimiento|date:"M"}}</small></div> 
+								{% endif %}
+								</div>		
+							</td>
+						{% endfor %}
+						</tr>
+					</table>			
+				</td>
+			</tr>
+		{% endfor %}		
+		</tbody>
+		</table>
+		</div>
+	{% endif %}
+
+
+<!--
 	<div class="grouper"><h6>{{evaluacion.0.concepto.concepto.tipo_concepto.tipo_concepto}}</h6></div>
 	<div class="contenedor-extendible">
 	{% regroup evaluacion by curso_alumno.alumno as alumnos %}
+
 	<table width="auto" class="table table-hover table-small">
 	<thead>
 	<tr>
@@ -121,7 +134,49 @@
 	{% endfor %}		
 	</tbody>
 	</table>
-	</div>
 
+-->
+	{% if ordinario %}
+		<div class="grouper"><h6>Examen Ordinario</h6></div>
+		<div class="contenedor-extendible">
+		<table width="auto" class="table table-hover table-small">
+			{% for ord in ordinario  %}
+				{% if forloop.first %}
+				<thead>
+					<tr>
+						{% for titulo in ordinario.0  %}
+							{% if forloop.counter == 1 %}
+								<th class="_alumno">{{titulo}}</th>
+							{% else %}
+								<th class="_materia">{{titulo}}</th>
+							{% endif %}
+						{% endfor %}
+					</tr>
+				</thead>
+				{% else %}
+					<tr>
+						{% for campo in ord %}
+							{% if campo.cedula %}
+								<td><div class="_cedula">{{campo.cedula}}</div>  <a href="{% url 'finanzas:det_alumno' campo.codigo %}"><strong>{{campo}}</strong></a></td>
+							{% else %}
+								{% if campo.estado %}
+									{% if campo.estado == 'PAG' %}
+										<td class="verde" style="border-left:1px solid #ddd">
+											<a title="{{campo.get_recibo.fecha}} {{campo.get_recibo.monto}}" href="{% url 'finanzas:det_recibo' campo.get_recibo.id %}"><strong>{{campo.get_recibo.serie}}-{{campo.get_recibo.nro_recibo}}</strong></a>
+										</td>
+									{% else %}
+										<td style="color:#999; border-left:1px solid #ddd"><small>{{campo.estado}}</small></td>
+									{% endif %}
+								{% else %}
+									<td style="border-left:1px solid #ddd">{{campo}}</td>
+								{% endif %}
+							{% endif %}
+						{% endfor %}
+					</tr>
+				{% endif %}
+			{% endfor %}
+		</table>
+		</div>
+	{% endif %}
 </div>
 {% endblock content %}

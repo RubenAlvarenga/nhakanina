@@ -252,7 +252,12 @@ height: 28px;
 .amarillo {background: #FFEF85}
 
 .frmRecibo{clear: both;}
-.cienporciento{width: 100%}
+.cienporciento{width: 100%;}
+
+.linea100{clear: both; min-height: 100%;}
+.linea20, .linea80{padding: 2px 5px; margin-top: 5px; border-bottom: 1px solid #DDD;}
+.linea20{background: #DDD; width: 20%; float: left; font-weight: bold; height: 100%}
+.linea80{width: 80%; float: right; min-height: 23px;}
 
 .table-small{font-size: 0.88em}
 .table-small tr{height: 23px}
@@ -552,3 +557,25 @@ a .menu-ico:hover{background:linear-gradient(#006C18, #0A1F0B); color:#FFF;}
   margin: 0 auto;
   border-radius: 5px;
 }
+
+
+
+
+._alumno{
+  width: 200px;
+}
+
+._materia{
+  width: 100px;
+
+}
+
+._cedula{
+  width: 70px;
+  float: left;
+  /*text-align: right;*/
+  padding-right: 5px;
+  color: #777;
+}
+
+

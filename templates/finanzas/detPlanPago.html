@@ -18,22 +18,17 @@
     	</div>
     </div>
 
-<div class="detalles">
-	<div><div class="det_titulo">Fraccionable: </div><div class="det_contenido">{{object.concepto.concepto.fraccionable}}</div></div>
-
-	<div><div class="det_titulo">Alumno: </div><div class="det_contenido">{{object.curso_alumno.alumno.get_full_name}} <strong>C.I: {{object.curso_alumno.alumno.cedula|intcomma}}</strong></div></div>
-	<div><div class="det_titulo">Curso: </div><div class="det_contenido">{{object.curso_alumno.curso}}</div></div>
-	<div><div class="det_titulo">concepto: </div><div class="det_contenido">{{object.cantidad}} {{object.concepto.concepto}}  {{object.secuencia}}/{{object.total_cuotas}}</div></div>
-	<div><div class="det_titulo">Monto: </div><div class="det_contenido">{{object.monto|intcomma}}</div></div>
-	<div><div class="det_titulo">Vencimiento: </div><div class="det_contenido">{{object.vencimiento}}</div></div>
-	<div><div class="det_titulo">Estado: </div><div {% if object.estado == 'PAG' %}style="background: #CBF9CE"{% endif %} class="det_contenido">{{object.estado}} {% if object.get_recibo %} <a href="{% url 'finanzas:det_recibo' object.get_recibo.id %}"><strong>{{object.get_recibo.serie}}-{{object.get_recibo.nro_recibo}}</strong></a> {% endif %}</div></div>
-	<div><div class="det_titulo">Materia: </div><div class="det_contenido">{{object.materia}}</div></div>
-	<div><div class="det_titulo">Creado por: </div><div class="det_contenido">{{object.created_by}}</div></div>
-	<div><div class="det_titulo">Autorizado por: </div><div class="det_contenido">{{object.authorized_by}}</div></div>
-	<div><div class="det_titulo">Observaciones: </div><div class="det_contenido">{{object.observaciones}}</div></div>
-
-
-</div>
+	<div class="linea100"><div class="linea20">Fraccionable: </div><div class="linea80">{{object.concepto.concepto.fraccionable}}</div></div>
+	<div class="linea100"><div class="linea20">Alumno: </div><div class="linea80">{{object.curso_alumno.alumno.get_full_name}} <strong>C.I: {{object.curso_alumno.alumno.cedula|intcomma}}</strong></div></div>
+	<div class="linea100"><div class="linea20">Curso: </div><div class="linea80">{{object.curso_alumno.curso}}</div></div>
+	<div class="linea100"><div class="linea20">Concepto: </div><div class="linea80">{{object.cantidad}} {{object.concepto.concepto}}  {{object.secuencia}}/{{object.total_cuotas}}</div></div>
+	<div class="linea100"><div class="linea20">Monto: </div><div class="linea80">{{object.monto|intcomma}}</div></div>
+	<div class="linea100"><div class="linea20">Vencimiento: </div><div class="linea80">{{object.vencimiento}}</div></div>
+	<div class="linea100"><div class="linea20">Estado: </div><div {% if object.estado == 'PAG' %}style="background: #CBF9CE"{% endif %} class="linea80">{{object.estado}} {% if object.get_recibo %} <a href="{% url 'finanzas:det_recibo' object.get_recibo.id %}"><strong>{{object.get_recibo.serie}}-{{object.get_recibo.nro_recibo}}</strong></a> {% endif %}</div></div>
+	<div class="linea100"><div class="linea20">Materia: </div><div class="linea80">{{object.materia}}</div></div>
+	<div class="linea100"><div class="linea20">Creado por: </div><div class="linea80">{{object.created_by}}</div></div>
+	<div class="linea100"><div class="linea20">Autorizado por: </div><div class="linea80">{{object.authorized_by}}</div></div>
+	<div class="linea100"><div class="linea20">Observaciones: </div><div class="linea80">{{object.observaciones}}</div></div>
 
 
 

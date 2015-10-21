@@ -59,9 +59,9 @@ class MateriaSingleTableView(SingleTableView):
 
         elif accion=='A pdf':
             table.model=self.model
-            RequestConfig(request).configure(table)            
+            RequestConfig(request).configure(table)    
             pdf_name = 'base/generic_pdf_list.html'
-            return PDFTemplateResponse(request, pdf_name, {'table':table})
+            return PDFTemplateResponse(request , pdf_name, {'table':table, 'request': self.get_context_data.im_self.request})
 
         elif accion=='Eliminar':
             perm = 'catedras.delete_carrera'

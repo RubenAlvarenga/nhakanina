@@ -15,23 +15,21 @@
     </div>
 
 
-<div class="detalles">
-	<div><div class="det_titulo">Estado: </div><div class="det_contenido">{{object.estado}}</div></div>
-	<div><div class="det_titulo">Carrera: </div><div class="det_contenido">{{object.carrera}}</div></div>
-	<div><div class="det_titulo">Fecha Inicio: </div><div class="det_contenido">{{object.inicio}}</div></div>
-	<div><div class="det_titulo">Fecha Fin: </div><div class="det_contenido">{{object.fin}}</div></div>
-	<div><div class="det_titulo">Dias de Clase: </div><div class="det_contenido">{% for item in  object.dias.all %} {{item}} {% endfor %}</div></div>
-	<div><div class="det_titulo">Turno/Seccion: </div><div class="det_contenido">{{object.turno}}</div></div>
-	<div><div class="det_titulo">Monto Matricula: </div><div class="det_contenido">{{object.matricula}}</div></div>
-	<div><div class="det_titulo">Monto Matricula FPO: </div><div class="det_contenido">{{object.matricula_fpo}}</div></div>
-	<div><div class="det_titulo">Fecha tope de Matriculación: </div><div class="det_contenido">{{object.fecha_tope_matriculacion}}</div></div>
-	<div><div class="det_titulo">Monto Cuota: </div><div class="det_contenido">{{object.monto_cuota}}</div></div>
-	<div><div class="det_titulo">Cantidad de Cuotas:</div><div class="det_contenido">{{object.cantidad_cuotas}}</div></div>
-
-	<div><div class="det_titulo">Examen Ordinario:</div><div class="det_contenido">{{object.examen_ordinario}}</div></div>
+	<div class="linea100"><div class="linea20">Estado: </div><div class="linea80">{{object.estado}}</div></div>
+	<div class="linea100"><div class="linea20">Carrera: </div><div class="linea80">{{object.carrera}}</div></div>
+	<div class="linea100"><div class="linea20">Fecha Inicio: </div><div class="linea80">{{object.inicio}}</div></div>
+	<div class="linea100"><div class="linea20">Fecha Fin: </div><div class="linea80">{{object.fin}}</div></div>
+	<div class="linea100"><div class="linea20">Dias de Clase: </div><div class="linea80">{% for item in  object.dias.all %} {{item}} {% endfor %}</div></div>
+	<div class="linea100"><div class="linea20">Turno/Seccion: </div><div class="linea80">{{object.turno}}</div></div>
+	<div class="linea100"><div class="linea20">Monto Matricula: </div><div class="linea80">{{object.matricula}}</div></div>
+	<div class="linea100"><div class="linea20">Monto Matricula FPO: </div><div class="linea80">{{object.matricula_fpo}}</div></div>
+	<div class="linea100"><div class="linea20">Fecha tope de Matriculación: </div><div class="linea80">{{object.fecha_tope_matriculacion}}</div></div>
+	<div class="linea100"><div class="linea20">Monto Cuota: </div><div class="linea80">{{object.monto_cuota}}</div></div>
+	<div class="linea100"><div class="linea20">Cantidad de Cuotas:</div><div class="linea80">{{object.cantidad_cuotas}}</div></div>
+	<div class="linea100"><div class="linea20">Examen Ordinario:</div><div class="linea80">{{object.examen_ordinario}}</div></div>
 	
 
-	<div class="det_titulo">Materias</div>
+	<div class="linea20">Materias</div>
 	<div>
 		<table class="table table-hover">
 		{% for materia in object.materias.all %}
@@ -40,7 +38,7 @@
 		</table>
 	</div>
 
-	<div class="det_titulo">Examenes</div>
+	<div class="linea20">Examenes</div>
 	<div>
 		<table class="table table-hover">
 		{% for examen in object.examen_extra.all %}
@@ -49,7 +47,7 @@
 		</table>
 	</div>
 
-	<div class="det_titulo">Aranceles</div>
+	<div class="linea20">Aranceles</div>
 	<div>
 		<table class="table table-hover">
 		{% for arancel in object.aranceles.all %}
@@ -58,17 +56,19 @@
 		</table>
 	</div>
 
-	<div class="det_titulo">Alumnos</div>
+	<div class="linea20">Alumnos</div>
 	<div>
 		<table class="table table-hover">
 		{% for alumno in object.get_alumnos.all %}
-			<tr><td>{{alumno.alumno}}</td></tr>		
+			<tr>
+				<td width="90">{{alumno.alumno.cedula}}</td>
+				<td>{{alumno.alumno}}</td>
+			</tr>
 		{% endfor %}
 		</table>
 	</div>
 
 
-</div>
 
 
 
