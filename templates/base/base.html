@@ -100,7 +100,7 @@
 <div class="container-fluid footer">
     <div class="row">
         <div class="col-xs-12">
-            <div style="text-align: right"><!--{# <small>&copy; Copyright 2014 <strong>arai</strong>apps. Todos los derechos reservados.</small> #} --> <small>{{tiempo}}</small><a href="#" class="scrollup"></a></div>
+            <div style="text-align: right"><!--{# <small>&copy; Copyright 2014 <strong>arai</strong>apps. Todos los derechos reservados.</small> #} --> <small>{{tiempo}}</small><a href="#" class="scrollup"></a> <a id="about" ><span class="glyphicon glyphicon-info-sign"></span></a></div>
         </div>          
     </div>
 </div>
@@ -114,5 +114,31 @@
 {% endblock scripts %}
 {% block slider %}
 {% endblock slider %}
+
+<div class="about">
+    <center><img width="250" src="{% static "img/logodevelpy.png" %}"></center>
+    <div class="textual">
+        <br/>Desarrollado con <span style="color:red" class="glyphicon glyphicon-heart"></span> por el team <strong>develpy</strong>
+        <br/>
+        <br/><strong>Ruben Alvarenga</strong>
+        <br/><span class="glyphicon glyphicon-user"></span> @wanderung
+        <br/><span class="glyphicon glyphicon-envelope"></span> rubenalvarengan@gmail.com
+        <br/><span class="glyphicon glyphicon-phone"></span> 0961 865406
+        <br/><br/>
+        <div class="align-right">&copy; Copyright 2015 <strong>develpy</strong></div>
+    </div>
+</div>
+
+    <script type="text/javascript">
+    $(document).on('ready', function(){
+        $('#about').click(function() {
+            $('.about').css("visibility", "visible");
+        }); 
+        $('.about').click(function() {
+            $('.about').css("visibility", "hidden");
+        }); 
+    });
+    </script>
+
 </body>
 </html>

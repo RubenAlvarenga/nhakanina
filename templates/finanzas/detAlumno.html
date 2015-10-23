@@ -19,8 +19,14 @@
     </div>
     <div class="alumno-cursos">
     {% for curso in object.get_cursos_activos %}
-            
-            <div class="curso"><input type="checkbox" name="curso_alumno_id" value="{{curso.id}}"> <a href="{% url 'finanzas:det_curso' curso.curso.id %}"><strong><span class="glyphicon glyphicon-education"></span> {{curso.curso}}</strong></a></div>
+        <div class="curso"><input type="checkbox" name="curso_alumno_id" value="{{curso.id}}"> <a href="{% url 'finanzas:det_curso' curso.curso.id %}"><strong><span class="glyphicon glyphicon-education"></span> {{curso.curso}}</strong></a>
+        <div class="align-right">
+        <a href="{% url 'catedras:recuperar_plan' curso.id %}"><button type="button" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-retweet"></span> Recuperar Plan</button></a>
+
+        </div>
+    </div>
+
+
             
             {% if curso.get_planPago %}
                 <div id="frmOpciones{{curso.id}}"></div>
@@ -48,7 +54,7 @@
                         {% endif %}
                     {% endifequal %}
                         <!-- <td><input type="checkbox"></td> -->
-                        <td class="gris"><small>{{plan.id}}</small></td>
+                        <td class="gris"><small><a href="{% url 'finanzas:det_planpago' plan.id %}">{{plan.id}}</a></small></td>
                         {% if plan.concepto.concepto.tipo_concepto.tipo_concepto.id == 2 %}
                             <td>{{plan.secuencia}}/{{plan.curso_alumno.curso.cantidad_cuotas}}</td>
                         {% else %}
@@ -100,7 +106,7 @@
             
     {% endfor %}
     {% if recibossueltos %}
-        <div class="titulo"> <span class="glyphicon glyphicon-paperclip"></span><strong> Recibos sin Planes de Pagos</strong></div>
+        <div class="titulo" style="padding-left:5px"> <span class="glyphicon glyphicon-paperclip"></span><strong> Recibos sin Planes de Pagos</strong></div>
         <table width="100%" class="table table-hover table-small">
         <thead>
         <tr>

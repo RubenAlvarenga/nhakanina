@@ -18,6 +18,9 @@ class EnlaceColumn(tables.Column):
 class CobrarColumn(tables.Column):
     def render(self, value): return mark_safe('<a href="'+str(self.attrs["url"])+str(value)+'"><button type="button" class="btn btn-info btn-xs"><span class="glyphicon '+str(self.attrs["icono"])+'"></span> '+str(self.attrs["texto"])+'</button></a>')
 
+class buttonColumn(tables.Column):
+    def render(self, value): return mark_safe('<a href="'+str(self.attrs["url"])+str(value)+'"><button type="button" class="btn btn-info btn-xs"><span class="glyphicon '+str(self.attrs["icono"])+'"></span> '+str(self.attrs["texto"])+'</button></a>')
+
 
 class FraccionarColumn(tables.Column):
     def render(self, value): 
@@ -134,13 +137,15 @@ class CursosTable(tables.Table):
     selection = tables.CheckBoxColumn(accessor="pk", orderable=False, attrs = {"td": {"width": "2%"}, "th__input":{"onclick": "", "id":'todosLosCheck', "name":"option"}, "td__input":{"class":"checkboxList", "name":"checks"} } )
     carrera = tables.LinkColumn('finanzas:det_curso', args=[A('pk')], verbose_name='carrera',  attrs={'style':"font-weight:bold"})    
 
-    ver     = EnlaceColumn( accessor="id", verbose_name=" ", attrs={"td": {"width": "2%"}, "url":"detCurso/", "icono":"glyphicon-eye-open" }, )
+    planilla = buttonColumn( accessor="id", verbose_name=" ", attrs={"td": {"width": "2%"}, "url":"detCurso/", "icono":"glyphicon-list-alt", "texto":"Planilla" }, )    
+    autorizar = buttonColumn( accessor="id", verbose_name=" ", attrs={"td": {"width": "2%"}, "url":"autCursoExamen/", "icono":"glyphicon-ok-circle", "texto":"Autorizar" }, )
+
     class Meta:
         model = Curso
         exclude = ('inicio', 'fin', 'matricula', 'matricula_fpo', 'fecha_tope_matriculacion', 'monto_cuota', 'cantidad_cuotas', 'examen_ordinario')
         per_page=ITEM_POR_PAGINA
-        attrs = {"class": "table table-striped table-hover" }
-        sequence = ("selection", "anho", "id", "...", "ver")
+        attrs = {"class": "table table-striped table-hover table-small" }
+        sequence = ("selection", "anho", "id", "...", "planilla", "autorizar")
 
 
 

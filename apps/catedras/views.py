@@ -20,6 +20,8 @@ from wkhtmltopdf.views import PDFTemplateResponse
 from apps.actions import export_as_csv, export_table_to_csv, eliminar_bulk
 from django.forms.util import ErrorList
 from django.db import IntegrityError
+from apps.decorators import custom_permission_required
+
 
 class MateriaSingleTableView(SingleTableView):
     template_name='base/generic_list.html'
@@ -464,4 +466,10 @@ class CursoAlumnoCreateView(SuccessMessageMixin, CreateView):
 
 
 
-
+@custom_permission_required('finanzas.changue_planpago')
+def recuperarPlan(request, pk):
+    curso_alumno = CursoAlumno.objects.get(pk=int(pk))
+    curso_alumno.save()
+    mensaje = msg_render("<strong>Plan Recuperado con exito</strong>")
+    messages.add_message(request, messages.SUCCESS, mensaje)
+    return HttpResponseRedirect(request.META['HTTP_REFERER'])   

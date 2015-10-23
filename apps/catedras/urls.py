@@ -19,6 +19,8 @@ urlpatterns = patterns('',
 
     url(r'^cursos/addCursoAlumno/$', custom_permission_required('catedras.add_cursoalumno')(CursoAlumnoCreateView.as_view()), name ='add_curso_alumno'),
 
+    url(r'^cursos/recuperarPlan/(?P<pk>[\d]+)$', ('apps.catedras.views.recuperarPlan'), name='recuperar_plan'),
+
     url(r'^carreras/$', custom_permission_required('catedras.list_carrera')(CarreraSingleTableView.as_view()), name ='lst_carrera'),
     url(r'^carreras/detCarrera/(?P<pk>[\d]+)$', custom_permission_required('catedras.view_carrera')(CarreraDetailView.as_view()), name='det_carrera'),
     url(r'^carreras/addCarrera/$', custom_permission_required('catedras.add_carrera')(CarreraCreateView.as_view()), name ='add_carrera'),

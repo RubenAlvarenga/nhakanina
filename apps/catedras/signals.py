@@ -54,9 +54,9 @@ def esInscripto(sender, **kwargs):
 
 
    #EXAMENNES ORDINARIOS
-    if not PlanPago.objects.filter(curso_alumno=p_curso_alumno, concepto__in=Arancel.objects.filter(concepto__tipo_concepto__tipo_concepto=3) ):
-        if p_curso_alumno.curso.materias.all() and p_curso_alumno.curso.examen_ordinario:
-            for materia in p_curso_alumno.curso.materias.all():
+    if p_curso_alumno.curso.materias.all() and p_curso_alumno.curso.examen_ordinario:
+        for materia in p_curso_alumno.curso.materias.all():
+            if not PlanPago.objects.filter(curso_alumno=p_curso_alumno, concepto__in=Arancel.objects.filter(concepto__tipo_concepto__tipo_concepto=3), materia=materia):
                 plan_examen = PlanPago()
                 plan_examen.curso_alumno = p_curso_alumno
                 plan_examen.concepto = p_curso_alumno.curso.examen_ordinario
@@ -66,6 +66,19 @@ def esInscripto(sender, **kwargs):
                 plan_examen.created_by = User.objects.get(pk=2)
                 plan_examen.materia = materia
                 plan_examen.save()
+
+    # if not PlanPago.objects.filter(curso_alumno=p_curso_alumno, concepto__in=Arancel.objects.filter(concepto__tipo_concepto__tipo_concepto=3) ):
+    #     if p_curso_alumno.curso.materias.all() and p_curso_alumno.curso.examen_ordinario:
+    #         for materia in p_curso_alumno.curso.materias.all():
+    #             plan_examen = PlanPago()
+    #             plan_examen.curso_alumno = p_curso_alumno
+    #             plan_examen.concepto = p_curso_alumno.curso.examen_ordinario
+    #             plan_examen.secuencia = 0 
+    #             #plan_examen.vencimiento = ultimo_dia_del_mes(p_curso_alumno.curso.inicio)
+    #             plan_examen.monto = p_curso_alumno.curso.examen_ordinario.monto
+    #             plan_examen.created_by = User.objects.get(pk=2)
+    #             plan_examen.materia = materia
+    #             plan_examen.save()
  
 
 

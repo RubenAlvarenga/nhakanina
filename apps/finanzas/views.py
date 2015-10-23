@@ -727,7 +727,7 @@ class CursoDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(CursoDetailView, self).get_context_data(**kwargs)
-        context['matriculas'] = PlanPago.objects.filter(curso_alumno__curso=context['object'], concepto__concepto__tipo_concepto__tipo_concepto__id=1)
+        context['matriculas'] = PlanPago.objects.filter(curso_alumno__curso=context['object'], concepto__concepto__tipo_concepto__tipo_concepto__id=1).order_by('curso_alumno', 'concepto')
         context['cuotas'] = PlanPago.objects.filter(curso_alumno__curso=context['object'], concepto__concepto__tipo_concepto__tipo_concepto__id=2).order_by('curso_alumno', 'secuencia')
         context['evaluacion'] = PlanPago.objects.filter(curso_alumno__curso=context['object'], concepto__concepto__tipo_concepto__tipo_concepto__id=3)
 
@@ -845,3 +845,46 @@ class FraccionarPlanFormView(SuccessMessageMixin, FormView):
             messages.info(self.request,"La fecha del Primer vencimiento es obligatorio", extra_tags='danger')
         return super(FraccionarPlanFormView, self).form_invalid(form)
 
+
+
+
+
+
+
+
+from django import forms
+class MateriasSelectForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        super(MateriasSelectForm, self).__init__(*args, **kwargs)
+        self.fields['materia'] = forms.ChoiceField(choices=[(x.id, x) for x in  args[1].materias.all() ])
+        self.fields['materia'].widget.attrs.update({ 'class':'form-control'})
+
+class AutorizarCursoDetailView(DetailView):
+    model=Curso
+    template_name='finanzas/autCursoExamen.html'
+
+
+    def get_context_data(self, **kwargs):
+        context = super(AutorizarCursoDetailView, self).get_context_data(**kwargs)
+        context['evaluacion'] = PlanPago.objects.filter(curso_alumno__curso=context['object'], concepto__concepto__tipo_concepto__tipo_concepto__id=3)
+
+
+
+        materias = self.object.materias.all()
+        alumnos = self.object.get_alumnos.all()
+        context['materia_select'] = MateriasSelectForm(self.request.GET, self.object)
+        data =[]
+        linea = ['Alumno']
+        for m in materias: linea.append(m)
+        data.append(linea)
+
+        for alumno in alumnos:
+            linea = []
+            linea.append(alumno.alumno) 
+            for materia in materias:
+                try: linea.append(context['evaluacion'].get(curso_alumno=alumno, materia=materia))
+                except: linea.append('Desconocido')
+            data.append( linea )
+
+        context['ordinario']=data
+        return context

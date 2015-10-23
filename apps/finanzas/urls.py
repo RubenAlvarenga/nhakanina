@@ -1,7 +1,8 @@
 from django.conf.urls import patterns, url
 from .views import AlumnoSingleTableView, PersonaSingleTableView,  AlumnoDetailView, PersonaDetailView, fraccionar_planpago_ajax, ReciboCancelView, \
     ReciboSingleTableView, ReciboFormView, PlanPagoFormView, ReciboPlanPagoFormView, ReciboDetailView, total_recibo_plan_pago_ajax, PlanPagoSingleTableView, \
-    PlanPagoDetailView, PlanPagoUpdateView, PlanPagoDeleteView, CursoExtractoSingleTableView, CursoDetailView, FraccionarPlanFormView, EstadoDeCuentaSingleTableView
+    PlanPagoDetailView, PlanPagoUpdateView, PlanPagoDeleteView, CursoExtractoSingleTableView, CursoDetailView, FraccionarPlanFormView, EstadoDeCuentaSingleTableView, \
+    AutorizarCursoDetailView
 from apps.entidades.views import AlumnoCreateView
 from apps.catedras.views import CursoCreateView
 from django.views.generic import TemplateView
@@ -71,6 +72,10 @@ urlpatterns = patterns('',
 
     #imprimir
     url(r'^alumnos/prtExtracto/$', ('apps.finanzas.views.imprimirExtracto'), name ='prt_extracto'),
+
+    url(r'^cursos/autCursoExamen/(?P<pk>[\d]+)$', custom_permission_required('catedras.change_cursoalumno')(AutorizarCursoDetailView.as_view()), name ='det_autorizar_curso'),
+
+
 
 )
 

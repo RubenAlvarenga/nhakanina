@@ -1,0 +1,95 @@
+{% extends "base/divided.html" %}
+{% load render_table from django_tables2 %}
+{% load verbose_name_tags %}
+{% load humanize %}
+{% block title %}Detalle {{ object|get_verbose_name|capfirst }}{% endblock title %}
+
+{% block content %}
+
+<div class="titulo container-fluid"><h3>{{ object|get_verbose_name|capfirst }} {{object.name}}</h3></div>
+<div class="linea100">
+	<div class="linea20">Curso: </div>
+		<div class="linea80">
+			<a href="{% url 'catedras:det_curso' object.id %}">
+			<strong>{{object.carrera}} {{object.turno}}</strong>
+			</a>
+		</div>
+	</div>
+<div class="linea100"><div class="linea20">Estado: </div><div class="linea80">{{object.estado}}</div></div>
+<div class="linea100"><div class="linea20">Fecha Inicio: </div><div class="linea80">{{object.inicio}}</div></div>
+<div class="linea100"><div class="linea20">Dias de Clase: </div><div class="linea80">{% for item in  object.dias.all %} {{item}} {% endfor %}</div></div>
+<div class="linea100"><div class="linea20">Examen Ordinario:</div>
+	<div class="linea80">{{object.examen_ordinario.concepto}} 
+		<div class="align-right" style="font-size:1.1em"><strong>{{object.examen_ordinario.monto|intcomma}}</strong></div>
+	</div>
+</div>
+
+{% for materia in materia_select %}
+<div class="linea100"><div class="linea20">{{materia.label_tag}}</div><div style="width:80%; float:left">{{materia}}</div></div>
+{% endfor %}
+
+
+
+<div class="extracto">
+
+	{% if ordinario %}
+		<div class="grouper"><h6>Examen Ordinario</h6></div>
+		<div class="contenedor-extendible">
+		<table width="auto" class="table table-hover table-small">
+			{% for ord in ordinario  %}
+				{% if forloop.first %}
+				<thead>
+					<tr>
+						{% for titulo in ordinario.0  %}
+							{% if forloop.counter == 1 %}
+								<th class="_alumno">{{titulo}}</th>
+							{% else %}
+								<th class="_materia">{{titulo}}</th>
+							{% endif %}
+						{% endfor %}
+					</tr>
+				</thead>
+				{% else %}
+					<tr>
+						{% for campo in ord %}
+							{% if campo.cedula %}
+								<td><div class="_cedula">{{campo.cedula}}</div>  <a href="{% url 'finanzas:det_alumno' campo.codigo %}"><strong>{{campo}}</strong></a></td>
+							{% else %}
+								{% if campo.estado %}
+									{% if campo.estado == 'PAG' %}
+										<td class="verde" style="border-left:1px solid #ddd">
+											<a title="{{campo.get_recibo.fecha}} {{campo.get_recibo.monto}}" href="{% url 'finanzas:det_recibo' campo.get_recibo.id %}"><strong>{{campo.get_recibo.serie}}-{{campo.get_recibo.nro_recibo}}</strong></a>
+										</td>
+									{% else %}
+										<td style="color:#999; border-left:1px solid #ddd"><small>{{campo.estado}}</small></td>
+									{% endif %}
+								{% else %}
+									<td style="border-left:1px solid #ddd">{{campo}}</td>
+								{% endif %}
+							{% endif %}
+						{% endfor %}
+					</tr>
+				{% endif %}
+			{% endfor %}
+		</table>
+		</div>
+	{% endif %}
+</div>
+{% endblock content %}
+
+
+
+{% block scripts %}
+<script type="text/javascript">
+    $(document).ready(function() {
+    	$("#id_materia").change(function() {
+    		var id_matera = $("#id_materia").find('option:selected').val()
+    		console.log(id_materia)
+            get_planes_materia(id_materia)
+		});
+        function get_planes_materia(id_materia){
+
+        }
+    });
+</script>
+{% endblock scripts %}

@@ -53,7 +53,9 @@
                 <tr>
                 	<td style="color: #CCC"><small>{{plan.id}}</small></td>
                 	<td>{{plan.cantidad}}</td>
-                	<td>{{plan.concepto.concepto}}{% if plan.vencimiento %} | {{plan.vencimiento|date:"M"}}{% endif %}</td>
+                	<td>{{plan.concepto.concepto}}{% if plan.vencimiento %} - {{plan.vencimiento|date:"M"}}{% endif %} {% if plan.materia %}
+                        <small> | {{plan.materia}}</small>
+                    {% endif %}</td>
                 	<td>{{plan.concepto.monto|intcomma}}</td>
                 	<td>{{plan.monto|intcomma}}</td>
                 </tr>

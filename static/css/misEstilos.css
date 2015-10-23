@@ -234,6 +234,16 @@ height: 28px;
   border-bottom: 1px solid #CCC;
 }
 
+.alumno-cursos .curso:hover{
+  padding: 5px 5px;
+  border-bottom: 1px solid #CCC;
+  background: #D9D9D9;
+}
+.alumno-cursos .curso:hover a{
+  text-decoration: none;
+}
+
+
 .input-small{width: 20px; border: 0; padding: 1px 3px; background-color: #eee;}
 .input-fraccionar-hasta{
   width: 80px;
@@ -551,11 +561,12 @@ a .menu-ico:hover{background:linear-gradient(#006C18, #0A1F0B); color:#FFF;}
   bottom:15px;
   left: 22px;
   z-index: 10000;
-  background: red;
+  background: #d43f3a;
   color: yellow;
   padding: 3px 5px;
   margin: 0 auto;
   border-radius: 5px;
+  font-weight: bold;
 }
 
 
@@ -579,3 +590,31 @@ a .menu-ico:hover{background:linear-gradient(#006C18, #0A1F0B); color:#FFF;}
 }
 
 
+.about{
+  z-index:1000000;
+  position:fixed;
+  top:50%;
+  left: 50%;
+  width: 300px;
+  height: 400px;
+  margin-left: -150px;
+  margin-top: -200px;
+  border: solid 1px #AAA;
+  border-radius: 5px;
+  padding: 25px 10px;
+  background: white;
+  box-shadow: 0 0 10px 1px #aaa;
+  visibility: hidden;
+}
+
+.about:hover{
+  background: #FFF287;
+}
+
+#about{
+  font-size: 0.8em;
+}
+
+.about .textual{
+  margin: 20px 15px;
+}

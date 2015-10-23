@@ -90,6 +90,7 @@ class PlanPago(TimeStampModel):
         ('PEN', 'Pendiente'), 
         ('PAG', 'Pagado'),
         ('ANU', 'Anulado'),
+        ('EXO', 'Exonerado'),
     )
     curso_alumno = models.ForeignKey(CursoAlumno, verbose_name='Curso | Alumno', on_delete=models.PROTECT)
     cantidad = models.DecimalField(max_digits=2, decimal_places=0, verbose_name='Cantidad', default=1)
