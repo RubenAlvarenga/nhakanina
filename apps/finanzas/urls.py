@@ -73,8 +73,11 @@ urlpatterns = patterns('',
     #imprimir
     url(r'^alumnos/prtExtracto/$', ('apps.finanzas.views.imprimirExtracto'), name ='prt_extracto'),
 
-    url(r'^cursos/autCursoExamen/(?P<pk>[\d]+)$', custom_permission_required('catedras.change_cursoalumno')(AutorizarCursoDetailView.as_view()), name ='det_autorizar_curso'),
+    url(r'^cursos/autCursoExamen/(?P<pk>[\d]+)$', custom_permission_required('finanzas.change_planpago')(AutorizarCursoDetailView.as_view()), name ='det_autorizar_curso'),
+    url(r'^cursos/autCursoExamen/$', custom_permission_required('finanzas.change_planpago')(AutorizarCursoDetailView.as_view()), name ='det_autorizar_curso'),
 
+
+    url(r'^cursos/get_planesMateriaCurso_ajax/$', ('apps.finanzas.views.get_planesMateriaCurso_ajax'), name ='get_planesMateriaCurso'),
 
 
 )

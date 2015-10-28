@@ -22,8 +22,13 @@ class PlanPagoInine(admin.TabularInline):
 class CursoAdmin(admin.ModelAdmin):
     form = CursoForm
     filter_horizontal = ('aranceles', 'examen_extra')
-    list_display=('id', 'carrera' )
+    list_display=('id', 'carrera', 'turno', 'get_anho' )
     inlines = (CursoMateriaInline, )
+    search_fields = ['carrera__nombre', 'turno', 'inicio']
+    list_display_links = ('turno',)
+
+    def get_anho(self, obj):
+        return obj.inicio.year
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         # Filtrar Aranceles de Matricula

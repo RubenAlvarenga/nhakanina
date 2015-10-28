@@ -64,7 +64,7 @@ class PersonaSingleTableView(SingleTableView):
 
 class EstadoDeCuentaSingleTableView(SingleTableView):
     template_name='base/generic_list.html'
-    model = Persona
+    model = Alumno
     table_class = EstadoDeCuentaTable
     def get_queryset(self):
         table = super(EstadoDeCuentaSingleTableView, self).get_queryset()
@@ -729,7 +729,7 @@ class CursoDetailView(DetailView):
         context = super(CursoDetailView, self).get_context_data(**kwargs)
         context['matriculas'] = PlanPago.objects.filter(curso_alumno__curso=context['object'], concepto__concepto__tipo_concepto__tipo_concepto__id=1).order_by('curso_alumno', 'concepto')
         context['cuotas'] = PlanPago.objects.filter(curso_alumno__curso=context['object'], concepto__concepto__tipo_concepto__tipo_concepto__id=2).order_by('curso_alumno', 'secuencia')
-        context['evaluacion'] = PlanPago.objects.filter(curso_alumno__curso=context['object'], concepto__concepto__tipo_concepto__tipo_concepto__id=3)
+        context['evaluacion'] = PlanPago.objects.filter(curso_alumno__curso=context['object'], concepto=context['object'].examen_ordinario, concepto__concepto__tipo_concepto__tipo_concepto__id=3)
 
         materias = self.object.materias.all()
         alumnos = self.object.get_alumnos.all()
@@ -835,10 +835,6 @@ class FraccionarPlanFormView(SuccessMessageMixin, FormView):
                 else:
                     #return super(FraccionarPlanFormView, self).form_valid(form)
                     return self.get_success_url(plan_pago.curso_alumno)
-
-
-
-
     
     def form_invalid(self, form):
         if not form.cleaned_data.get('vencimiento'):
@@ -857,18 +853,14 @@ class MateriasSelectForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super(MateriasSelectForm, self).__init__(*args, **kwargs)
         self.fields['materia'] = forms.ChoiceField(choices=[(x.id, x) for x in  args[1].materias.all() ])
-        self.fields['materia'].widget.attrs.update({ 'class':'form-control'})
+        self.fields['materia'].widget.attrs.update({ 'class':'form-control select-materia'})
 
-class AutorizarCursoDetailView(DetailView):
+class AutorizarCursoDetailView(DetailView, FormView):
     model=Curso
     template_name='finanzas/autCursoExamen.html'
-
-
     def get_context_data(self, **kwargs):
         context = super(AutorizarCursoDetailView, self).get_context_data(**kwargs)
-        context['evaluacion'] = PlanPago.objects.filter(curso_alumno__curso=context['object'], concepto__concepto__tipo_concepto__tipo_concepto__id=3)
-
-
+        context['evaluacion'] = PlanPago.objects.filter(curso_alumno__curso=context['object'], concepto=context['object'].examen_ordinario, concepto__concepto__tipo_concepto__tipo_concepto__id=3)
 
         materias = self.object.materias.all()
         alumnos = self.object.get_alumnos.all()
@@ -888,3 +880,74 @@ class AutorizarCursoDetailView(DetailView):
 
         context['ordinario']=data
         return context
+
+    def get_success_url(self, instance):
+        success_message = msg_render("Cambio de estado Exitoso")
+        messages.success(self.request, success_message)
+        url = reverse('finanzas:det_autorizar_curso', kwargs={'pk': instance.curso_alumno.curso.id})
+        return redirect(url)
+
+    def post(self, request, *args, **kwargs):
+        checks = request.POST.getlist('checks')
+        if not checks:
+            mensaje = msg_render("<strong>Favor seleccione por lo menos un item</strong>")
+            messages.add_message(request, messages.INFO, mensaje)
+            url = request.META['HTTP_REFERER']
+            return HttpResponseRedirect(url)
+        else:
+            ids = map(int, checks)
+            planes=PlanPago.objects.filter(pk__in=ids)
+            accion=request.POST['accion']
+            for plan in planes:
+                if plan.estado != 'PAG':
+                    plan.estado = accion
+                    plan.save()
+            return self.get_success_url(plan)
+
+
+def get_planesMateriaCurso_ajax(request):
+    if request.is_ajax():
+        if request.GET['id_materia'] and request.GET['id_curso']:
+            curso = Curso.objects.get(pk=int(request.GET['id_curso']))
+            try: plan_materias = PlanPago.objects.filter(curso_alumno__curso=curso, concepto=curso.examen_ordinario, materia__id=int(request.GET['id_materia'])).order_by("curso_alumno")
+            except: plan_materias = False
+    template='finanzas/planesMateriaCurso_form.html'
+    return render_to_response(template, {'plan_materias': plan_materias })  
+
+
+
+# class PlanPagoFormView(SuccessMessageMixin, FormView):
+#     template_name='finanzas/addPlanPago.html'
+#     form_class = PlanPagoForm
+#     #success_message = "El recibo %(serie)s %(nro_recibo)s registrado con exito"
+#     def get_success_url(self, instance):
+#         success_message = msg_render("El Plan Pago para <strong>%s</strong> registrado con exito" % (str(instance.curso_alumno)))
+#         messages.success(self.request, success_message)
+#         url = reverse('finanzas:det_persona', kwargs={'pk': instance.curso_alumno.alumno.id})
+#         return redirect(url)
+
+#     def get_form(self, form_class):
+#         form = super(PlanPagoFormView,self).get_form(form_class) #instantiate using parent
+#         #form.fields['materia'].queryset = Materia.objects.filter(pk=0)
+#         return form
+
+
+#     def form_valid(self, form):
+#         instance = form.save(commit=False)
+#         #import pdb; pdb.set_trace()
+#         instance.monto = instance.cantidad * instance.concepto.monto
+#         instance.created_by = self.request.user
+#         if not instance.secuencia:
+#             ultimasecuencia = PlanPago.objects.filter(curso_alumno=instance.curso_alumno, concepto=instance.concepto).order_by('-secuencia')
+#             if ultimasecuencia: instance.secuencia = ultimasecuencia[0].secuencia + 1
+#             else: instance.ultimasecuencia = 0
+#         instance.save()
+#         return self.get_success_url(instance)
+#         #return super(PlanPagoFormView, self).form_valid(form)
+    
+#     def form_invalid(self, form):
+#         if form.cleaned_data.get('curso_alumno'): form.fields['materia'].queryset = form.cleaned_data.get('curso_alumno').curso.materias.all()
+#         messages.info(self.request,"Corrija los Errores")
+#         return super(PlanPagoFormView, self).form_invalid(form)
+
+

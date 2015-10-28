@@ -473,3 +473,12 @@ def recuperarPlan(request, pk):
     mensaje = msg_render("<strong>Plan Recuperado con exito</strong>")
     messages.add_message(request, messages.SUCCESS, mensaje)
     return HttpResponseRedirect(request.META['HTTP_REFERER'])   
+
+
+def get_full_curso_ajax(request):
+    id_curso = request.GET['id_curso']
+    try : curso = get_object_or_404(Curso, id=int(id_curso))
+    except: curso = False
+    if curso: data = curso
+    else: data = "No existe"
+    return HttpResponse(data)

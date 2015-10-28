@@ -57,15 +57,16 @@ class PersonasTable(tables.Table):
 
 
 class EstadoDeCuentaTable(tables.Table):
-    selection = tables.CheckBoxColumn(accessor="pk", orderable=False, attrs = {"td": {"width": "2%"}, "th__input":{"onclick": "", "id":'todosLosCheck', "name":"option"}, "td__input":{"class":"checkboxList", "name":"checks"} } )
+    selection = tables.CheckBoxColumn(accessor="codigo", orderable=False, attrs = {"td": {"width": "2%"}, "th__input":{"onclick": "", "id":'todosLosCheck', "name":"option"}, "td__input":{"class":"checkboxList", "name":"checks"} } )
     get_full_name = tables.LinkColumn('finanzas:det_alumno', args=[A('pk')], verbose_name='nombres', order_by =("apellido1", "apellido2"), attrs={'style':"font-weight:bold"})    
-    estadoCuenta     = CobrarColumn( accessor="id", verbose_name=" ", attrs={"td": {"width": "2%"}, "url":"../alumnos/detAlumno/", "icono":"glyphicon glyphicon-list-alt", "texto":"Estado" }, )
+    estadoCuenta     = CobrarColumn( accessor="codigo", verbose_name=" ", attrs={"td": {"width": "2%"}, "url":"../alumnos/detAlumno/", "icono":"glyphicon glyphicon-list-alt", "texto":"Estado" }, )
+    codigo = tables.Column(verbose_name='Cod')
     class Meta:
-        model = Persona
-        exclude = ('apellido1', 'apellido2', 'nombre1', 'nombre2', 'persona')
+        model = Alumno
+        exclude = ('apellido1', 'apellido2', 'nombre1', 'nombre2', 'persona_ptr')
         per_page=ITEM_POR_PAGINA
         attrs = {"class": "table table-striped table-hover" }
-        sequence = ("selection", "id", "get_full_name", "cedula", "...", "estadoCuenta")
+        sequence = ("selection", "id","codigo", "get_full_name", "cedula", "...", "estadoCuenta")
 
 
 
@@ -165,5 +166,3 @@ class ExtractoCursoAlumnoTable(tables.Table):
         return "%s-%s" % (value.serie, unicode(value.nro_recibo))
     def render_monto(self, value):
         return intcomma(value)
-
-

@@ -20,18 +20,18 @@
 <div class="linea100"><div class="linea20">Dias de Clase: </div><div class="linea80">{% for item in  object.dias.all %} {{item}} {% endfor %}</div></div>
 <div class="linea100"><div class="linea20">Examen Ordinario:</div>
 	<div class="linea80">{{object.examen_ordinario.concepto}} 
-		<div class="align-right" style="font-size:1.1em"><strong>{{object.examen_ordinario.monto|intcomma}}</strong></div>
+		<div class="align-right"><strong>{{object.examen_ordinario.monto|intcomma}}</strong></div>
 	</div>
 </div>
 
 {% for materia in materia_select %}
-<div class="linea100"><div class="linea20">{{materia.label_tag}}</div><div style="width:80%; float:left">{{materia}}</div></div>
+	<div class="linea100"><div class="linea20">{{materia.label_tag}}</div><div class="linea80" style="margin-top:0; border-bottom:None">{{materia}}</div></div>
 {% endfor %}
+<br><br>
 
-
+<form action="." method="POST">{% csrf_token %}<div style="clear:both; margin-top:10px" id="formulario"></div></form>
 
 <div class="extracto">
-
 	{% if ordinario %}
 		<div class="grouper"><h6>Examen Ordinario</h6></div>
 		<div class="contenedor-extendible">
@@ -61,7 +61,19 @@
 											<a title="{{campo.get_recibo.fecha}} {{campo.get_recibo.monto}}" href="{% url 'finanzas:det_recibo' campo.get_recibo.id %}"><strong>{{campo.get_recibo.serie}}-{{campo.get_recibo.nro_recibo}}</strong></a>
 										</td>
 									{% else %}
-										<td style="color:#999; border-left:1px solid #ddd"><small>{{campo.estado}}</small></td>
+										{% if campo.estado == 'BLO' %}
+											<td style="border-left:1px solid #ddd">
+												<small><span style="color:red">{{campo.estado}}</span></small>
+											</td>
+										{% else %}	
+											{% if campo.estado == 'EXO' %}
+												<td style="border-left:1px solid #ddd">
+													<small><span style="color:green">{{campo.estado}}</span></small>
+												</td>
+											{% else %}
+												<td style="color:#999; border-left:1px solid #ddd"><small>{{campo.estado}}</small></td>
+											{% endif %}
+										{% endif %}
 									{% endif %}
 								{% else %}
 									<td style="border-left:1px solid #ddd">{{campo}}</td>
@@ -82,12 +94,22 @@
 {% block scripts %}
 <script type="text/javascript">
     $(document).ready(function() {
-    	$("#id_materia").change(function() {
-    		var id_matera = $("#id_materia").find('option:selected').val()
-    		console.log(id_materia)
-            get_planes_materia(id_materia)
+    	$("#id_materia").click(function() {
+    		console.log("cambio")
+    		var id_materia = $("#id_materia").val();
+    		console.log({{object.id}})
+    		get_planes_materia(id_materia)
 		});
         function get_planes_materia(id_materia){
+            $.ajax({
+                data : {'id_materia' : id_materia, 'id_curso' : {{object.id}}  },
+                url : '/finanzas/cursos/get_planesMateriaCurso_ajax/',
+                type: 'get',
+                success : function(table){
+                	console.log(table)
+                    $('#formulario').html(table);
+                }                                
+            });
 
         }
     });

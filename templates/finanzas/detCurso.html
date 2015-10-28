@@ -136,8 +136,15 @@
 	</table>
 
 -->
+
 	{% if ordinario %}
-		<div class="grouper"><h6>Examen Ordinario</h6></div>
+		<div class="grouper">
+			<h6 style="height:32px">Examen Ordinario
+		        <div class="align-right">
+		        	<a href="{% url 'finanzas:det_autorizar_curso' curso.id %}"><button type="button" class="btn btn-info btn-xs"><span class="glyphicon glyphicon-ok-circle"></span> Autorizaciones</button></a>
+		        </div>
+			</h6> 
+		</div>
 		<div class="contenedor-extendible">
 		<table width="auto" class="table table-hover table-small">
 			{% for ord in ordinario  %}
@@ -165,7 +172,19 @@
 											<a title="{{campo.get_recibo.fecha}} {{campo.get_recibo.monto}}" href="{% url 'finanzas:det_recibo' campo.get_recibo.id %}"><strong>{{campo.get_recibo.serie}}-{{campo.get_recibo.nro_recibo}}</strong></a>
 										</td>
 									{% else %}
-										<td style="color:#999; border-left:1px solid #ddd"><small>{{campo.estado}}</small></td>
+										{% if campo.estado == 'BLO' %}
+											<td style="border-left:1px solid #ddd">
+												<small><span style="color:red">{{campo.estado}}</span></small>
+											</td>
+										{% else %}	
+											{% if campo.estado == 'EXO' %}
+												<td style="border-left:1px solid #ddd">
+													<small><span style="color:green">{{campo.estado}}</span></small>
+												</td>
+											{% else %}
+												<td style="color:#999; border-left:1px solid #ddd"><small>{{campo.estado}}</small></td>
+											{% endif %}
+										{% endif %}
 									{% endif %}
 								{% else %}
 									<td style="border-left:1px solid #ddd">{{campo}}</td>
@@ -178,5 +197,7 @@
 		</table>
 		</div>
 	{% endif %}
+
+
 </div>
 {% endblock content %}

@@ -33,6 +33,7 @@ urlpatterns = patterns('',
     url(r'^materias/updMateria/(?P<pk>[\d]+)$', custom_permission_required('catedras.change_materia')(MateriaUpdateView.as_view()), name='upd_materia'),
     url(r'^materias/delMateria/(?P<pk>[\d]+)$', custom_permission_required('catedras.delete_materia')(MateriaDeleteView.as_view()), name='del_materia'),
 
+    url(r'^cursos/get_full_curso_ajax/$', 'apps.catedras.views.get_full_curso_ajax' , name ='get_full_curso'),
 
 )
 

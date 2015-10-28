@@ -25,7 +25,7 @@
 	<div>
 		<table class="table table-hover">
 		{% for curso in object.get_cursos_activos.all %}
-			<tr><td>{{curso.curso}}</td></tr>		
+			<tr><td><a href="{% url 'catedras:det_curso' curso.curso.id %}">{{curso.curso}}</a></td></tr>		
 		{% endfor %}
 		</table>
 	</div>

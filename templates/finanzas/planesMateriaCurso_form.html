@@ -1,0 +1,54 @@
+{% if plan_materias %}
+<div class="titulo container-fluid"><span></span>
+    <div class="btn-group align-right">
+        <div class="btn btn-info btn-sm">Cambiar al Estado</div>
+        <button type="button" class="btn btn-info dropdown-toggle btn-sm" data-toggle="dropdown">
+            <span class="caret"></span>
+            <span class="sr-only">Toggle Dropdown</span>
+        </button>
+        <ul class="dropdown-menu" role="menu">
+            <li class="btn-default"><button class="btn-input" type="submit" name="accion" value="PEN"> Pendiente</button></li>
+            <li class="btn-danger"><button class="btn-input" type="submit" name="accion" value="BLO"> Bloqueado</button></li>
+            <li class="btn-success"><button class="btn-input" type="submit" name="accion" value="EXO"> Exonerado</button></li>
+        </ul>
+    </div>  
+</div>   
+
+
+<table class="table table-hover table-small">
+	<thead>
+		<tr>
+			<th width="10"></th>
+			<th>Alumno</th>
+			<th>Estado</th>
+			<th width="600">Materia</th>
+		</tr>
+	</thead>
+	<tbody>
+	{% for plan in plan_materias %}
+	<tr 
+	{% if plan.estado == 'PAG'%}
+		style="background:#CBF9CE; font-style:italic"
+	{% endif %}
+	{% if plan.estado == 'BLO'%}
+		style="background:#FFCACA;"
+	{% endif %}
+	{% if plan.estado == 'EXO'%}
+		style="background:#CBF9CE"
+	{% endif %}
+	>
+		<td>
+		{% if not  plan.estado == 'PAG' %}
+			<input type="checkbox" id="checkbox" name="checks" value="{{plan.id}}">
+		{% endif %}
+		</td>
+		<td><div class="align-left" style="color:#888; width:80px">{{plan.curso_alumno.alumno.cedula}}</div> {{plan.curso_alumno.alumno}}</td>
+		<td>{{plan.estado}}</td>
+		<td>{{plan.materia}}</td>
+	</tr>
+	{% endfor %}
+	</tbody>
+</table>
+{% endif %}
+
+

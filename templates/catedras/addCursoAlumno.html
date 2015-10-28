@@ -6,7 +6,7 @@
 	<script type="text/javascript" src="/static/admin/js/jquery.init.js"></script>
 	{{form.media}}
     <style>
-        #id_alumno{
+        #id_alumno, #id_curso{
             width: 10%;
             height: 34px;
             padding: 6px 12px;
@@ -24,7 +24,7 @@
         }
         label{font-weight: bolder !important; color: #191919; }
         .requerido strong{display: none;}
-        .id_alumno{background: #E5E5E5; padding: 8px; border-radius: 5px;}
+        .id_alumno, .id_curso{background: #E5E5E5; padding: 8px; border-radius: 5px;}
 
     </style>
 {% endblock headExtra %}
@@ -41,7 +41,7 @@
                 <div class="col-sm-9">
                     {% if field.field.required %}
                         <div class="requerido {% if field.name == 'alumno' %}get_full_name{% endif %}">{{field}}
-                            {% if field.name == 'alumno' %} <span class="{{ field.auto_id }}"></span>{% endif %}
+                            {% if field.name == 'alumno' or field.name == 'curso' %} <span class="{{ field.auto_id }}"></span>{% endif %}
                         </div> 
                     {% else %}
                         <div class="norequerido">{{field}}</div>
@@ -68,21 +68,27 @@
     <script type="text/javascript">
         (function($) {
             $(document).ready(function() {
-                get_full_name($('#id_alumno').val()) 
+                get_full_name($('#id_alumno').val());
+                get_curso($('#id_curso').val());
 
-/*                $('.add-another').click(function(e) {
-                    e.preventDefault();
-                    showAddAnotherPopup(this);
-                });
-*/
-                $('.related-lookup').click(function(e) {
+                $('#lookup_id_alumno').click(function(e) {
                     e.preventDefault();
                     showRelatedObjectLookupPopup(this);
                     $('#id_alumno').focus()
                 });
+                $('#lookup_id_curso').click(function(e) {
+                    e.preventDefault();
+                    showRelatedObjectLookupPopup(this);
+                    $('#id_curso').focus()
+                });
+
+                $('#id_curso').on("focus blur", function() {
+                    get_curso($(this).val())
+                }); 
                 $('#id_alumno').on("focus blur", function() {
                     get_full_name($(this).val())
                 }); 
+
                 function get_full_name(id){
                     console.log(id)
                     $.ajax({
@@ -92,6 +98,17 @@
                         success : function(data){
                             console.log(data)
                             $('.id_alumno').html(data);
+                        }                                
+                    });
+                }
+                function get_curso(id){
+                    $.ajax({
+                        data : {'id_curso' : id  },
+                        url : '/catedras/cursos/get_full_curso_ajax/',
+                        type: 'get',
+                        success : function(data){
+                            console.log(data)
+                            $('.id_curso').html(data);
                         }                                
                     });
                 }

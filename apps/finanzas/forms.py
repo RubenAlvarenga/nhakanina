@@ -124,3 +124,4 @@ class fracPlanPagoForm(forms.ModelForm):
         widgets = {
             'vencimiento': SelectDateWidget(years=range(2000, datetime.now().date().year + 2, 1), attrs = {'class':'form-control', 'style':'width:100px; float:left'}),
         }
+

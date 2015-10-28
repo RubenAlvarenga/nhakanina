@@ -76,9 +76,9 @@ class CursoAlumnoForm(forms.ModelForm):
         model = CursoAlumno
         exclude = ['estado', 'observacion']
         widgets = {
-            'curso' : forms.Select(attrs = {'class':'form-control'}),
+            'curso' : ForeignKeyRawIdWidget(CursoAlumno._meta.get_field('curso').rel, site),
             'alumno': ForeignKeyRawIdWidget(CursoAlumno._meta.get_field('alumno').rel, site),
-            'fecha_inscripcion': SelectDateWidget(years=range(datetime.now().date().year - 1, datetime.now().date().year + 1, 1), attrs = {'class':'form-control', 'style':'width:100px; float:left'}),
+            'fecha_inscripcion': SelectDateWidget(years=range(datetime.now().date().year - 8, datetime.now().date().year + 1, 1), attrs = {'class':'form-control', 'style':'width:100px; float:left'}),
         }
     def clean(self):
         alumno = self.cleaned_data.get('alumno')

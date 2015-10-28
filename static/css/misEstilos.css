@@ -147,6 +147,11 @@ border-top-right-radius: 0;
   width: 100%;
 }
 
+.select-materia{
+  height: 30px;
+  margin: 0;
+}
+
 .form-horizontal .control-label{background: #E3E3E3;  line-height:0.8; height: 100%; padding: 8px}
 .form-horizontal .control-label label{padding-top: 3px; margin: 0}
 .form-horizontal .imput-form{float: right;}
@@ -603,7 +608,7 @@ a .menu-ico:hover{background:linear-gradient(#006C18, #0A1F0B); color:#FFF;}
   border-radius: 5px;
   padding: 25px 10px;
   background: white;
-  box-shadow: 0 0 10px 1px #aaa;
+  box-shadow: 0 0 10px 1px #333;
   visibility: hidden;
 }
 
