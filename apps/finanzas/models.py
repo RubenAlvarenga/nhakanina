@@ -5,6 +5,7 @@ from apps.aranceles.models import Arancel
 from apps.entidades.models import Alumno, Persona
 from django.contrib.auth.models import User
 from apps.catedras.models import CursoAlumno, CursoMateria, Materia
+from apps.descuentos.models import Descuento
 from datetime import date, datetime
 from apps.functions import mesificar
 
@@ -34,6 +35,9 @@ class Recibo(TimeStampModel):
     motivo_anulacion = models.TextField( verbose_name='Motivo Anulacion', blank=True, null=True)
     fecha_anulacion = models.DateTimeField(blank=True, null=True, editable=False)
     usuario_anulacion = models.ForeignKey(User, editable=False, related_name='usuario_anulacion_recibo', blank=True, null=True, on_delete=models.PROTECT)
+
+    descuentos = models.ManyToManyField(Descuento, through='ReciboDescuento', blank=True)
+
 
     @property
     def get_recibo(self):
@@ -165,3 +169,17 @@ class ReciboPlanPago(Recibo):
 
 
 
+class ReciboDescuento(models.Model):
+    recibo = models.ForeignKey(Recibo, verbose_name='Recibo', on_delete=models.PROTECT)
+    descuento = models.ForeignKey(Descuento, verbose_name='Descuento', on_delete=models.PROTECT)
+
+    porcentaje = models.DecimalField(max_digits=3, decimal_places=0, verbose_name='Porcentaje', null=True, blank=True )
+    monto = models.DecimalField(max_digits=7, decimal_places=0, verbose_name='Monto', null=True, blank=True )
+
+    class Meta:
+        verbose_name = 'Recibo Descuento'
+        verbose_name_plural = 'Recibos Descuentos'
+        default_permissions = ('add', 'change', 'delete', 'view', 'list')
+
+    def __unicode__(self):
+        return u'%s %s' % (unicode(self.porcentaje), unicode(self.monto))

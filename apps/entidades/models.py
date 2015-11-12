@@ -11,6 +11,7 @@ class Persona(models.Model):
     apellido1=models.CharField(max_length=50, verbose_name='Primer Apellido')
     apellido2=models.CharField(max_length=50, verbose_name='Segundo Apellido', blank=True)
     fecha_nacimiento=models.DateField(verbose_name='Nacimiento', blank=True, null=True)
+    socio_afemec=models.BooleanField(default=False, verbose_name='Socio Afemec')
     
     @property
     def get_full_name(self):

@@ -24,22 +24,27 @@
 
 
     <div class="recibo-contenedor {% if object.estado == 'ANU' %}letrasgrises{% endif %}">
-    	<div class="cincuenta nro-recibo"><div class="align-left">{{object.serie}}-</div> {{object.nro_recibo}}</div>
-    	<div style="width:80%" class="subrayado-suave">Fecha: {{object.fecha}}</div>
-    	<div class="cincuenta subrayado-suave">Recibido de: 
+        
+
+        <div class="cincuenta nro-recibo align-right"><div class="align-left">{{object.serie}}-</div> {{object.nro_recibo}}</div>
+        <div class="cincuenta monto-total align-left"><div class="align-left">Gs.</div> {{object.monto|intcomma}} </div>
+
+
+    	<div style="width:63%" class="subrayado-suave">Fecha: {{object.fecha}}</div>
+    	<div style="width:63%" class="subrayado-suave">Recibido de: 
             {% if  object.persona.es_alumno %}
                 <a href="{% url 'finanzas:det_alumno' object.persona.es_alumno.codigo %}"><strong>{{object.persona.get_full_name}}</strong></a>
             {% else %}
                 <strong>{{object.persona.get_full_name}}</strong>
             {% endif %}
+            <div style="margin-right:20px" class="align-right">C.I.: <strong>{{object.persona.cedula|intcomma}}</strong></div>
         </div>
-        <div class="cincuenta subrayado-suave">C.I.: <strong>{{object.persona.cedula|intcomma}}</strong></div>
 		<div class="recibo-monto subrayado-suave">Guaranies: <strong>{{object.monto|intcomma}}</strong>  ({{totalenletras|capfirst}} Gs.)</div>
 		<div class="subrayado-suave">En Concepto de: <strong>{{object.cantidad}} {{object.concepto.concepto}}</strong></div>
 		<div class="subrayado-suave">Cajero: <strong>{{object.cajero.first_name}} {{object.cajero.last_name}}</strong></div>
         <div class="recibo-detalle">
 		{% if object.get_planes and object.get_planes.plan_pago.all %}
-			<table  width="100%"class="table table-hover table-small">
+			<table  width="100%"class="table table-hover table-small" style="margin-bottom:0">
                 <thead>
                 <tr>
                     <th>ID</th>
@@ -57,13 +62,15 @@
                         <small> | {{plan.materia}}</small>
                     {% endif %}</td>
                 	<td>{{plan.concepto.monto|intcomma}}</td>
-                	<td>{{plan.monto|intcomma}}</td>
+                	<td align="right">{{plan.monto|intcomma}}</td>
                 </tr>
                 {% endfor %}
+                {% if not object.recibodescuento_set.all%}
                 <tr>
                 	<td align="right" colspan="4">{{totalenletras|capfirst}} Gs.</td>
-                	<td><strong>{{object.monto|intcomma}}</strong></td>
+                	<td align="right"><strong>{{object.monto|intcomma}}</strong></td>
                 </tr>
+                {% endif %}
 			</table>
         {% else %}
             <table  width="100%"class="table table-hover table-small">
@@ -79,15 +86,40 @@
                     <td>{{object.cantidad}}</td>
                     <td>{{object.concepto.concepto}}</td>
                     <td>{{object.concepto.monto|intcomma}}</td>
-                    <td>{{object.monto|intcomma}}</td>
+                    <td align="right">{{object.monto|intcomma}}</td>
                 </tr>
                 <tr>
                     <td align="right" colspan="3">{{totalenletras|capfirst}} Gs.</td>
-                    <td><strong>{{object.monto|intcomma}}</strong></td>
+                    <td align="right"><strong>{{object.monto|intcomma}}</strong></td>
                 </tr>
             </table>
 
 		{% endif %}
+        {% if object.recibodescuento_set.all%}
+            <table width="100%" class="table table-hover table-small" style="font-style: italic">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Motivo</th>
+                        <th>Porcentaje</th>
+                        <th>Monto</th>
+                    </tr>
+                </thead>
+                {% for desc in object.recibodescuento_set.all %}
+                    <tr>
+                        <td style="color: #CCC"><small>{{desc.id}}</small></td>
+                        <td>{{desc.descuento}}</td>
+                        <td>{{desc.porcentaje}}%</td>
+                        <td align="right">- {{desc.monto|intcomma}}</td>
+                    </tr>
+                {% endfor %}
+                <tr style="font-style: normal">
+                    <td align="right" colspan="3">{{totalenletras|capfirst}} Gs.</td>
+                    <td align="right"><strong>{{object.monto|intcomma}}</strong></td>
+                </tr>
+            </table>
+        {% endif %}
+
         </div>
         
         {% if object.estado == 'ANU' %}

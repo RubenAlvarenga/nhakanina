@@ -4,11 +4,10 @@ from .views import AlumnoSingleTableView, PersonaSingleTableView,  AlumnoDetailV
     PlanPagoDetailView, PlanPagoUpdateView, PlanPagoDeleteView, CursoExtractoSingleTableView, CursoDetailView, FraccionarPlanFormView, EstadoDeCuentaSingleTableView, \
     AutorizarCursoDetailView
 from apps.entidades.views import AlumnoCreateView
-from apps.catedras.views import CursoCreateView
 from django.views.generic import TemplateView
 from django.contrib.auth.decorators import login_required, permission_required
 from apps.decorators import custom_permission_required
-
+from apps.catedras.views import CursoCreateView
 
 urlpatterns = patterns('',
 
@@ -69,7 +68,7 @@ urlpatterns = patterns('',
     url(r'^cursos/$', custom_permission_required('catedras.list_cursos')(CursoExtractoSingleTableView.as_view()), name ='lst_curso'),
     url(r'^cursos/addCurso/$', custom_permission_required('catedras.add_curso')(CursoCreateView.as_view()), name ='add_curso'),
     url(r'^cursos/detCurso/(?P<pk>[\d]+)$', custom_permission_required('catedras.det_curso')(CursoDetailView.as_view()), name ='det_curso'),
-
+    
     #imprimir
     url(r'^alumnos/prtExtracto/$', ('apps.finanzas.views.imprimirExtracto'), name ='prt_extracto'),
 

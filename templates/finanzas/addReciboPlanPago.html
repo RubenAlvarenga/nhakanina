@@ -8,77 +8,134 @@
 {% block content %}
     <div class="titulo container-fluid"><h3>Registrar {{ form|form_model_name|capfirst }}</h3></div>
     <div class="formulario">    
-    	<form class="form-horizontal" role="form" action="/finanzas/recibos/addReciboPlanPago/" method="POST" enctype="multipart/form-data">{% csrf_token %}
-			<!-- FECHA -->
-			<div class="form-group">
-			    <label for="{{ form.fecha.auto_id }}" class="col-sm-3 control-label">{{ form.fecha.label_tag }}</label>
-			    <div class="col-sm-9">			    
-			        <div class="requerido">{{form.fecha}}</div>
-			    {% if form.fecha.errors %}
-			        <div class="alert alert-danger" id="camporequerido" role="alert"><span class="glyphicon glyphicon-remove-sign align-left" id="errorlogin"></span> {{form.fecha.errors}}</div> 
-			    {% endif %}
-			    </div>
-			</div>
-			<!-- SERIE y RECIBO -->
-			<div class="form-group">
-			    <label for="{{ form.nro_recibo.auto_id }}" class="col-sm-3 control-label">{{ form.nro_recibo.label_tag }}</label>
-			    <div class="col-sm-9">
-			        <div class="requerido"> <div style="width:5%; float:left" >{{form.serie}}</div> <div  style="width:95%; float:left" >{{form.nro_recibo}}</div></div>
-			    {% if form.serie.errors %}
-			        <div class="alert alert-danger" id="camporequerido" role="alert"><span class="glyphicon glyphicon-remove-sign align-left" id="errorlogin"></span> {{form.serie.errors}}</div> 
-			    {% endif %}
-			    {% if form.nro_recibo.errors %}
-			        <div class="alert alert-danger" id="camporequerido" role="alert"><span class="glyphicon glyphicon-remove-sign align-left" id="errorlogin"></span> {{form.nro_recibo.errors}}</div> 
-			    {% endif %}
-			    </div>
-			</div>
-			<!-- PERSONA -->
-			<div class="form-group">
-			    <label for="{{ form.persona.auto_id }}" class="col-sm-3 control-label">{{ form.persona.label_tag }}</label>
-			    <div class="col-sm-9">			    
-			        <div class="requerido">{{form.persona}}</div>
-			    {% if form.persona.errors %}
-			        <div class="alert alert-danger" id="camporequerido" role="alert"><span class="glyphicon glyphicon-remove-sign align-left" id="errorlogin"></span> {{form.persona.errors}}</div> 
-			    {% endif %}
-			    </div>
-			</div>
-			<!-- PLANES DE PAGOS -->
-			<div class="form-group">
-			    <label for="{{ form.plan_pago.auto_id }}" class="col-sm-3 control-label">{{ form.plan_pago.label_tag }}</label>
-			    <div class="col-sm-9">			    
-			        <div class="requerido">
-			        <table class="table table-hover">
-			        	{% for pk, plan in form.plan_pago.field.widget.choices %}
-			        	<tr>
-				        	<td><input type="checkbox" id="checkbox" name="plan_pago" value="{{pk}}" checked="checked"></td>
-				        	<td><small><div style="color:#AAA">{{pk}}</div></small></td>
-			        		<td>{{plan}}</td>
-			        		<td>{{plan|get_mes_plan:pk|date:"M"}} {% if plan|get_materia_plan:pk %}<small>{{plan|get_materia_plan:pk}}</small>{% endif %}</td>
-			        		<td style="text-align:right">{{plan|get_monto_plan:pk|intcomma }}</td>
-			        	</tr>
-			        	{% endfor %}
-			        	<tr style="background:#ddd">
-			        		<td colspan="4"><div class="align-right">Gs.</div></td>
-			        		<td style="text-align:right"><strong><div id="totales">{{total|intcomma}}</div></strong></td>
-			        	</tr>
-			        </table>
-			        </div>
-			    {% if form.plan_pago.errors %}
-			        <div class="alert alert-danger" id="camporequerido" role="alert"><span class="glyphicon glyphicon-remove-sign align-left" id="errorlogin"></span> {{form.plan_pago.errors}}</div> 
-			    {% endif %}
-			    </div>
-			</div>
+        <form class="form-horizontal" role="form" action="/finanzas/recibos/addReciboPlanPago/" method="POST" enctype="multipart/form-data">{% csrf_token %}
+            <!-- FECHA -->
+            <div class="form-group">
+                <label for="{{ form.fecha.auto_id }}" class="col-sm-3 control-label">{{ form.fecha.label_tag }}</label>
+                <div class="col-sm-9">              
+                    <div class="requerido">{{form.fecha}}</div>
+                {% if form.fecha.errors %}
+                    <div class="alert alert-danger" id="camporequerido" role="alert"><span class="glyphicon glyphicon-remove-sign align-left" id="errorlogin"></span> {{form.fecha.errors}}</div> 
+                {% endif %}
+                </div>
+            </div>
+            <!-- SERIE y RECIBO -->
+            <div class="form-group">
+                <label for="{{ form.nro_recibo.auto_id }}" class="col-sm-3 control-label">{{ form.nro_recibo.label_tag }}</label>
+                <div class="col-sm-9">
+                    <div class="requerido"> <div style="width:5%; float:left" >{{form.serie}}</div> <div  style="width:95%; float:left" >{{form.nro_recibo}}</div></div>
+                {% if form.serie.errors %}
+                    <div class="alert alert-danger" id="camporequerido" role="alert"><span class="glyphicon glyphicon-remove-sign align-left" id="errorlogin"></span> {{form.serie.errors}}</div> 
+                {% endif %}
+                {% if form.nro_recibo.errors %}
+                    <div class="alert alert-danger" id="camporequerido" role="alert"><span class="glyphicon glyphicon-remove-sign align-left" id="errorlogin"></span> {{form.nro_recibo.errors}}</div> 
+                {% endif %}
+                </div>
+            </div>
+            <!-- PERSONA -->
+            <div class="form-group">
+                <label for="{{ form.persona.auto_id }}" class="col-sm-3 control-label">{{ form.persona.label_tag }}</label>
+                <div class="col-sm-9">              
+                    <div class="requerido">{{form.persona}}</div>
+                {% if form.persona.errors %}
+                    <div class="alert alert-danger" id="camporequerido" role="alert"><span class="glyphicon glyphicon-remove-sign align-left" id="errorlogin"></span> {{form.persona.errors}}</div> 
+                {% endif %}
+                </div>
+            </div>
+            <!-- PLANES DE PAGOS -->
+            <div class="form-group">
+                <label for="{{ form.plan_pago.auto_id }}" class="col-sm-3 control-label">{{ form.plan_pago.label_tag }}</label>
+                <div class="col-sm-9">              
+                    <div class="requerido">
+                    <table style="margin-bottom: 0;" class="table table-hover">
+                        {% for pk, plan in form.plan_pago.field.widget.choices %}
+                        <tr>
+                            <td><input type="checkbox" class="chk_plan" id="checkbox" name="plan_pago" value="{{pk}}" checked="checked"></td>
+                            <td><small><div style="color:#AAA">{{pk}}</div></small></td>
+                            <td>{{plan}}</td>
+                            <td>{{plan|get_mes_plan:pk|date:"M"}} {% if plan|get_materia_plan:pk %}<small>{{plan|get_materia_plan:pk}}</small>{% endif %}</td>
+                            <td style="text-align:right">{{plan|get_monto_plan:pk|intcomma }}</td>
+                        </tr>
+                        {% endfor %}
+                        <tr>
+                            <td colspan="4"><div class="align-right">Gs.</div></td>
+                            <td style="text-align:right; background:#ddd"><strong><div class="total_planes">{{total|intcomma}}</div></strong></td>
+                        </tr>
+                    </table>
+                    </div>
+                {% if form.plan_pago.errors %}
+                    <div class="alert alert-danger" id="camporequerido" role="alert"><span class="glyphicon glyphicon-remove-sign align-left" id="errorlogin"></span> {{form.plan_pago.errors}}</div> 
+                {% endif %}
+                </div>
+            </div>
 
-			{% for field in form %}
-			{% endfor %}
-			<div class="form-group">
-			    <div class="col-sm-offset-7 col-sm-5">
-			        <button type="submit" class="btn btn-primary align-right"><span class="glyphicon glyphicon-ok-circle"></span> Registrar Recibo</button>
-			        <a href="../" type="submit" class="btn btn-default align-right"><span class="glyphicon glyphicon-remove-circle"></span> Cancelar</a>
-			    </div>
-			</div>  
-    	</form>
-	</div>
+            <!-- DESCUENTOS -->
+            {% if form.descuentos.field.widget.choices %}
+                <div class="form-group">
+                    <label for="{{ form.descuentos.auto_id }}" class="col-sm-3 control-label">{{ form.descuentos.label_tag }}</label>
+                    <div class="col-sm-9">              
+                        <div class="requerido">
+                        <table style="margin-bottom: 0;" class="table table-hover">
+                            {% for pk, descuento in form.descuentos.field.widget.choices %}
+                            <tr>
+                                <td><input type="checkbox" class="chk_descuento" id="checkbox" name="descuentos" value="{{pk}}" ></td>
+                                <td><small><div style="color:#AAA">{{pk}}</div></small></td>
+                                <td>{{descuento}}</td>
+                                <td>{{descuento|get_descuento_porcentaje:pk}}%</td>
+                            </tr>
+                            {% endfor %}
+                        </table>
+                        </div>
+                    {% if form.descuentos.errors %}
+                        <div class="alert alert-danger" id="camporequerido" role="alert"><span class="glyphicon glyphicon-remove-sign align-left" id="errorlogin"></span> {{form.descuentos.errors}}</div> 
+                    {% endif %}
+                    </div>
+                </div>                
+            {% endif %}
+
+
+            {% if descuentos %}
+                
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Descuentos:</label>
+                <div class="col-sm-9">
+                    <div class="requerido">
+                    <table class="table table-hover">
+                    {% for d in descuentos %}
+                    <tr>
+                        <td><input type="checkbox" id="checkbox" class="chk_descuento" name="descuentos" value="{{d.pk}}"></td>
+                        <td>{{d.motivo}}</td>
+                        <td>{{d.porcentaje}}%</td>
+                    </tr>
+                    {% endfor %}                        
+                    </table>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+
+
+            <div class="totalglobal"><span class="align-left">Gs.</span> <div class="total_descuentos">{{total|intcomma}}</div></div>
+
+
+
+
+
+
+
+
+            <div class="form-group">
+                <div class="col-sm-offset-7 col-sm-5">
+                    <button type="submit" class="btn btn-primary align-right"><span class="glyphicon glyphicon-ok-circle"></span> Registrar Recibo</button>
+                    <a href="../" type="submit" class="btn btn-default align-right"><span class="glyphicon glyphicon-remove-circle"></span> Cancelar</a>
+                </div>
+            </div>  
+        </form>
+    </div>
+
+    
+
 {% endblock content %}
 
 
@@ -86,32 +143,69 @@
 {% block scripts %}
     <script type="text/javascript">
     $(document).ready(function(){
- 		$("input:checkbox").change(function() { 
-    		var myCheckboxes = new Array();
+
+        var selected_plan = [];
+        $("input.chk_plan:checked").each(function() {
+            selected_plan.push($(this).val());
+        });
+
+        var selected_desc = [];
+        $("input.chk_plan:checked").each(function() {
+            selected_desc.push($(this).val());
+        });
+
+        get_totales(selected_plan, selected_desc) 
+        
+        $("input:checkbox").change(function() { 
+
+            var myCheckboxes = new Array();
             if($(this).is(":checked")) { 
-            	console.log(this.value)
-		        $("input:checked").each(function() {
-		           myCheckboxes.push($(this).val());
-		        });
+                console.log(this.value)
+                $("input.chk_plan:checked").each(function() {
+                   myCheckboxes.push($(this).val());
+                });
 
             } else {
-            	console.log(this.value)
-		        $("input:checked").each(function() {
-		           myCheckboxes.push($(this).val());
-		        });
+                console.log(this.value)
+                $("input.chk_plan:checked").each(function() {
+                   myCheckboxes.push($(this).val());
+                });
 
             }
-        	console.log(myCheckboxes)
-        	$.ajax({
+            var myCheckboxes_desc = new Array();
+            if($(this).is(":checked")) { 
+                console.log(this.value)
+                $("input.chk_descuento:checked").each(function() {
+                   myCheckboxes_desc.push($(this).val());
+                });
+
+            } else {
+                console.log(this.value)
+                $("input.chk_descuento:checked").each(function() {
+                   myCheckboxes_desc.push($(this).val());
+                });
+
+            }            
+            console.log(myCheckboxes)
+            console.log(myCheckboxes_desc)
+
+            get_totales(myCheckboxes, myCheckboxes_desc) 
+
+        });
+
+        function get_totales(myCheckboxes, myCheckboxes_desc ){
+            $.ajax({
                 url: "/finanzas/total_recibo_plan_pago_ajax", // link of your "whatever" php
                 type: "get",
-                data: {'checks': myCheckboxes}, // all data will be passed here
-                success: function(data){ 
+                data: {'checks': myCheckboxes, 'descuentos': myCheckboxes_desc}, // all data will be passed here
+                success: function(data){
+                    data = JSON.parse(data); 
                     console.log(data)
-                    $('#totales').html(data)
+                    $('.total_planes').html(data["total_planes"])
+                    $('.total_descuentos').html(data["total_descuentos"])
                 }
             });
-        });
+        }
     });
     </script>
 {% endblock scripts %}

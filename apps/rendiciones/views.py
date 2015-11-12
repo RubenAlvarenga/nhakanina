@@ -67,7 +67,7 @@ class RendicionCreateView(SuccessMessageMixin, CreateView):
 class RendicionDeleteView(SuccessMessageMixin, DeleteView):
     template_name='base/generic_delete.html'
     model=Rendicion
-    success_url=reverse_lazy('rendiciones:lst_rendicion')
+    success_url=reverse_lazy('rendiciones:list_rendicion')
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
         if self.object.estado=='APR':
@@ -121,7 +121,7 @@ class RendicionUpdateView(SuccessMessageMixin, UpdateView):
         messages.add_message(self.request, messages.ERROR, 'Corrija los Errores.', extra_tags='danger')
         return super(RendicionUpdateView, self).form_invalid(form)
 
-@custom_permission_required('rendiciones.lst_rendicion')
+@custom_permission_required('rendiciones.list_rendicion')
 def csvRendicion(request, pk):
     rendicion=Rendicion.objects.get(pk=int(pk))
     recibos=rendicion.recibos.all()

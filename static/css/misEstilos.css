@@ -293,10 +293,30 @@ height: 28px;
   text-align: right;
 }
 
+.recibo-contenedor .monto-total{
+  width: 200px;
+  float: right;
+  font-size: 1.5em;
+  font-weight: bold;
+  padding: 5px 10px;
+  border-radius: 5px;
+  text-align: right;
+  background: repeating-linear-gradient(
+  45deg,
+  #FFEE74,
+  #FFEE74 5px,
+  #FFDD27 5px,
+  #FFDD27 10px
+  );
+}
+
 .recibo-monto{
   clear: both;
 }
 .cincuenta{width: 40%; float: left;}
+.treinta{width: 20%; float: left;}
+
+
 .subrayado-suave{border-bottom: 1px solid #ddd}
 
 .recibo-detalle{margin-top: 20px }
@@ -613,7 +633,13 @@ a .menu-ico:hover{background:linear-gradient(#006C18, #0A1F0B); color:#FFF;}
 }
 
 .about:hover{
-  background: #FFF287;
+  background: repeating-linear-gradient(
+  45deg,
+  #FFEE74,
+  #FFEE74 5px,
+  #FFDD27 5px,
+  #FFDD27 10px
+  );
 }
 
 #about{
@@ -622,4 +648,22 @@ a .menu-ico:hover{background:linear-gradient(#006C18, #0A1F0B); color:#FFF;}
 
 .about .textual{
   margin: 20px 15px;
+}
+
+.totalglobal{
+  width: 250px;
+  border-radius: 10px;
+  float: right;
+  margin: 20px 25px;
+  text-align: right;
+  padding: 5px 10px;
+  font-size: 1.8em;
+  font-weight: bold;
+  background: repeating-linear-gradient(
+  45deg,
+  #FFEE74,
+  #FFEE74 5px,
+  #FFDD27 5px,
+  #FFDD27 10px
+  );
 }

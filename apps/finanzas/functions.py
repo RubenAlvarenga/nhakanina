@@ -58,3 +58,9 @@ def sumarTotalesPlanPago(planes):
     for plan in planes:
         total = total + plan.monto
     return total
+
+def restarDescuento(total, descuentos):
+    total_con_descuento = total
+    for d in descuentos:
+        total_con_descuento = total_con_descuento - (total * d.porcentaje/100)
+    return total_con_descuento

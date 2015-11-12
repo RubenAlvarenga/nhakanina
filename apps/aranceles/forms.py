@@ -1,9 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from django import forms
-from .models import Concepto, Periodo, Arancel
+from .models import Concepto, Periodo, Arancel, TipoConcepto
 from django.forms.extras.widgets import SelectDateWidget
 from datetime import datetime
+from django.core.exceptions import ValidationError
+
 
 class PeriodoForm(forms.ModelForm):
     class Meta:
@@ -39,6 +41,24 @@ class ArancelForm(forms.ModelForm):
             'monto' : forms.TextInput(attrs = {'class':'form-control'}),
         }
 
+    def clean(self):
+        resolucion = self.cleaned_data.get('resolucion')
+        concepto = self.cleaned_data.get('concepto')
+
+        if resolucion and concepto:
+            if Arancel.objects.filter(concepto=concepto, resolucion=resolucion):
+                raise ValidationError({'concepto': u'Ya existe un Arancel de %s en la Resolucion %s' % (concepto, resolucion) })
+        return self.cleaned_data
+
+
+
+class TipoConceptoForm(forms.ModelForm):
+    class Meta:
+        model = TipoConcepto
+        exclude = []
+        widgets = {
+            'titulo' : forms.TextInput(attrs = {'class':'form-control'}),
+        }
 
 
 

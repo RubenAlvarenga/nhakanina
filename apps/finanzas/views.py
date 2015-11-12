@@ -13,12 +13,12 @@ from django.contrib.messages.views import SuccessMessageMixin
 from datetime import datetime
 from django.forms.extras.widgets import SelectDateWidget
 from apps.entidades.models import Alumno, Persona
-from apps.finanzas.models import PlanPago, Recibo, ReciboPlanPago
+from apps.finanzas.models import PlanPago, Recibo, ReciboPlanPago, ReciboDescuento
 from apps.aranceles.models import Arancel
 from apps.catedras.models import CursoAlumno, Materia
 from .tables import AlumnosTable, PersonasTable, PlanPagoTable, PlanPagoAplReciboTable, RecibosTable, RecibosTablePDF, \
     CursosTable, ExtractoCursoAlumnoTable, EstadoDeCuentaTable
-from .functions import fracionar_plan, msg_render, sumarTotalesPlanPago
+from .functions import fracionar_plan, msg_render, sumarTotalesPlanPago, restarDescuento
 from .forms import ReciboPlanPagoForm, ReciboForm, PlanPagoForm, updPlanPagoForm, fracPlanPagoForm
 from apps.catedras.models import Curso
 from apps.actions import export_as_csv, export_table_to_csv
@@ -262,6 +262,11 @@ def genRecibo(request):
             dic={'object_list':form}
             return render_to_response(template_name, dic, context_instance=RequestContext(request, locals()))
 
+
+
+#DESCUENTOS
+from apps.descuentos.views import *
+from apps.descuentos.models import Descuento
 @custom_permission_required('finanzas.add_recibo')
 def genReciboPlanPago(request):
     if request.method == "POST":
@@ -286,11 +291,33 @@ def genReciboPlanPago(request):
                 form.fields['plan_pago'].widget = forms.CheckboxSelectMultiple({"checked":'checked'})
                 form.fields['plan_pago'].queryset = planes 
                 form.fields['persona'].queryset = Persona.objects.filter(pk=persona.id)
+
+                descuentos_full= Descuento.objects.filter(
+                        activo=True, 
+                        tipo_carrera_concepto = planes[0].concepto.concepto.tipo_concepto,
+                        cant_minima_concepto__lte = len(planes),
+                        cant_maxima_concepto__gte = len(planes)
+                    )
+                descuentos_filtrado=[]
+                for desc in descuentos_full:
+                    if desc.funcion == 'Ninguno':
+                        descuentos_filtrado.append(desc)
+                    else:
+                        try: aplica = globals()[desc.funcion](request)
+                        except: aplica = False
+                        if aplica == True : descuentos_filtrado.append(desc)
+
+                form.fields['descuentos'].queryset = descuentos_full.filter(id__in=[d.id for d in descuentos_filtrado])
+
                 template_name='finanzas/addReciboPlanPago.html'
                 # GENERAR TOTALES
                 total = sumarTotalesPlanPago(planes)
                 dic={'object_list':form, 'total' : total}
                 return render_to_response(template_name, dic, context_instance=RequestContext(request, locals()))
+
+
+
+
 
 @custom_permission_required('finanzas.change_planpago')
 def aplReciboPlanPago(request, pk):
@@ -352,13 +379,24 @@ def aplReciboPlanPago(request, pk):
 
 
 
+import json
 def total_recibo_plan_pago_ajax(request):
     if request.is_ajax():
+        dic={}
         checks= request.GET.getlist('checks[]')
         ids = map(int, checks)
+        checks_desc= request.GET.getlist('descuentos[]')
+        ids_desc = map(int, checks_desc)
         planes = PlanPago.objects.filter(pk__in=ids)
+        descuentos = Descuento.objects.filter(pk__in=ids_desc)
         total = sumarTotalesPlanPago(planes)
-        return HttpResponse(intcomma(int(total)))
+        dic['total_planes'] = intcomma(int(total))
+
+        if descuentos: dic['total_descuentos'] = intcomma(int(restarDescuento(total, descuentos)))
+        else: dic['total_descuentos'] = dic['total_planes']
+        return HttpResponse(json.dumps(dic))
+            
+
 
 class ReciboSingleTableView(SingleTableView):
     template_name='finanzas/lstRecibo.html'
@@ -422,6 +460,14 @@ class ReciboPlanPagoFormView(SuccessMessageMixin, FormView):
         url = reverse('finanzas:det_recibo', kwargs={'pk': instance.id})
         return redirect(url)
 
+    def get_form(self, form_class):
+        form = super(ReciboPlanPagoFormView,self).get_form(form_class)
+        form.fields['plan_pago'].queryset = PlanPago.objects.filter(pk__in=map(int, self.request.POST.getlist('plan_pago')))
+        form.fields['persona'].queryset = Persona.objects.filter(pk=int(self.request.POST['persona']))
+        #form.fields['persona'].widget.attrs['disabled'] = 'disabled'
+        form.fields['descuentos'].queryset = Descuento.objects.filter(pk__in=map(int, self.request.POST.getlist('descuentos')))
+        return form
+
     def form_valid(self, form):
         instance = form.save(commit=False)
         total=0
@@ -443,48 +489,65 @@ class ReciboPlanPagoFormView(SuccessMessageMixin, FormView):
         instance.cantidad = cantidad
         instance.cajero = self.request.user
         instance.save()
-        form.save_m2m()
+
+        for descuento in form.cleaned_data['descuentos']:
+            monto = instance.monto * descuento.porcentaje / 100
+            d = ReciboDescuento(recibo = instance, descuento = descuento, porcentaje = descuento.porcentaje, monto = monto )
+            d.save()
+        instance.monto = restarDescuento(instance.monto, instance.descuentos.all())
+        instance.save()
+
+        for plan in form.cleaned_data['plan_pago']:
+            instance.plan_pago.add(plan)
+
+        #form.save_m2m()
         return self.get_success_url(instance)
         #return super(ReciboPlanPagoFormView, self).form_valid(form)
 
     def form_invalid(self, form):
-        messages.info(self.request,"Corrija los Errores")
-        if form['plan_pago'].value():
-            form.fields['plan_pago'].queryset = form.clean()['plan_pago']    
-        else:
-            form.fields['plan_pago'].queryset = []
-        if form['persona'].value(): form.fields['persona'].queryset = Persona.objects.filter(pk=form['persona'].value())
-        else: 
-            planes = form.clean()['plan_pago']
-            form.fields['persona'].queryset = Persona.objects.filter(pk=planes[0].curso_alumno.alumno.id)
+        messages.error(self.request,"Corrija los Errores", extra_tags='danger')
+        descuentos_full = Descuento.objects.filter(
+                activo=True, 
+                tipo_carrera_concepto = form.fields['plan_pago'].queryset[0].concepto.concepto.tipo_concepto,
+                cant_minima_concepto__lte = len(form.fields['plan_pago'].queryset),
+                cant_maxima_concepto__gte = len(form.fields['plan_pago'].queryset)
+            )
 
-        #form.fields['persona'].widget.attrs['disabled'] = 'disabled'
+        descuentos_filtrado=[]
+        for desc in descuentos_full:
+            if desc.funcion == 'Ninguno':
+                descuentos_filtrado.append(desc)
+            else:
+                try: aplica = globals()[desc.funcion](self.request)
+                except: aplica = False
+                if aplica == True : descuentos_filtrado.append(desc)
+
+        form.fields['descuentos'].queryset = descuentos_full.filter(id__in=[d.id for d in descuentos_filtrado])
+
         return super(ReciboPlanPagoFormView, self).form_invalid(form)
 
 
 
-
-@custom_permission_required('finanzas.add_planpago')
-def fraccionar_planpago(request):
-    import pdb; pdb.set_trace()
-    if request.is_ajax():
-        if request.POST['id_planpago']:
-            plan_pago = PlanPago.objects.get(pk=int(request.POST['id_planpago']))
-            cantidad = int(request.POST['cantidad'])
-            mensaje=''
-            if cantidad > plan_pago.concepto.concepto.fraccionable_hasta or cantidad==1:
-                mensaje = "La cantidad máxima para este concepto es: "+str(plan_pago.concepto.concepto.fraccionable_hasta)+' cuotas'
-            else:
-                if not plan_pago.vencimiento:
-                    mensaje = "Error: El Plan de pago debe tener fecha del 1er vencimiento"
-                else:
-                    fraccionado = fracionar_plan(plan_pago, cantidad, request.user)
-                    if not fraccionado: 
-                        mensaje = "Ocurrio un Error Inesperado"
-                    else:
-                        return HttpResponse("success")
-        template='finanzas/fraccionar_form.html'
-    return render_to_response(template, {'mensaje': mensaje})  
+# @custom_permission_required('finanzas.add_planpago')
+# def fraccionar_planpago(request):
+#     if request.is_ajax():
+#         if request.POST['id_planpago']:
+#             plan_pago = PlanPago.objects.get(pk=int(request.POST['id_planpago']))
+#             cantidad = int(request.POST['cantidad'])
+#             mensaje=''
+#             if cantidad > plan_pago.concepto.concepto.fraccionable_hasta or cantidad==1:
+#                 mensaje = "La cantidad máxima para este concepto es: "+str(plan_pago.concepto.concepto.fraccionable_hasta)+' cuotas'
+#             else:
+#                 if not plan_pago.vencimiento:
+#                     mensaje = "Error: El Plan de pago debe tener fecha del 1er vencimiento"
+#                 else:
+#                     fraccionado = fracionar_plan(plan_pago, cantidad, request.user)
+#                     if not fraccionado: 
+#                         mensaje = "Ocurrio un Error Inesperado"
+#                     else:
+#                         return HttpResponse("success")
+#         template='finanzas/fraccionar_form.html'
+#     return render_to_response(template, {'mensaje': mensaje})  
 
 
 
@@ -913,41 +976,3 @@ def get_planesMateriaCurso_ajax(request):
             except: plan_materias = False
     template='finanzas/planesMateriaCurso_form.html'
     return render_to_response(template, {'plan_materias': plan_materias })  
-
-
-
-# class PlanPagoFormView(SuccessMessageMixin, FormView):
-#     template_name='finanzas/addPlanPago.html'
-#     form_class = PlanPagoForm
-#     #success_message = "El recibo %(serie)s %(nro_recibo)s registrado con exito"
-#     def get_success_url(self, instance):
-#         success_message = msg_render("El Plan Pago para <strong>%s</strong> registrado con exito" % (str(instance.curso_alumno)))
-#         messages.success(self.request, success_message)
-#         url = reverse('finanzas:det_persona', kwargs={'pk': instance.curso_alumno.alumno.id})
-#         return redirect(url)
-
-#     def get_form(self, form_class):
-#         form = super(PlanPagoFormView,self).get_form(form_class) #instantiate using parent
-#         #form.fields['materia'].queryset = Materia.objects.filter(pk=0)
-#         return form
-
-
-#     def form_valid(self, form):
-#         instance = form.save(commit=False)
-#         #import pdb; pdb.set_trace()
-#         instance.monto = instance.cantidad * instance.concepto.monto
-#         instance.created_by = self.request.user
-#         if not instance.secuencia:
-#             ultimasecuencia = PlanPago.objects.filter(curso_alumno=instance.curso_alumno, concepto=instance.concepto).order_by('-secuencia')
-#             if ultimasecuencia: instance.secuencia = ultimasecuencia[0].secuencia + 1
-#             else: instance.ultimasecuencia = 0
-#         instance.save()
-#         return self.get_success_url(instance)
-#         #return super(PlanPagoFormView, self).form_valid(form)
-    
-#     def form_invalid(self, form):
-#         if form.cleaned_data.get('curso_alumno'): form.fields['materia'].queryset = form.cleaned_data.get('curso_alumno').curso.materias.all()
-#         messages.info(self.request,"Corrija los Errores")
-#         return super(PlanPagoFormView, self).form_invalid(form)
-
-

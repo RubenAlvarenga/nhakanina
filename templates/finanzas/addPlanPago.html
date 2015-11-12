@@ -90,7 +90,7 @@
                 }); 
                 $('#id_concepto').on("focus blur", function() {
                     get_concepto($(this).val())
-                }); 
+                });
                 function get_curso_alumno(id){
                     $.ajax({
                         data : {'id_curso_alumno' : id  },

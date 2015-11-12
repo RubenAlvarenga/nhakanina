@@ -58,13 +58,21 @@ class ReciboPlanPagoForm(forms.ModelForm):
         super(ReciboPlanPagoForm, self).__init__(*args, **kwargs)
         self.fields['fecha'].initial = datetime.now()
 
-
     def clean(self):
         plan_pago = self.cleaned_data.get('plan_pago')
         persona = self.cleaned_data.get('persona')
         nro_recibo = self.cleaned_data.get('nro_recibo')
         serie = self.cleaned_data.get('serie')
+        descuentos = self.cleaned_data.get('descuentos')
         
+        if descuentos and plan_pago:
+            for desc in descuentos:
+                if desc.tipo_carrera_concepto != plan_pago[0].concepto.concepto.tipo_concepto:
+                    raise ValidationError({'descuentos': u'Este descuento no es aplicable a este concepto' })
+                if desc.cant_minima_concepto > len(plan_pago) or desc.cant_maxima_concepto < len(plan_pago):
+                    raise ValidationError({'descuentos': u'para aplicar %s es necesario un minimo de %s y un maximo de %s planes' % (desc.motivo, desc.cant_minima_concepto, desc.cant_maxima_concepto) })
+
+
         if nro_recibo and serie:
             if Recibo.objects.filter(nro_recibo=nro_recibo, serie=serie):
                 raise ValidationError({'nro_recibo': u'Ya existe un Recibo con el numero: %s de la serie: %s' % (str(nro_recibo), serie) })

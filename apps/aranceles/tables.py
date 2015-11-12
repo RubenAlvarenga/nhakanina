@@ -34,8 +34,8 @@ class ConceptosTable(tables.Table):
 class PeriodosTable(tables.Table):
     selection = tables.CheckBoxColumn(accessor="pk", orderable=False, attrs = {"th__input":{"onclick": "", "id":'todosLosCheck', "name":"option"}, "td__input":{"class":"checkboxList", "name":"checks"} } )
     ver     = EnlaceColumn( accessor="id", verbose_name=" ", attrs={"td": {"width": "2%"}, "url":"./detPeriodo/", "icono":"glyphicon-eye-open" }, )
-    # editar  = EnlaceColumn( accessor="id", verbose_name=" ", attrs={"td": {"width": "2%"}, "url":"./updPeriodo/", "icono":"glyphicon-pencil" }, )
-    # borrar  = EnlaceColumn( accessor="id", verbose_name=" ", attrs={"td": {"width": "2%"}, "url":"./delPeriodo/", "icono":"glyphicon-remove" }, )
+    editar  = EnlaceColumn( accessor="id", verbose_name=" ", attrs={"td": {"width": "2%"}, "url":"./updPeriodo/", "icono":"glyphicon-pencil" }, )
+    borrar  = EnlaceColumn( accessor="id", verbose_name=" ", attrs={"td": {"width": "2%"}, "url":"./delPeriodo/", "icono":"glyphicon-remove" }, )
 
     class Meta:
         model = Periodo
@@ -62,9 +62,9 @@ class ArancelesTable(tables.Table):
 
 class TiposConceptosTable(tables.Table):
     selection = tables.CheckBoxColumn(accessor="pk", orderable=False, attrs = {"th__input":{"onclick": "", "id":'todosLosCheck', "name":"option"}, "td__input":{"class":"checkboxList", "name":"checks"} } )
-    ver     = EnlaceColumn( accessor="id", verbose_name=" ", attrs={"td": {"width": "2%"}, "url":"./detArancel/", "icono":"glyphicon-eye-open" }, )
-    editar  = EnlaceColumn( accessor="id", verbose_name=" ", attrs={"td": {"width": "2%"}, "url":"./updArancel/", "icono":"glyphicon-pencil" }, )
-    borrar  = EnlaceColumn( accessor="id", verbose_name=" ", attrs={"td": {"width": "2%"}, "url":"./delArancel/", "icono":"glyphicon-remove" }, )
+    ver     = EnlaceColumn( accessor="id", verbose_name=" ", attrs={"td": {"width": "2%"}, "url":"./detTipoConcepto/", "icono":"glyphicon-eye-open" }, )
+    editar  = EnlaceColumn( accessor="id", verbose_name=" ", attrs={"td": {"width": "2%"}, "url":"./updTipoConcepto/", "icono":"glyphicon-pencil" }, )
+    borrar  = EnlaceColumn( accessor="id", verbose_name=" ", attrs={"td": {"width": "2%"}, "url":"./delTipoConcepto/", "icono":"glyphicon-remove" }, )
 
     class Meta:
         model = TipoConcepto

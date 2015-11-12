@@ -34,6 +34,7 @@ urlpatterns = [
     url(r'^autorizaciones/', include('apps.autorizaciones.urls', namespace="autorizaciones", app_name='autorizaciones')),
     url(r'^aranceles/', include('apps.aranceles.urls', namespace="aranceles", app_name='aranceles')),
     url(r'^rendiciones/', include('apps.rendiciones.urls', namespace="rendiciones", app_name='rendiciones')),
+    url(r'^descuentos/', include('apps.descuentos.urls', namespace="descuentos", app_name='descuentos')),
 
 
 ]

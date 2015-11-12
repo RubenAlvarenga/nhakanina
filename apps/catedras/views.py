@@ -466,7 +466,7 @@ class CursoAlumnoCreateView(SuccessMessageMixin, CreateView):
 
 
 
-@custom_permission_required('finanzas.changue_planpago')
+@custom_permission_required('finanzas.change_planpago')
 def recuperarPlan(request, pk):
     curso_alumno = CursoAlumno.objects.get(pk=int(pk))
     curso_alumno.save()

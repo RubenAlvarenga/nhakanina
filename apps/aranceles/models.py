@@ -26,7 +26,7 @@ class Periodo(TimeStampModel):
     fin = models.DateField(verbose_name='Fin', blank=True, null=True)
     estado = models.CharField(max_length=3, choices=ESTADO, default='ACT')
     class Meta:
-        verbose_name = 'PeriodoArancel'
+        verbose_name = 'Periodo'
         verbose_name_plural = 'Periodos de Aranceles'
         default_permissions = ('add', 'change', 'delete', 'view', 'list')
 
@@ -47,7 +47,7 @@ class TipoCarrera(models.Model):
 class TipoConcepto(models.Model):
     titulo=models.CharField(max_length=255, verbose_name='Titulo')
     class Meta:
-        verbose_name = 'Tipo Concepto'
+        verbose_name = 'TipoConcepto'
         verbose_name_plural = 'Tipos de Conceptos'
         default_permissions = ('add', 'change', 'delete', 'view', 'list')
 
