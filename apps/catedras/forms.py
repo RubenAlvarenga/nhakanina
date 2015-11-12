@@ -19,8 +19,8 @@ class CursoForm(forms.ModelForm):
         exclude=[]
         widgets = {
             'carrera' : forms.Select(attrs = {'class':'form-control'}),            
-            'inicio': SelectDateWidget(years=range(datetime.now().date().year - 5, datetime.now().date().year + 3, 1), attrs = {'class':'form-control', 'style':'width:100px; float:left'}),
-            'fin': SelectDateWidget(years=range(datetime.now().date().year - 5, datetime.now().date().year + 3, 1), attrs = {'class':'form-control', 'style':'width:100px; float:left'}),
+            'inicio': SelectDateWidget(years=range(datetime.now().date().year - 15, datetime.now().date().year + 1, 1), attrs = {'class':'form-control', 'style':'width:100px; float:left'}),
+            'fin': SelectDateWidget(years=range(datetime.now().date().year, datetime.now().date().year + 3, 1), attrs = {'class':'form-control', 'style':'width:100px; float:left'}),
             'dias' : forms.CheckboxSelectMultiple(),
             'turno' : forms.TextInput(attrs = {'class':'form-control'}),
             'matricula' : forms.Select(attrs = {'class':'form-control'}),
