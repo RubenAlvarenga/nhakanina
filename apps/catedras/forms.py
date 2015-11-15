@@ -112,3 +112,15 @@ class MateriaForm(forms.ModelForm):
             'nombre' : forms.TextInput(attrs = {'class':'form-control',}),
         }
 
+
+class updCursoAlumnoForm(forms.ModelForm):
+    class Meta:
+        model = CursoAlumno
+        exclude = []
+        widgets = {
+            'fecha_inscripcion': SelectDateWidget(years=range(datetime.now().date().year - 8, datetime.now().date().year + 1, 1), attrs = {'class':'form-control', 'style':'width:100px; float:left'}),
+            'curso' : forms.Select(attrs = {'class':'form-control',}),
+            'alumno' : forms.Select(attrs = {'class':'form-control',}),
+            'estado' : forms.Select(attrs = {'class':'form-control',}),
+            'observacion' : forms.Textarea(attrs = { 'class':'form-control',}),
+        }

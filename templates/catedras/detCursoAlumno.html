@@ -1,0 +1,50 @@
+{% extends "base/divided.html" %}
+{% load verbose_name_tags %}
+{% load humanize %}
+{% block title %}Detalle {{ object|get_verbose_name|capfirst }}{% endblock title %}
+
+{% block content %}
+
+    <div class="titulo container-fluid"><h3>{{ object|get_verbose_name|capfirst }} {{object.name}}</h3>
+        <div class="align-right">
+
+            <a href="../updCursoAlumno/{{object.id}}" class="btn btn-default btn-sm" role="button"><span class="glyphicon glyphicon-pencil"></span> Editar esta {{ object|get_verbose_name|capfirst }}</a>
+
+            <a href="../delCursoAlumno/{{object.id}}" class="btn btn-danger btn-sm" role="button"><span class="glyphicon glyphicon-remove-circle"></span> Eliminar esta {{ object|get_verbose_name|capfirst }}</a>
+            <a href="../addCursoAlumno" class="btn btn-primary btn-sm" role="button"><span class="glyphicon glyphicon-plus"></span> Agregar otra {{ object|get_verbose_name|capfirst }}</a>
+        </div>
+    </div>
+
+
+	<div class="linea100"><div class="linea20">Nombre: </div><div class="linea80">{{object.alumno.get_full_name}}</div></div>
+	<div class="linea100"><div class="linea20">Cedula de Identidad: </div><div class="linea80">{{object.alumno.cedula|intcomma}}</div></div>
+	<div class="linea100"><div class="linea20">Fecha Nacimiento: </div><div class="linea80">{{object.alumno.fecha_nacimiento}}</div></div>
+
+
+	<div class="linea100"><div class="linea20">Curso: </div><div class="linea80">{{object.curso}}</div></div>
+	<div class="linea100"><div class="linea20">Fecha de Inscripcion: </div><div class="linea80">{{object.fecha_inscripcion}}</div></div>
+	<div class="linea100"><div class="linea20">Estado: </div><div class="linea80">{{object.estado}}</div></div>
+	<div class="linea100"><div class="linea20">Matriculado por: </div><div class="linea80">{{object.created_by}}</div></div>
+
+
+	<div class="linea100"><div class="linea20">Planes de Pagos</div><div class="linea80">&nbsp;</div></div>
+
+
+	<div>
+		<table class="table table-hover table-small">
+		{% for plan in object.get_planPago %}
+			<tr>
+				<td><small><a href="{% url 'finanzas:det_planpago' plan.id %}">{{plan.id}}</a></small></td>
+				<td>{{plan.get_cuotasecuencia}}</td>
+				<td>{{plan.concepto.concepto}} {{plan.materia}}</td>
+				<td>{{plan.vencimiento}}</td>
+				<td>{{plan.estado}}</td>
+				<td>{{plan.monto|intcomma}}</td>
+			</tr>
+		{% endfor %}
+		</table>
+	</div>
+
+
+
+{% endblock content %}

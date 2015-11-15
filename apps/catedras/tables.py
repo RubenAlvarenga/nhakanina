@@ -77,3 +77,17 @@ class MateriasTablePDF(tables.Table):
         model = Materia
         exclude = ()
         per_page=ITEM_POR_PAGINA
+
+
+
+class CursoAlumnoTable(tables.Table):
+    selection = tables.CheckBoxColumn(accessor="pk", orderable=False, attrs = {"td": {"width": "2%"}, "th__input":{"onclick": "", "id":'todosLosCheck', "name":"option"}, "td__input":{"class":"checkboxList", "name":"checks"} } )
+    ver     = EnlaceColumn( accessor="id", verbose_name=" ", attrs={"td": {"width": "2%"}, "url":"detCursoAlumno/", "icono":"glyphicon-eye-open" }, )
+    #editar  = EnlaceColumn( accessor="id", verbose_name=" ", attrs={"td": {"width": "2%"}, "url":"updCurso/", "icono":"glyphicon-pencil" }, )
+    #borrar  = EnlaceColumn( accessor="id", verbose_name=" ", attrs={"td": {"width": "2%"}, "url":"delCurso/", "icono":"glyphicon-remove" }, )
+    class Meta:
+        model = CursoAlumno
+        exclude = ['created_by', 'created', 'modified', 'observacion']
+        per_page=ITEM_POR_PAGINA
+        attrs = {"class": "table table-striped table-hover" }
+        sequence = ("selection", "id", "...", "ver")

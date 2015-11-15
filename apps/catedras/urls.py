@@ -1,7 +1,7 @@
 from django.conf.urls import patterns, url
 from .views import CursoSingleTableView, CursoDetailView, CursoCreateView, CursoUpdateView, CursoAlumnoCreateView, CarreraSingleTableView, CarreraCreateView, \
 	CarreraDetailView, CarreraUpdateView, CarreraDeleteView, MateriaSingleTableView, MateriaDetailView, MateriaCreateView, MateriaUpdateView, \
-    MateriaDeleteView, CursoDeleteView
+    MateriaDeleteView, CursoDeleteView, CursoAlumnoSingleTableView, CursoAlumnoDetailView, CursoAlumnoUpdateView, CursoAlumnoDeleteView
 from django.views.generic import TemplateView
 from django.contrib.auth.decorators import login_required, permission_required
 from apps.decorators import custom_permission_required
@@ -17,7 +17,13 @@ urlpatterns = patterns('',
     url(r'^cursos/updCurso/(?P<pk>[\d]+)$', custom_permission_required('catedras.change_curso')(CursoUpdateView.as_view()), name='upd_curso'),
     url(r'^cursos/delCurso/(?P<pk>[\d]+)$', custom_permission_required('catedras.delete_curso')(CursoDeleteView.as_view()), name='del_curso'),
 
-    url(r'^cursos/addCursoAlumno/$', custom_permission_required('catedras.add_cursoalumno')(CursoAlumnoCreateView.as_view()), name ='add_curso_alumno'),
+    url(r'^matriculaciones/$', custom_permission_required('catedras.list_cursoalumno')(CursoAlumnoSingleTableView.as_view()), name ='lst_curso_alumno'),
+    url(r'^matriculaciones/addCursoAlumno/$', custom_permission_required('catedras.add_cursoalumno')(CursoAlumnoCreateView.as_view()), name ='add_curso_alumno'),
+    url(r'^matriculaciones/addMatricula/$', custom_permission_required('catedras.add_cursoalumno')(CursoAlumnoCreateView.as_view()),),
+
+    url(r'^matriculaciones/detCursoAlumno/(?P<pk>[\d]+)$', custom_permission_required('catedras.view_cursoalumno')(CursoAlumnoDetailView.as_view()), name ='det_curso_alumno'),
+    url(r'^matriculaciones/updCursoAlumno/(?P<pk>[\d]+)$', custom_permission_required('catedras.change_cursoalumno')(CursoAlumnoUpdateView.as_view()), name ='upd_curso_alumno'),
+    url(r'^matriculaciones/delCursoAlumno/(?P<pk>[\d]+)$', custom_permission_required('catedras.delete_cursoalumno')(CursoAlumnoDeleteView.as_view()), name ='del_curso_alumno'),
 
     url(r'^cursos/recuperarPlan/(?P<pk>[\d]+)$', ('apps.catedras.views.recuperarPlan'), name='recuperar_plan'),
 

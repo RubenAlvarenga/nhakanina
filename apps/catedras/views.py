@@ -12,8 +12,8 @@ from django.contrib.messages.views import SuccessMessageMixin
 from datetime import datetime
 from django.forms.extras.widgets import SelectDateWidget
 from .models import Curso, Materia, CursoMateria, CursoAlumno, Carrera
-from .tables import CursosTable, CursosTablePDF, CarrerasTable, CarrerasTablePDF, MateriasTable, MateriasTablePDF 
-from .forms import CursoForm, CursoAlumnoForm, CarreraForm, MateriaForm
+from .tables import CursosTable, CursosTablePDF, CarrerasTable, CarrerasTablePDF, MateriasTable, MateriasTablePDF, CursoAlumnoTable 
+from .forms import CursoForm, CursoAlumnoForm, CarreraForm, MateriaForm, updCursoAlumnoForm
 from apps.aranceles.models import Arancel
 from apps.functions import msg_render
 from wkhtmltopdf.views import PDFTemplateResponse
@@ -315,7 +315,7 @@ class CursoUpdateView(SuccessMessageMixin, UpdateView):
     def get_success_url(self, instance):
         success_message = msg_render("El Curso <strong>%s(%s) %s %s</strong> Modificado con exito" % (str(instance.carrera), str(instance.inicio.year), str(instance.dias), str(instance.turno) ))
         messages.success(self.request, success_message)
-        url = reverse('catedras:det_curso', kwargs={'pk': instance.id})
+
         return redirect(url)
 
     def get_form(self, form_class):
@@ -435,6 +435,65 @@ class CursoCreateView(SuccessMessageMixin, CreateView):
         return super(CursoCreateView, self).form_invalid(form)
 
 
+
+class CursoAlumnoSingleTableView(SingleTableView):
+    template_name='base/generic_list.html'
+    model = CursoAlumno
+    table_class = CursoAlumnoTable
+    def get_queryset(self):
+        table = super(CursoAlumnoSingleTableView, self).get_queryset()
+        q=self.request.GET.get("q")
+        if q: return table.filter(Q(curso__carrera__nombre__icontains=q) | Q(curso__turno__icontains=q) )#.order_by(sort)
+        else: return table
+
+    def get_context_data(self, **kwargs):
+        context = super(CursoAlumnoSingleTableView, self).get_context_data(**kwargs)
+        context['sort']= self.request.GET.get("sort")
+        return context
+
+    def post(self, request, *args, **kwargs):
+        checks = request.POST.getlist('checks')
+        if not checks:
+            mensaje = msg_render("<strong>Favor seleccione por lo menos un item</strong>")
+            messages.add_message(request, messages.INFO, mensaje)
+            url = request.META['HTTP_REFERER']
+            return HttpResponseRedirect(url)
+
+        sort=request.POST.get('sort')
+        ids = map(int, checks)
+        materias=Materia.objects.filter(pk__in=ids)
+        accion=request.POST.get('accion')
+        
+        table = MateriasTablePDF(materias)
+        if sort!='None':
+            table.order_by = sort 
+
+        if accion=='A csv':
+            RequestConfig(request).configure(table)
+            return export_table_to_csv(Materia, request, table)
+
+        elif accion=='A pdf':
+            table.model=self.model
+            RequestConfig(request).configure(table)    
+            pdf_name = 'base/generic_pdf_list.html'
+            return PDFTemplateResponse(request , pdf_name, {'table':table, 'request': self.get_context_data.im_self.request})
+
+        elif accion=='Eliminar':
+            perm = 'catedras.delete_carrera'
+            if request.user.has_perm(perm):
+                if request.POST.get("confirmar")=='True':
+                    return eliminar_bulk(request, materias)
+                else:
+                    dic={'object_list':materias}
+                    template_name='base/generic_delete.html'
+                    return render_to_response(template_name, dic, context_instance=RequestContext(request, locals()))
+            else:
+                mensaje = "ACCESO RESTRINGIDO | Permiso Requerido: "+str(perm)
+                messages.add_message(request, messages.ERROR, mensaje, extra_tags='danger')
+                url = request.META['HTTP_REFERER']
+                return HttpResponseRedirect(url)
+
+
 class CursoAlumnoCreateView(SuccessMessageMixin, CreateView):
     template_name='catedras/addCursoAlumno.html'
     form_class = CursoAlumnoForm
@@ -443,7 +502,7 @@ class CursoAlumnoCreateView(SuccessMessageMixin, CreateView):
     def get_success_url(self, instance):
         success_message = msg_render("El Alumno <strong>%s</strong> inscripto al curso <strong>%s</strong> con exito" % (str(instance.alumno), str(instance.curso) ))
         messages.success(self.request, success_message)
-        url = reverse('entidades:det_alumno', kwargs={'pk': instance.alumno.codigo})
+        url = reverse('catedras:det_curso_alumno', kwargs={'pk': instance.id})
         return redirect(url)
 
     def get_form(self, form_class):
@@ -464,7 +523,47 @@ class CursoAlumnoCreateView(SuccessMessageMixin, CreateView):
         return super(CursoAlumnoCreateView, self).form_invalid(form)
 
 
+class CursoAlumnoUpdateView(SuccessMessageMixin, UpdateView):
+    template_name='catedras/updCursoAlumno.html'
+    model=CursoAlumno
+    form_class = updCursoAlumnoForm
+    #success_url=reverse_lazy('localizaciones:lst_pais')
+    success_message = msg_render("Los datos del la matricula %(curso)s - %(alumno)s modificado con exito")
+    def get_success_url(self):
+        return reverse_lazy('catedras:det_curso_alumno', args=(self.object.id, ))
 
+    def get_form(self, form_class):
+        form = super(CursoAlumnoUpdateView,self).get_form(form_class) #instantiate using parent
+        form.fields['alumno'].widget.attrs['disabled'] = 'disabled'
+        form.fields['curso'].widget.attrs['disabled'] = 'disabled'
+        return form
+
+
+class CursoAlumnoDeleteView(SuccessMessageMixin, DeleteView):
+    template_name='base/generic_delete.html'
+    model=CursoAlumno
+    success_url=reverse_lazy('catedras:lst_curso_alumno')
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        try:
+            self.object.delete()
+            success_message = msg_render(u"La matricula <strong>"+unicode(self.object)+u"</strong> eliminado con éxito")
+            messages.add_message(request, messages.SUCCESS, success_message )
+            return HttpResponseRedirect(self.get_success_url(), )
+        except IntegrityError as e:
+            e.tags='danger'
+            dic={'messages': (e,), 'object': self.object}
+            return render_to_response(self.template_name, dic, context_instance=RequestContext(request))
+
+
+class CursoAlumnoDetailView(DetailView):
+    model=CursoAlumno
+    template_name='catedras/detCursoAlumno.html'
+    # def get_context_data(self, **kwargs):
+    #     context = super(ReciboDetailView, self).get_context_data(**kwargs)
+    #     context['totalenletras'] = num2words(self.object.monto, lang='es')
+    #     return context
 
 @custom_permission_required('finanzas.change_planpago')
 def recuperarPlan(request, pk):
