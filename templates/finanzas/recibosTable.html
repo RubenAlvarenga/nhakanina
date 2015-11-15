@@ -1,4 +1,5 @@
 {% spaceless %}
+{% load verbose_name_tags %}
 {% load django_tables2 %}
 {% load i18n %}
 {% if table.page %}
@@ -68,21 +69,25 @@
     {% if table.page.has_previous %}
         {% nospaceless %}{% block pagination.previous %}<li class="previous"><a href="{% querystring table.prefixed_page_field=table.page.previous_page_number %}"><!--{% trans "Previous" %}--> <span class="glyphicon glyphicon-chevron-left"></span></a></li>{% endblock pagination.previous %}{% endnospaceless %}
     {%else%}
-        <li class="disabled"><a href="#"> <span class="glyphicon glyphicon-chevron-left"></span></a></li>
+        <li class="disabled"><a> <span class="glyphicon glyphicon-chevron-left"></span></a></li>
     {% endif %}
     {% block pagination.allpages %}
-      {% for p in table.paginator.page_range %}
+      {% for p in table|get_list_pages %}
             {% ifequal p  table.page.number %}
                 <li class="active" ><a href="{% querystring table.prefixed_page_field=p %}">{{ p }}</a></li>
             {% else %}
-                <li><a href="{% querystring table.prefixed_page_field=p %}">{{ p }}</a></li>
+                {% if p == '...' %}
+                    <li class="disabled"><a>{{ p }}</a></li>
+                {% else %}
+                    <li><a href="{% querystring table.prefixed_page_field=p %}">{{ p }}</a></li>
+                {% endif %}
             {% endifequal %}
       {% endfor %}
     {% endblock pagination.allpages %}
     {% if table.page.has_next %}
         {% nospaceless %}{% block pagination.next %}<li class="next"><a href="{% querystring table.prefixed_page_field=table.page.next_page_number %}"><!--{% trans "Next" %}--> <span class="glyphicon glyphicon-chevron-right"></span></a></li>{% endblock pagination.next %}{% endnospaceless %}
     {% else %}
-        <li class="disabled"><a href="#"> <span class="glyphicon glyphicon-chevron-right"></span></a></li>
+        <li class="disabled"><a> <span class="glyphicon glyphicon-chevron-right"></span></a></li>
     {% endif %}
 
 </div>
