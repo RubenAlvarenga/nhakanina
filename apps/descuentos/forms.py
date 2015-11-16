@@ -18,6 +18,6 @@ class DescuentoForm(forms.ModelForm):
             'cant_maxima_concepto' : forms.TextInput(attrs = {'class':'form-control'}),
             'porcentaje' : forms.TextInput(attrs = {'class':'form-control'}),
             'tipo_carrera_concepto' : forms.Select(attrs = {'class':'form-control'}),
-            'funcion' : forms.TextInput(attrs = {'class':'form-control', 'placeholder':'Ingrese Funcion' }),
+            'funcion' : forms.Select(attrs = {'class':'form-control' }),
 
         }

@@ -315,7 +315,7 @@ class CursoUpdateView(SuccessMessageMixin, UpdateView):
     def get_success_url(self, instance):
         success_message = msg_render("El Curso <strong>%s(%s) %s %s</strong> Modificado con exito" % (str(instance.carrera), str(instance.inicio.year), str(instance.dias), str(instance.turno) ))
         messages.success(self.request, success_message)
-
+        url = reverse('catedras:det_curso', kwargs={'pk': instance.id})
         return redirect(url)
 
     def get_form(self, form_class):

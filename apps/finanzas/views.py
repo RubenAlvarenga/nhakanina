@@ -265,7 +265,7 @@ def genRecibo(request):
 
 
 #DESCUENTOS
-from apps.descuentos.views import *
+from apps.descuentos.functions import *
 from apps.descuentos.models import Descuento
 @custom_permission_required('finanzas.add_recibo')
 def genReciboPlanPago(request):
@@ -300,7 +300,7 @@ def genReciboPlanPago(request):
                     )
                 descuentos_filtrado=[]
                 for desc in descuentos_full:
-                    if desc.funcion == 'Ninguno':
+                    if desc.funcion == 'ninguno':
                         descuentos_filtrado.append(desc)
                     else:
                         try: aplica = globals()[desc.funcion](request)

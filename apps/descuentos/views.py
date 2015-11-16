@@ -134,3 +134,9 @@ def es_socio_afemec(request):
     except: persona = Persona.objects.get(pk=int(request.POST['persona']))
     if persona.socio_afemec: return True
     else: return False
+
+def es_docente_ise(request):
+    try: persona = Persona.objects.get(pk=int(request.POST['id_persona']))
+    except: persona = Persona.objects.get(pk=int(request.POST['persona']))
+    if persona.docente_ise: return True
+    else: return False
