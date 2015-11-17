@@ -19,7 +19,7 @@ from apps.catedras.models import CursoAlumno, Materia
 from .tables import AlumnosTable, PersonasTable, PlanPagoTable, PlanPagoAplReciboTable, RecibosTable, RecibosTablePDF, \
     CursosTable, ExtractoCursoAlumnoTable, EstadoDeCuentaTable
 from .functions import fracionar_plan, msg_render, sumarTotalesPlanPago, restarDescuento
-from .forms import ReciboPlanPagoForm, ReciboForm, PlanPagoForm, updPlanPagoForm, fracPlanPagoForm
+from .forms import ReciboPlanPagoForm, ReciboForm, PlanPagoForm, updPlanPagoForm, fracPlanPagoForm, filterPlanPagoForm
 from apps.catedras.models import Curso
 from apps.actions import export_as_csv, export_table_to_csv
 from django import forms
@@ -28,7 +28,7 @@ from wkhtmltopdf.views import PDFTemplateResponse
 from django.forms.util import ErrorList
 from django.db import IntegrityError
 from apps.prints import imprimir_recibo
-
+import operator
 
 class PersonaSingleTableView(SingleTableView):
     template_name='base/generic_list.html'
@@ -639,42 +639,36 @@ class PlanPagoSingleTableView(SingleTableView):
     table_class = PlanPagoTable
     def get_queryset(self):
         table = super(PlanPagoSingleTableView, self).get_queryset()
-        q=self.request.GET.get("q")
         filtro = self.request.GET.get("selector")
-        if q:
-            if filtro == 'ced_con':
-                cedula, concepto=q.split("-")
-                return table.filter(curso_alumno__alumno__cedula=cedula, concepto__concepto__concepto__icontains=concepto)
-            else:
-                if q.isdigit(): return table.filter(curso_alumno__alumno__cedula=q)#.order_by(sort)
-                else: return table.filter(Q(curso_alumno__alumno__apellido1__icontains=q) | Q(curso_alumno__alumno__apellido2__icontains=q) | Q(curso_alumno__alumno__nombre1__icontains=q) | Q(curso_alumno__alumno__nombre2__icontains=q))#.order_by(sort)
+        if self.request.GET:
+            q = self.request.GET.get("q")
+            alumno = self.request.GET.get("alumno").split(" ")
+            concepto = self.request.GET.get("concepto").split(" ")
+            cedula = self.request.GET.get("cedula")
+            tipo_concepto = self.request.GET.get("tipo_concepto")
+            if q: table = table.filter(Q(curso_alumno__alumno__cedula=q) | Q(id=int(q)))               
+            if alumno: 
+                query = reduce(operator.and_, (
+                    Q(curso_alumno__alumno__apellido1__icontains=x) | 
+                    Q(curso_alumno__alumno__apellido2__icontains=x) | 
+                    Q(curso_alumno__alumno__nombre1__icontains=x) | 
+                    Q(curso_alumno__alumno__nombre2__icontains=x) for x in alumno
+                    )
+                )
+                table = table.filter(query)
+            if concepto: table = table.filter( reduce(operator.and_, (Q(concepto__concepto__concepto__icontains=c) for c in concepto)))
+            if cedula: table = table.filter(curso_alumno__alumno__cedula=cedula)
+            if tipo_concepto!='0': table = table.filter(concepto__concepto__tipo_concepto__tipo_concepto__id=int(tipo_concepto))
+            return table
+
         else: return table
 
     def get_context_data(self, **kwargs):
         context = super(PlanPagoSingleTableView, self).get_context_data(**kwargs)
         context['sort']= self.request.GET.get("sort")
-        context['selectoptions'] = {
-            'cedula'    : ['por cedula', True],
-            'apellido'  : ['por apellido'],
-            'concepto'  : ['por concepto'],
-            'ced_con'   : ['por cedula y concepto']
-        }
+        context['formFilter'] = filterPlanPagoForm()
         context['notbuttonlist'] = True
         return context
-
-    # def post(self, request, *args, **kwargs):
-    #     checks = request.POST.getlist('checks')
-    #     if not checks:
-    #         mensaje = msg_render("<strong>Favor seleccione por lo menos un item</strong>")
-    #         messages.add_message(request, messages.INFO, mensaje)
-    #         url = request.META['HTTP_REFERER']
-    #         return HttpResponseRedirect(url)
-
-    #     sort=request.POST.get('sort')
-    #     ids = map(int, checks)
-    #     alumnos=Alumno.objects.filter(pk__in=ids)
-    #     accion=request.POST.get('accion')
-
 
 
 

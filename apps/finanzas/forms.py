@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 from django import forms
 from apps.finanzas.models import PlanPago, ReciboPlanPago, Recibo
+from apps.aranceles.models import TipoConcepto
 from django.core.exceptions import ValidationError
 from django.forms.extras.widgets import SelectDateWidget
 from datetime import datetime, date
@@ -38,6 +39,18 @@ class updPlanPagoForm(forms.ModelForm):
             'materia' : forms.Select(attrs = {'class':'form-control'}),
             'observaciones' : forms.Textarea(attrs = { 'class':'form-control'} ),
         }
+
+
+class filterPlanPagoForm(forms.Form):
+    TIPOS_CONCEPTO=[(t.id, unicode(t)) for t in TipoConcepto.objects.all()]
+    TIPOS_CONCEPTO.append( (0,'Todos') )
+    cedula = forms.DecimalField()
+    alumno = forms.CharField()
+    concepto = forms.CharField()
+    tipo_concepto = forms.ChoiceField(choices=TIPOS_CONCEPTO, initial=0)
+    # class Meta:
+    #     model = PlanPago
+    #     fields = ['curso_alumno', 'concepto']
 
     
 

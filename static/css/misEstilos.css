@@ -667,3 +667,30 @@ a .menu-ico:hover{background:linear-gradient(#006C18, #0A1F0B); color:#FFF;}
   #FFDD27 10px
   );
 }
+
+
+.filterform{
+  padding: 10px;
+
+}
+
+
+.filterform tr td{
+  padding-bottom: 5px;
+  padding-right: 5px;
+}
+
+/*.filterform input{
+  max-width: 100%;
+}
+*/
+
+.btn-filtros{
+  height: 30px;
+  padding-top: 4px;
+  background: #DDD;
+}
+
+.filterformlabel{
+  white-space: nowrap;
+}
