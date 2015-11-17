@@ -53,3 +53,11 @@ class RecibosTablePDF(tables.Table):
     class Meta:
         model = Recibo
         exclude = ('created', 'modified', 'cajero', 'motivo_anulacion', 'fecha_anulacion', 'usuario_anulacion', 'rendido', 'concepto')
+
+
+class RecibosTableCSV(tables.Table):
+    get_concepto_planpago = tables.Column(verbose_name='Concepto')
+    class Meta:
+        model = Recibo
+        fields = ('get_concepto_planpago', 'nro_recibo', 'serie', 'fecha', 'monto')
+

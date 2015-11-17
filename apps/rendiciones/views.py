@@ -14,7 +14,7 @@ from datetime import datetime, date
 
 from apps.actions import export_as_csv, export_table_to_csv
 from .models import Rendicion
-from .tables import RendicionesTable, RecibosTable, RecibosTablePDF
+from .tables import RendicionesTable, RecibosTable, RecibosTablePDF, RecibosTableCSV
 from .forms import RendicionForm, AprobarRendicionForm
 from apps.functions import msg_render
 from apps.finanzas.models import Recibo
@@ -125,7 +125,7 @@ class RendicionUpdateView(SuccessMessageMixin, UpdateView):
 def csvRendicion(request, pk):
     rendicion=Rendicion.objects.get(pk=int(pk))
     recibos=rendicion.recibos.all()
-    table = RecibosTablePDF(recibos)
+    table = RecibosTableCSV(recibos)
     RequestConfig(request).configure(table)
     return export_table_to_csv(Recibo, request, table)
 

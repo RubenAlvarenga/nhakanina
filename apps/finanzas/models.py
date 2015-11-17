@@ -53,6 +53,8 @@ class Recibo(TimeStampModel):
     def get_concepto_planpago(self):
         concepto = unicode(self.concepto.concepto.tipo_concepto.tipo_carrera.titulo[:3] +'|'+ unicode(self.concepto.concepto.tipo_concepto.tipo_concepto)) +' '+unicode(self.concepto.concepto.concepto)
         extra=''
+        if self.estado=='ANU':
+            concepto = '[ANULADO] ' + concepto
         try:
             if ReciboPlanPago.objects.get(pk=self.id).plan_pago.all():
                 for recibo in ReciboPlanPago.objects.get(pk=self.id).plan_pago.all():
