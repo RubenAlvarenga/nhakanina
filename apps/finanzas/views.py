@@ -669,23 +669,24 @@ class PlanPagoSingleTableView(SingleTableView):
         filtro = self.request.GET.get("selector")
         if self.request.GET:
             q = self.request.GET.get("q")
-            alumno = self.request.GET.get("alumno").split(" ")
-            concepto = self.request.GET.get("concepto").split(" ")
+            alumno = self.request.GET.get("alumno")
+            concepto = self.request.GET.get("concepto")
             cedula = self.request.GET.get("cedula")
             tipo_concepto = self.request.GET.get("tipo_concepto")
+            if tipo_concepto=="0": tipo_concepto = None
             if q: table = table.filter(Q(curso_alumno__alumno__cedula=q) | Q(id=int(q)))               
             if alumno: 
-                query = reduce(operator.and_, (
+                query = reduce(operator.or_, (
                     Q(curso_alumno__alumno__apellido1__icontains=x) | 
                     Q(curso_alumno__alumno__apellido2__icontains=x) | 
                     Q(curso_alumno__alumno__nombre1__icontains=x) | 
-                    Q(curso_alumno__alumno__nombre2__icontains=x) for x in alumno
+                    Q(curso_alumno__alumno__nombre2__icontains=x) for x in alumno.split(" ")
                     )
                 )
                 table = table.filter(query)
-            if concepto: table = table.filter( reduce(operator.and_, (Q(concepto__concepto__concepto__icontains=c) for c in concepto)))
+            if concepto: table = table.filter( reduce(operator.or_, (Q(concepto__concepto__concepto__icontains=c) for c in concepto.split(" "))))
             if cedula: table = table.filter(curso_alumno__alumno__cedula=cedula)
-            if tipo_concepto!='0': table = table.filter(concepto__concepto__tipo_concepto__tipo_concepto__id=int(tipo_concepto))
+            if tipo_concepto!= None: table = table.filter(concepto__concepto__tipo_concepto__tipo_concepto__id=int(tipo_concepto))
             return table
 
         else: return table

@@ -18,16 +18,24 @@
         <div id="cedula">C.I.: <strong>{{object.cedula|intcomma}}</strong></div>
     </div>
     <div class="alumno-cursos">
-    {% for curso in object.get_cursos_activos %}
-        <div class="curso"><input type="checkbox" name="curso_alumno_id" value="{{curso.id}}"> <a href="{% url 'finanzas:det_curso' curso.curso.id %}"><strong><span class="glyphicon glyphicon-education"></span> {{curso.curso}}</strong></a>
-        <div class="align-right">
-        <a href="{% url 'catedras:recuperar_plan' curso.id %}"><button type="button" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-retweet"></span> Recuperar Plan</button></a>
 
+<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+    {% for curso in object.get_cursos %}
+    <div class="panel panel-default">
+        <div class="panel-heading curso" role="tab" id="heading{{forloop.counter}}">
+            <input type="checkbox" name="curso_alumno_id" value="{{curso.id}}"> 
+            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse{{forloop.counter}}" aria-expanded="true" aria-controls="collapse{{forloop.counter}}">
+                <strong><span class="glyphicon glyphicon-education"></span> {{curso.curso}}</strong>
+            </a>
+            <div class="align-right">
+                <a href="{% url 'catedras:recuperar_plan' curso.id %}"><button type="button" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-retweet"></span> Recuperar Plan</button></a>
+            </div>
+            <a class="align-right" href="{% url 'finanzas:det_curso' curso.curso.id %}">
+                <button type="button" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-eye-open"></span> Curso</button>
+            </a>
         </div>
-    </div>
-
-
-            
+        <div id="collapse{{forloop.counter}}" class="panel-collapse collapse {% if curso.curso.estado == True %}in{% endif %}" role="tabpanel" aria-labelledby="heading{{forloop.counter}}">
+            <div class="panel-planes">
             {% if curso.get_planPago %}
                 <div id="frmOpciones{{curso.id}}"></div>
                 <table width="100%" class="table table-hover table-small">
@@ -82,15 +90,6 @@
                         <td>{{plan.monto|intcomma}}</td>
                         
                         {% if plan.concepto.concepto.fraccionable and plan.monto == plan.concepto.monto  %}
-                            <!--<td>
-                            <form class="frmFraccionar" action="/finanzas/fraccionar_planpago_ajax" method="POST">{% csrf_token %}
-                            <input type="hidden" name="id_planpago" value="{{plan.id}}">
-                            <input id="id_curso" type="hidden" name="id_curso" value="{{curso.id}}">
-                               <input class="input-small" type="text" name="cantidad" value="{{plan.concepto.concepto.fraccionable_hasta}}">  <button type="submit" class="btn btn-primary btn-xs">
-                                    <span class="glyphicon glyphicon-ok-circle"></span> Fraccionar
-                                </button>
-                            </form>
-                            </td>-->
                         {% else %}
                         <td>
                         {% if plan.get_recibo %}
@@ -102,9 +101,14 @@
                     
                 {% endfor %}                
                 </table>                
-            {% endif %}
-            
+            {% endif %} 
+            </div>
+        </div>
+    </div>
     {% endfor %}
+</div>
+
+    
     {% if recibossueltos %}
         <div class="titulo" style="padding-left:5px"> <span class="glyphicon glyphicon-paperclip"></span><strong> Recibos sin Planes de Pagos</strong></div>
         <table width="100%" class="table table-hover table-small">
@@ -139,12 +143,17 @@
     </div>
 
 </form>
+
+
+
+
+
+
 {% endblock content %}
-
-
-
     <script type="text/javascript">
-/*    $(document).on('ready', function(){
+
+
+    /*$(document).on('ready', function(){
         $('.frmFraccionar').submit(function() {
             var id = $("#id_curso").val()              
             $.ajax({ 
@@ -162,6 +171,8 @@
         });
      });*/
     </script>
+
+
 
 
 

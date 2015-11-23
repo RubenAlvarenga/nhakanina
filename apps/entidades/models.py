@@ -63,6 +63,12 @@ class Alumno(Persona):
         cursos = CursoAlumno.objects.filter(alumno=self, estado='ACT')
         return cursos        
     
+    @property
+    def get_cursos(self):
+        from apps.catedras.models import CursoAlumno
+        cursos = CursoAlumno.objects.filter(alumno=self)
+        return cursos
+
     def __unicode__(self):
         return '%s, %s' % (self.apellido1, self.nombre1)
 

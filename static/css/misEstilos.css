@@ -694,3 +694,7 @@ a .menu-ico:hover{background:linear-gradient(#006C18, #0A1F0B); color:#FFF;}
 .filterformlabel{
   white-space: nowrap;
 }
+
+.panel-planes{
+  background: #EEE;
+}
