@@ -27,8 +27,10 @@ from apps.decorators import custom_permission_required
 from wkhtmltopdf.views import PDFTemplateResponse
 from django.forms.util import ErrorList
 from django.db import IntegrityError
-from apps.prints import imprimir_recibo
+from apps.prints import armar_impresion_recibo
 import operator
+import cups
+
 
 class PersonaSingleTableView(SingleTableView):
     template_name='base/generic_list.html'
@@ -160,6 +162,31 @@ class ReciboDetailView(DetailView):
         return context
 
 
+class ImprimirReciboDetailView(DetailView):
+    model=Recibo
+    template_name='finanzas/detRecibo.html'        
+    def get_context_data(self, **kwargs):
+        context = super(ImprimirReciboDetailView, self).get_context_data(**kwargs)
+        context['totalenletras'] = num2words(self.object.monto, lang='es')
+        
+        #Procedimiento de IMPRESION
+        try: impresora = self.request.user.perfil.impresora
+        except: impresora = 'ninguna'
+        
+        if impresora == 'ninguna':
+            mensaje = msg_render("<strong>El usuario %s no tiene una impresora asignada</strong>" % (self.request.user))
+            messages.add_message(self.request, messages.ERROR, mensaje, extra_tags='danger') 
+        else:
+            conn = cups.Connection()
+            if impresora in conn.getPrinters():
+                fichero = armar_impresion_recibo(self.object)
+                conn.printFile(impresora, fichero, 'recibo', {})
+                mensaje = msg_render("Se envió una orden de impresion a la impresora: <strong>%s</strong> (%s)" % (impresora, conn.getPrinters()[impresora]['printer-state-message']))
+                messages.add_message(self.request, messages.INFO, mensaje)
+            else:
+                mensaje = msg_render("<strong>No se encuentra instalada la impresora %s en el servidor</strong>" % (impresora))
+                messages.add_message(self.request, messages.ERROR, mensaje, extra_tags='danger') 
+        return context
 
 
 from django.utils.dateparse import parse_date

@@ -67,7 +67,7 @@ class RendicionCreateView(SuccessMessageMixin, CreateView):
 class RendicionDeleteView(SuccessMessageMixin, DeleteView):
     template_name='base/generic_delete.html'
     model=Rendicion
-    success_url=reverse_lazy('rendiciones:list_rendicion')
+    success_url=reverse_lazy('rendiciones:lst_rendicion')
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
         if self.object.estado=='APR':

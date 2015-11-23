@@ -13,9 +13,24 @@ def number(Number):
         return (num2words2[Number])
 
 
+
+# class Impresoras(models.Model):
+#     nombre = models.CharField(max_length=100, verbose_name='Nombre')
+#     class Meta:
+#         verbose_name = ('impresora')
+#         verbose_name_plural = ('impresoras')
+#         default_permissions = ('add', 'change', 'delete', 'view', 'list')
+#     def __unicode__(self):
+#         return '%s' % (self.nombre)
+
+
 class Perfil(models.Model):
     user=models.OneToOneField(User)
     avatar=ImageWithThumbsField(upload_to='avatar_user/',  null=True, blank=True, verbose_name='avatar', sizes=((125,125),(30,30)))
+    impresora = models.CharField(max_length=100, verbose_name='Impresora', null=True, blank=True)
+
+
+
     class Meta:
         verbose_name = ('perfil')
         verbose_name_plural = ('perfiles')

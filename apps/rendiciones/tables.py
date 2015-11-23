@@ -56,8 +56,8 @@ class RecibosTablePDF(tables.Table):
 
 
 class RecibosTableCSV(tables.Table):
-    get_concepto_planpago = tables.Column(verbose_name='Concepto')
+    get_concepto_planpago_declaracion = tables.Column(verbose_name='Concepto')
     class Meta:
         model = Recibo
-        fields = ('get_concepto_planpago', 'nro_recibo', 'serie', 'fecha', 'monto')
+        fields = ('get_concepto_planpago_declaracion', 'nro_recibo', 'serie', 'fecha', 'monto')
 

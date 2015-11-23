@@ -5,6 +5,7 @@ from django.contrib.auth.forms import UserCreationForm
 from .models import Perfil
 from django.core.files.images import get_image_dimensions
 from django.contrib.admin.widgets import FilteredSelectMultiple, ForeignKeyRawIdWidget
+import cups
 
 class UserForm(UserCreationForm):
     avatar = forms.ImageField(required = False)
@@ -21,13 +22,20 @@ class UserForm(UserCreationForm):
 class updUserForm(ModelForm):
     email = forms.EmailField(required = True, widget=forms.TextInput(attrs = {'class':'form-control'}))
     avatar = forms.ImageField(required = False)
+
+    conn = cups.Connection()
+    IMPRESORAS = [(i, i) for i in conn.getPrinters() ]
+    IMPRESORAS.append(("ninguna", "Ninguna")) 
+    impresora = forms.ChoiceField(choices=IMPRESORAS, widget=forms.Select(attrs={'class':'form-control'}))
+
+
     class Media:
         css = {'all': ('/static/admin/css/widgets.css',),}
         js = ('/admin/jsi18n',)
     class Meta:
         model = User
         exclude = ['is_superuser', 'last_login', 'date_joined', 'is_staff', 'password']
-        fields = ('username', 'first_name', 'last_name', 'email', 'groups', 'user_permissions', 'is_active')
+        fields = ('username', 'first_name', 'last_name', 'email', 'groups', 'user_permissions', 'is_active', 'impresora')
         widgets = {
             'username' : forms.TextInput(attrs = {'class':'form-control'}),
             'first_name' : forms.TextInput(attrs = {'class':'form-control'}),
@@ -42,12 +50,17 @@ class updUserForm(ModelForm):
 
 
 class updPerfilForm(ModelForm):
+    conn = cups.Connection()
+    IMPRESORAS = [(i, i) for i in conn.getPrinters() ]
+    IMPRESORAS.append(("ninguna", "Ninguna")) 
     email = forms.EmailField(required = True, widget=forms.TextInput(attrs = {'class':'form-control'}))
     avatar = forms.ImageField(required = False)
+    impresora = forms.ChoiceField(choices=IMPRESORAS, widget=forms.Select(attrs={'class':'form-control'}))
+
     class Meta:
         model = User
         exclude = ['is_superuser', 'last_login', 'date_joined', 'is_staff', 'password', 'groups', 'user_permissions', 'is_active', 'username']
-        fields = ('first_name', 'last_name', 'email')
+        fields = ('first_name', 'last_name', 'email', 'impresora')
         widgets = {
             # 'username' : forms.TextInput(attrs = {'class':'form-control'}),
             'first_name' : forms.TextInput(attrs = {'class':'form-control'}),

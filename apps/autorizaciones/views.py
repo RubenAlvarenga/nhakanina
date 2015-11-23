@@ -153,14 +153,30 @@ class UserPerfilUpdateView(SuccessMessageMixin, UpdateView):
     def get_context_data(self, **kwargs):
         if self.object == self.request.user:
             context = super(UserPerfilUpdateView, self).get_context_data(**kwargs)
-            context['user'] = self.request.user    
+            context['user'] = self.request.user
             return context
         else: raise Http404
+
+
+    def get_form(self, form_class):
+        form = super(UserPerfilUpdateView,self).get_form(form_class) #instantiate using parent
+        try : impresora = Perfil.objects.get(user_id=self.object.id).impresora
+        except : impresora = 'ninguna'
+        form.fields['impresora'].initial = impresora
+        return form
+
+
+
     def form_valid(self, form):
+        userperfil, created = Perfil.objects.get_or_create(user_id=self.object.id)
         if self.request.FILES:
-            userperfil, created = Perfil.objects.get_or_create(user_id=self.object.id)
             userperfil.avatar=self.request.FILES['avatar']
-            userperfil.save()        
+        if self.request.POST:
+            try: 
+                userperfil.impresora=self.request.POST['impresora']
+            except: pass
+        userperfil.save()
+
         return super(UserPerfilUpdateView, self).form_valid(form)
 
 
@@ -188,12 +204,34 @@ class UserUpdateView(SuccessMessageMixin, UpdateView):
         context['user'] = self.request.user    
         return context
 
+    def get_form(self, form_class):
+        form = super(UserUpdateView, self).get_form(form_class) #instantiate using parent
+        try : impresora = Perfil.objects.get(user_id=self.object.id).impresora
+        except : impresora = 'Ninguna'
+        import pdb; pdb.set_trace()
+        form.fields['impresora'].initial = impresora
+        return form
+
     def form_valid(self, form):
+        #if self.request.FILES:
+            # userperfil, created = Perfil.objects.get_or_create(user_id=self.object.id)
+            # userperfil.avatar=self.request.FILES['avatar']
+            # userperfil.save()
+        userperfil, created = Perfil.objects.get_or_create(user_id=self.object.id)
         if self.request.FILES:
-            userperfil, created = Perfil.objects.get_or_create(user_id=self.object.id)
             userperfil.avatar=self.request.FILES['avatar']
-            userperfil.save()        
+            userperfil.save()
+        if self.request.POST:
+            try: 
+                userperfil.impresora=self.request.POST['impresora']
+            except: pass
+        userperfil.save()
         return super(UserUpdateView, self).form_valid(form)
+
+
+
+
+
 
 
 class UserChgPasswordView(SuccessMessageMixin, UpdateView):

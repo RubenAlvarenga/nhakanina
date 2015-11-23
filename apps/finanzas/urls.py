@@ -2,7 +2,7 @@ from django.conf.urls import patterns, url
 from .views import AlumnoSingleTableView, PersonaSingleTableView,  AlumnoDetailView, PersonaDetailView, fraccionar_planpago_ajax, ReciboCancelView, \
     ReciboSingleTableView, ReciboFormView, PlanPagoFormView, ReciboPlanPagoFormView, ReciboDetailView, total_recibo_plan_pago_ajax, PlanPagoSingleTableView, \
     PlanPagoDetailView, PlanPagoUpdateView, PlanPagoDeleteView, CursoExtractoSingleTableView, CursoDetailView, FraccionarPlanFormView, EstadoDeCuentaSingleTableView, \
-    AutorizarCursoDetailView
+    AutorizarCursoDetailView, ImprimirReciboDetailView
 from apps.entidades.views import AlumnoCreateView
 from django.views.generic import TemplateView
 from django.contrib.auth.decorators import login_required, permission_required
@@ -27,6 +27,8 @@ urlpatterns = patterns('',
     url(r'^recibos/$', custom_permission_required('finanzas.list_recibo')(ReciboSingleTableView.as_view()), name ='lst_recibo'),
     
     url(r'^recibos/anularRecibo/(?P<pk>[\d]+)$', custom_permission_required('finanzas.delete_recibo')(ReciboCancelView.as_view()), name ='anu_recibo'),
+    url(r'^recibos/prtRecibo/(?P<pk>[\d]+)$', custom_permission_required('finanzas.view_recibo')(ImprimirReciboDetailView.as_view()), name ='prt_recibo'),
+
 
     #RECIBOS PLAN DE PAGO
     url(r'^recibos/genReciboPlanPago/$', ('apps.finanzas.views.genReciboPlanPago'), name ='gen_recibo_plan'),
