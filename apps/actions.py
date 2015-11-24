@@ -132,3 +132,29 @@ def export_table_to_csv(modelo, request, table):
 
     response.write(get_csv_from_dict_list(field_names, ax))
     return response
+
+
+
+def rendiciones_to_csv(modelo, request, table):
+    replace_dc = {'\n': '* ', '\r': '', ';': ',', '\"': '|', '\'': '|', 'True': 'Si', 'False': 'No'}
+    response = HttpResponse(content_type='text/csv; charset=utf-8')
+    response['Content-Disposition'] = 'attachment; filename=%s.csv' % unicode(table.data.verbose_name_plural.title()+"_"+str(datetime.now().date())).replace('.', '_')
+    w = csv.writer(response, delimiter=';')
+    
+    field_names = [field.name for field in table.columns]
+    v_field_names = [getattr(field, 'verbose_name') or field.name for field in table.columns]
+    v_field_names = map(lambda x: x.encode('utf-8') if x != 'ID' else 'Id', v_field_names)
+    w.writerow(v_field_names)
+    ax = []
+
+
+
+    for obj in table.rows:
+        acc = {}
+        for columna in range(len(field_names)):             
+            uf = unicode(obj[columna]).encode('utf-8').replace("\'", "")
+            acc[field_names[columna]]=uf
+        ax.append(acc)
+
+    response.write(get_csv_from_dict_list(field_names, ax))
+    return response
