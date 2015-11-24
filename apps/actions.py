@@ -11,6 +11,7 @@ from django.shortcuts import render_to_response, get_object_or_404, HttpResponse
 from datetime import datetime
 from django.contrib import messages
 from django.db import IntegrityError
+from num2words import num2words
 
 
 def get_csv_from_dict_list(field_list, data):
@@ -144,17 +145,57 @@ def rendiciones_to_csv(modelo, request, table):
     field_names = [field.name for field in table.columns]
     v_field_names = [getattr(field, 'verbose_name') or field.name for field in table.columns]
     v_field_names = map(lambda x: x.encode('utf-8') if x != 'ID' else 'Id', v_field_names)
+    v_field_names.append("Comprobante de Deposito Nro")
+    v_field_names.append("Fecha de Deposito")
+    v_field_names.append("Monto del Deposito")
     w.writerow(v_field_names)
     ax = []
-
-
-
+    cont = 1
+    totales=0
     for obj in table.rows:
         acc = {}
         for columna in range(len(field_names)):             
-            uf = unicode(obj[columna]).encode('utf-8').replace("\'", "")
+            uf = unicode(obj[columna]).encode('utf-8').replace("\'", "").replace("\"", "")
             acc[field_names[columna]]=uf
+        totales = totales + int(acc[field_names[4]])
         ax.append(acc)
+        cont = cont + 1
+        if cont > 18:
+            cont = 1
+            corte = {}
+            corte[field_names[0]] = "TOTAL DE INGRESOS"
+            corte[field_names[1]] = ""
+            corte[field_names[2]] = ""
+            corte[field_names[3]] = ""
+            corte[field_names[4]] = totales
+            ax.append(corte)
+
+            en_letras={}
+            en_letras[field_names[0]] = "SON GUARANIES: " + num2words(totales, lang='es').upper()
+            ax.append(en_letras)
+
+            declaracion={}            
+            declaracion[field_names[0]] = "NOTA: DECLARO BAJO FE DE JURAMENTO QUE LOS DATOS EXPUESTOS EN LA PRESENTE PLANILLA REPRESENTAN TODOS LOS INGRESOS PERCIBIDOS EN LA INSTITUCIÓN A MI CARGO. Y QUE LOS ERRORES EN LA PERCEPCION DE LOS INGRESOS Y LA CONFECCION DE LOS COMPROBANTES SON DE MI EXCLUSIVA RESPONSABILIDAD. ADJUNTO FOTOCOPIA DE CEDULA DE IDENTIDAD."
+            ax.append(declaracion)
+            ax.append("")
+
+            encabezado={}
+            for campo in range(len(field_names)):   
+                encabezado[field_names[campo]] = v_field_names[campo]
+
+            ax.append(encabezado)
+
+
+            transporte = {}
+            transporte[field_names[0]] = "TRANSPORTE"
+            transporte[field_names[1]] = ""
+            transporte[field_names[2]] = ""
+            transporte[field_names[3]] = ""
+            transporte[field_names[4]] = totales
+
+            ax.append(transporte)
+
+    
 
     response.write(get_csv_from_dict_list(field_names, ax))
     return response
