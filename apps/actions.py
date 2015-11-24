@@ -145,9 +145,6 @@ def rendiciones_to_csv(modelo, request, table):
     field_names = [field.name for field in table.columns]
     v_field_names = [getattr(field, 'verbose_name') or field.name for field in table.columns]
     v_field_names = map(lambda x: x.encode('utf-8') if x != 'ID' else 'Id', v_field_names)
-    v_field_names.append("Comprobante de Deposito Nro")
-    v_field_names.append("Fecha de Deposito")
-    v_field_names.append("Monto del Deposito")
     w.writerow(v_field_names)
     ax = []
     cont = 1
@@ -182,7 +179,6 @@ def rendiciones_to_csv(modelo, request, table):
             encabezado={}
             for campo in range(len(field_names)):   
                 encabezado[field_names[campo]] = v_field_names[campo]
-
             ax.append(encabezado)
 
 

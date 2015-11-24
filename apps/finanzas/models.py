@@ -70,16 +70,16 @@ class Recibo(TimeStampModel):
 
     @property
     def get_concepto_planpago_declaracion(self):
-        concepto = unicode(self.concepto.concepto.tipo_concepto.tipo_concepto) +' '+unicode(self.concepto.concepto.concepto)
+        concepto = unicode(self.concepto.concepto.concepto)
         extra=''
         if self.estado=='ANU':
             concepto = '[ANULADO] ' + concepto
         try:
             if ReciboPlanPago.objects.get(pk=self.id).plan_pago.all():
-                extra = extra +', '+ unicode(ReciboPlanPago.objects.get(pk=self.id).plan_pago.all()[0].curso_alumno.curso)
+                extra = extra +', '+ unicode(ReciboPlanPago.objects.get(pk=self.id).plan_pago.all()[0].curso_alumno.curso.carrera)
             if self.concepto.concepto.tipo_concepto.tipo_concepto.id == 2:
                 for plan in ReciboPlanPago.objects.get(pk=self.id).plan_pago.all():
-                    extra = extra +', '+ mesificar(plan.vencimiento.month)
+                    extra = extra +', '+ unicode(plan.get_cuotasecuencia)
             if extra:
                 concepto = concepto + " ("+(unicode(extra.strip(", ")))+")"
         except: pass
