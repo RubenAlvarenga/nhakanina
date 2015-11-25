@@ -124,7 +124,7 @@ class RendicionUpdateView(SuccessMessageMixin, UpdateView):
 @custom_permission_required('rendiciones.list_rendicion')
 def csvRendicion(request, pk):
     rendicion=Rendicion.objects.get(pk=int(pk))
-    recibos=rendicion.recibos.all()
+    recibos=rendicion.recibos.all().order_by('nro_recibo')
     table = RecibosTableCSV(recibos)
     RequestConfig(request).configure(table)
     return rendiciones_to_csv(Recibo, request, table)

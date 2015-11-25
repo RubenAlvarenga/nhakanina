@@ -35,7 +35,7 @@ class RecibosTable(tables.Table):
     #selection = tables.CheckBoxColumn(accessor="pk", orderable=False, attrs = {"td": {"width": "2%"}, "th__input":{"onclick": "", "id":'todosLosCheck', "name":"option"}, "td__input":{"class":"checkboxList", "name":"checks"} } )    
     get_recibo = tables.LinkColumn('finanzas:det_recibo', args=[A('pk')], verbose_name='Recibo', order_by=("serie", "nro_recibo"), attrs={'style':"font-weight:bold"})
     cantidad = tables.Column(verbose_name='Can')
-    get_concepto_planpago = tables.Column(verbose_name='Concepto', orderable=False)
+    get_concepto_planpago_declaracion = tables.Column(verbose_name='Concepto', orderable=False)
     monto = tables.Column(attrs={"td": {"class": "campo-align-right"}})
     #ver     = EnlaceColumn( accessor="id", verbose_name=" ", attrs={"td": {"width": "2%"}, "url":"detRecibo/", "icono":"glyphicon-eye-open" }, )
     def render_monto(self, value):
