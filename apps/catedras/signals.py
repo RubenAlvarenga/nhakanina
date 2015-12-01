@@ -17,20 +17,39 @@ def esInscripto(sender, **kwargs):
     cantidad_cuotas = p_curso_alumno.curso.cantidad_cuotas
     fecha = p_curso_alumno.curso.inicio
     #CUOTAS
-    if not PlanPago.objects.filter(curso_alumno=p_curso_alumno, concepto__in=Arancel.objects.filter(concepto__tipo_concepto__tipo_concepto=2) ):
-        for cuota in range(cantidad_cuotas):
+    # if not PlanPago.objects.filter(curso_alumno=p_curso_alumno, concepto__in=Arancel.objects.filter(concepto__tipo_concepto__tipo_concepto=2) ):
+    #     for cuota in range(cantidad_cuotas):
+    #         ultimo_dia = ultimo_dia_del_mes(fecha)
+    #         plan = PlanPago()
+    #         plan.curso_alumno = p_curso_alumno
+    #         plan.concepto = p_curso_alumno.curso.monto_cuota
+    #         plan.total_cuotas = cantidad_cuotas
+    #         plan.secuencia = cuota + 1 
+    #         plan.vencimiento = ultimo_dia
+    #         plan.monto = monto_cuota
+    #         plan.created_by = User.objects.get(pk=2)
+    #         plan.save()
+    #         fecha = sumar_mes(ultimo_dia, 1)
+    # else:
+    for cuota in range(cantidad_cuotas):
+        if not PlanPago.objects.filter(curso_alumno=p_curso_alumno, concepto__in=Arancel.objects.filter(concepto__tipo_concepto__tipo_concepto=2), total_cuotas=cantidad_cuotas, secuencia=cuota+1):
             ultimo_dia = ultimo_dia_del_mes(fecha)
             plan = PlanPago()
             plan.curso_alumno = p_curso_alumno
             plan.concepto = p_curso_alumno.curso.monto_cuota
             plan.total_cuotas = cantidad_cuotas
-            plan.secuencia = cuota + 1 
+            plan.secuencia = cuota + 1
             plan.vencimiento = ultimo_dia
             plan.monto = monto_cuota
             plan.created_by = User.objects.get(pk=2)
             plan.save()
             fecha = sumar_mes(ultimo_dia, 1)
-    else: pass
+        else:
+            ultimo_dia = ultimo_dia_del_mes(fecha)
+            fecha = sumar_mes(ultimo_dia, 1)
+
+
+
 
     #MATRICULA
     if not PlanPago.objects.filter(curso_alumno=p_curso_alumno, concepto__in=Arancel.objects.filter(concepto__tipo_concepto__tipo_concepto=1) ):
