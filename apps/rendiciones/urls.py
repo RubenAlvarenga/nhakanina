@@ -17,6 +17,7 @@ urlpatterns = patterns('',
     url(r'^rendiciones/aprRendicion/(?P<pk>[\d]+)$', custom_permission_required('rendiciones.change_rendicion')(AprobarRendicionUpdateView.as_view()), name='apr_rendicion'),
 
     url(r'^rendiciones/csvRendicion/(?P<pk>[\d]+)$', ('apps.rendiciones.views.csvRendicion') , name='csv_rendicion'),
+    url(r'^rendiciones/excRendicion/(?P<pk>[\d]+)$', ('apps.rendiciones.views.excelRendicion') , name='exc_rendicion'),
 
 
 )

@@ -3,5 +3,6 @@
 media/*
 tmp/*
 apps/entidades/migraciones/
+apps/rendiciones/excels/
 iseapp/settings/
 *.jpg

@@ -76,7 +76,7 @@ class Recibo(TimeStampModel):
             concepto = '[ANULADO] ' + concepto
         try:
             if ReciboPlanPago.objects.get(pk=self.id).plan_pago.all():
-                extra = extra +', '+ unicode(ReciboPlanPago.objects.get(pk=self.id).plan_pago.all()[0].curso_alumno.curso.carrera.nombre)
+                extra = extra +', '+ unicode(ReciboPlanPago.objects.get(pk=self.id).plan_pago.all()[0].curso_alumno.curso.carrera.nombre)+' '+unicode(ReciboPlanPago.objects.get(pk=self.id).plan_pago.all()[0].curso_alumno.curso.turno)
             
                 for plan in ReciboPlanPago.objects.get(pk=self.id).plan_pago.all().order_by('secuencia'):
                     extra = extra +', '+ unicode(plan.get_cuotasecuencia)

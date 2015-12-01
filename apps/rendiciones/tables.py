@@ -57,9 +57,9 @@ class RecibosTablePDF(tables.Table):
 
 class RecibosTableCSV(tables.Table):
     get_concepto_planpago_declaracion = tables.Column(verbose_name='Concepto')
-    deposito_comprobante = tables.Column(verbose_name='Comprobante de Depósito Nro')
-    deposito_fecha = tables.Column(verbose_name='Fecha de Depósito')
-    deposito_monto = tables.Column(verbose_name='Monto del Depósito')
+    deposito_comprobante = tables.Column(verbose_name='Comprobante de Deposito Nro')
+    deposito_fecha = tables.Column(verbose_name='Fecha de Deposito')
+    deposito_monto = tables.Column(verbose_name='Monto del Deposito')
     class Meta:
         model = Recibo
         fields = ('get_concepto_planpago_declaracion', 'nro_recibo', 'serie', 'fecha', 'monto', 'deposito_comprobante', 'deposito_fecha', 'deposito_monto')

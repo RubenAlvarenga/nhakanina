@@ -12,7 +12,7 @@ from django.contrib import messages
 from apps.decorators import custom_permission_required
 from datetime import datetime, date
 
-from apps.actions import export_as_csv, export_table_to_csv, rendiciones_to_csv
+from apps.actions import export_as_csv, export_table_to_csv, rendiciones_to_csv, rendiciones_to_excel
 from .models import Rendicion
 from .tables import RendicionesTable, RecibosTable, RecibosTablePDF, RecibosTableCSV
 from .forms import RendicionForm, AprobarRendicionForm
@@ -127,8 +127,16 @@ def csvRendicion(request, pk):
     recibos=rendicion.recibos.all().order_by('nro_recibo')
     table = RecibosTableCSV(recibos)
     RequestConfig(request).configure(table)
-    return rendiciones_to_csv(Recibo, request, table)
+    return export_table_to_csv(rendicion, request, table)
 
+
+@custom_permission_required('rendiciones.list_rendicion')
+def excelRendicion(request, pk):
+    rendicion=Rendicion.objects.get(pk=int(pk))
+    recibos=rendicion.recibos.all().order_by('nro_recibo')
+    table = RecibosTableCSV(recibos)
+    RequestConfig(request).configure(table)
+    return rendiciones_to_excel(rendicion, request, table)
 
 
 class AprobarRendicionUpdateView(SuccessMessageMixin, UpdateView):
