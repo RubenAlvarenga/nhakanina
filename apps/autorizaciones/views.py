@@ -316,3 +316,58 @@ class GroupDeleteView(SuccessMessageMixin, DeleteView):
             e.tags='danger'
             dic={'messages': (e,), 'object': self.object}
             return render_to_response(self.template_name, dic, context_instance=RequestContext(request))
+
+
+
+
+import requests  
+from django.conf import settings  
+
+class BaseJasperReport(object):
+    report_name = ''
+    filename = ''
+
+    def __init__(self):
+        self.auth = (settings.JASPER_USER, settings.JASPER_PASSWORD)
+        super(BaseJasperReport, self).__init__()
+
+    def get_report(self):
+        url = '{url}/reports/{report_name}.pdf'.format(url=settings.JASPER_URL, report_name=self.report_name)
+        req = requests.get(url, params=self.get_params(), auth=self.auth)
+
+        return req.content
+
+    def get_params(self):
+        """
+        Este metodo sera implementado por cada uno de nuestros reportes
+        """
+        raise NotImplementedError
+
+    def render_to_response(self):
+        response = HttpResponse(content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename="{}.pdf"'.format(self.filename)
+
+        response.write(self.get_report())  #<_____
+
+        return response
+
+
+
+class UsuariosReport(BaseJasperReport):
+
+
+    def __init__(self):
+        self.filename = 'lista_de_usuarios'
+        self.report_name = 'lista_usuarios'
+        super(UsuariosReport, self).__init__()
+
+    def get_params(self):
+        return None
+
+from django.views.generic import View
+class DownloadScoresReport(View):
+    def get(self, request, *args, **kwargs):
+
+
+        report = UsuariosReport()
+        return report.render_to_response()

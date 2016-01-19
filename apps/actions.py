@@ -379,3 +379,6 @@ def rendiciones_to_excel(rendicion, request, table):
 
 
 
+
+
+

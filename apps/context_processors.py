@@ -48,7 +48,6 @@ def menu(request):
                     link.active=True
                     active = link.grupo
             print enlaces
-            # import pdb; pdb.set_trace()    
             agrupador = enlaces.values('grupo__grupo', 'grupo__icono', 'grupo__id').annotate(dcount=Count('grupo'))
             for item in agrupador:
                 item['url'] = 'collapse'+unicode(number(item['grupo__id']))

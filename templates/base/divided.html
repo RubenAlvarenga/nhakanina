@@ -1,4 +1,11 @@
 {% extends "base/base.html" %}
+{% block title %} 
+    {% if sistema %}
+        {{sistema.titulo}}
+    {% endif %}
+{% endblock title %}
+
+
 {% block container %}
     {% if request.session.sistema %}
         <div class="row" id="wrapper">

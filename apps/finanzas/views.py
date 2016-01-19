@@ -998,3 +998,6 @@ def get_planesMateriaCurso_ajax(request):
             except: plan_materias = False
     template='finanzas/planesMateriaCurso_form.html'
     return render_to_response(template, {'plan_materias': plan_materias })  
+
+
+

@@ -1,6 +1,6 @@
 from django.conf.urls import patterns, url
 from .views import UserSingleTableView, UserDetailView, GroupSingleTableView, GroupDetailView, UserDeleteView, GroupUpdateView, GroupCreateView, \
-	GroupDeleteView, UserUpdateView, UserChgPasswordView, UserPerfilDetailView, UserPerfilUpdateView
+	GroupDeleteView, UserUpdateView, UserChgPasswordView, UserPerfilDetailView, UserPerfilUpdateView, DownloadScoresReport
 from django.views.generic import TemplateView
 from django.contrib.auth.decorators import login_required, permission_required
 from apps.decorators import custom_permission_required
@@ -28,6 +28,10 @@ urlpatterns = patterns('',
     url(r'^grupos/detGrupo/(?P<pk>[\d]+)$', custom_permission_required('auth.view_group')(GroupDetailView.as_view()), name='det_grupo'),
 	url(r'^grupos/updGrupo/(?P<pk>[\d]+)$', custom_permission_required('auth.change_group')(GroupUpdateView.as_view()), name='upd_grupo'),
     url(r'^grupos/delGrupo/(?P<pk>[\d]+)$', custom_permission_required('auth.delete_group')(GroupDeleteView.as_view()), name='del_grupo'),
+
+
+    url(r'^usuarios/lista_usuarios/$', (DownloadScoresReport.as_view()), name='reporte_usuarios'),
+
 
 )
 

@@ -38,3 +38,8 @@ STATIC_ROOT = '/'#os.path.join(BASE_DIR, 'static')
 STATIC_URL = '/static/'
 #AUTH_PROFILE_MODULE = 'apps.autorizaciones.perfil'
 MEDIA_URL = 'http://127.0.0.1:8000/media/'
+
+
+JASPER_URL = 'http://localhost:8080/jasperserver/rest_v2/reports'  # url donde este corriendo jasper server  
+JASPER_USER = 'jasperadmin'  
+JASPER_PASSWORD = 'jasperadmin'  
