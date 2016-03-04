@@ -53,7 +53,7 @@ class UsersTablePDF(tables.Table):
 
 class GroupsTable(tables.Table):
     selection = tables.CheckBoxColumn(accessor="pk", orderable=False, attrs = {"th__input":{"onclick": "", "id":'todosLosCheck', "name":"option"}, "td__input":{"class":"checkboxList", "name":"checks"} } )
-    permissions=tables.Column(verbose_name='permisos', accessor="id")    
+    permissions=tables.Column(verbose_name='permisos', accessor="id")
     ver     = EnlaceColumn( accessor="id", verbose_name=" ", attrs={"td": {"width": "2%"}, "url":"./detGrupo/", "icono":"glyphicon-eye-open" }, )
     editar  = EnlaceColumn( accessor="id", verbose_name=" ", attrs={"td": {"width": "2%"}, "url":"./updGrupo/", "icono":"glyphicon-pencil" }, )
     borrar  = EnlaceColumn( accessor="id", verbose_name=" ", attrs={"td": {"width": "2%"}, "url":"./delGrupo/", "icono":"glyphicon-remove" }, )

@@ -20,7 +20,12 @@
 	<div class="linea100"><div class="linea20">Fecha Inicio: </div><div class="linea80">{{object.inicio}}</div></div>
 	<div class="linea100"><div class="linea20">Fecha Fin: </div><div class="linea80">{{object.fin}}</div></div>
 	<div class="linea100"><div class="linea20">Dias de Clase: </div><div class="linea80">{% for item in  object.dias.all %} {{item}} {% endfor %}</div></div>
-	<div class="linea100"><div class="linea20">Turno/Seccion: </div><div class="linea80">{{object.turno}}</div></div>
+
+	<div class="linea100"><div class="linea20">Turno: </div><div class="linea80">{% for item in  object.turnos.all %} {{item}} {% endfor %}</div></div>
+	<div class="linea100"><div class="linea20">Etapa/año: </div><div class="linea80">{{object.etapa}} {{object.tipo_periodo}}</div></div>
+
+	<div class="linea100"><div class="linea20">Seccion: </div><div class="linea80">{{object.turno}}</div></div>
+
 	<div class="linea100"><div class="linea20">Monto Matricula: </div><div class="linea80">{{object.matricula}}</div></div>
 	<div class="linea100"><div class="linea20">Monto Matricula FPO: </div><div class="linea80">{{object.matricula_fpo}}</div></div>
 	<div class="linea100"><div class="linea20">Fecha tope de Matriculación: </div><div class="linea80">{{object.fecha_tope_matriculacion}}</div></div>

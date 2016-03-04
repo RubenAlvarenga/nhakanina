@@ -4,7 +4,7 @@ from django import forms
 from .models import Curso, CursoAlumno, Carrera, Materia
 from django.forms.extras.widgets import SelectDateWidget
 from django.contrib.admin.widgets import FilteredSelectMultiple, ForeignKeyRawIdWidget
-from apps.aranceles.models import Arancel
+from apps.aranceles.models import Arancel, TipoCarrera
 from apps.entidades.models import Alumno
 from django.core.exceptions import ValidationError
 from datetime import datetime
@@ -23,6 +23,11 @@ class CursoForm(forms.ModelForm):
             'fin': SelectDateWidget(years=range(datetime.now().date().year, datetime.now().date().year + 3, 1), attrs = {'class':'form-control', 'style':'width:100px; float:left'}),
             'dias' : forms.CheckboxSelectMultiple(),
             'turno' : forms.TextInput(attrs = {'class':'form-control'}),
+            'turnos' : forms.CheckboxSelectMultiple(),
+
+            'etapa' : forms.TextInput(attrs = {'class':'form-control'}),
+            'tipo_periodo' : forms.Select(attrs = {'class':'form-control'}),
+            
             'matricula' : forms.Select(attrs = {'class':'form-control'}),
             'matricula_fpo' : forms.Select(attrs = {'class':'form-control'}),
             'fecha_tope_matriculacion': SelectDateWidget(years=range(datetime.now().date().year - 5, datetime.now().date().year + 3, 1), attrs = {'class':'form-control', 'style':'width:100px; float:left'}),
@@ -124,3 +129,22 @@ class updCursoAlumnoForm(forms.ModelForm):
             'estado' : forms.Select(attrs = {'class':'form-control',}),
             'observacion' : forms.Textarea(attrs = { 'class':'form-control',}),
         }
+
+
+
+class filterCursoForm(forms.Form):
+    TIPOS_CARRERAS=[(t.id, t.titulo) for t in TipoCarrera.objects.all()]
+    TIPOS_CARRERAS.append( (0,'Todos') )
+
+    tipo_carrera = forms.ChoiceField(choices=TIPOS_CARRERAS, initial=0)
+    anho = forms.DecimalField(max_digits=4, decimal_places=0, label="Año")
+    habilitado = forms.BooleanField(initial=True, label="Solo Habilitados")
+
+
+
+#     TIPOS_CONCEPTO=[(t.id, unicode(t)) for t in TipoConcepto.objects.all()]
+#     TIPOS_CONCEPTO.append( (0,'Todos') )
+#     cedula = forms.DecimalField()
+#     alumno = forms.CharField()
+#     concepto = forms.CharField()
+#     tipo_concepto = forms.ChoiceField(choices=TIPOS_CONCEPTO, initial=0)

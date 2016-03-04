@@ -1,0 +1,118 @@
+{% extends "base/divided.html" %}
+{% load render_table from django_tables2 %}
+{% load verbose_name_tags %}
+{% block title %}{{ object_list|queryset_verbose_name_plural|capfirst }}{% endblock title %}
+
+{% block content %}
+{% load verbose_name_tags %}
+    <div class="container-fluid titulo">
+        <div class="row">
+            <div class="col-md-3">
+                <h3>{{ object_list|queryset_verbose_name_plural|capfirst }}</h3>
+            </div>          
+            <div class="col-md-6 buscador">
+                <form action="." type="GET">
+                    <div class="dropdown align-left">
+                      <button class="btn btn-default dropdown-toggle btn-filtros" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                        Filtros
+                        <span class="caret"></span>
+                      </button>
+                      <table class="dropdown-menu filterform" aria-labelledby="dropdownMenu1">
+                      {% for field in formFilter  %}
+                        <tr>
+                            <td class="filterformlabel"><small>{{field.label_tag}}</small></td>
+                            <td>{{field}}</td>
+                        </tr>
+                      {% endfor %}
+                        <tr>
+                            <td colspan="2"><button type="submit" class="btn btn-primary btn-xs align-right"><span class="glyphicon glyphicon-search"></span> Buscar</button></td>
+                        </tr>
+                      </table>
+                    </div>
+
+
+                    <div class="input-group"  id="buscadorTabla" style="width:59%">
+                        <input type="text" class="form-control" placeholder="Nombre de Carrera" name='q'>
+                        <span class="input-group-btn">
+                            <button  type="submit" class="btn btn-default" ><span class="glyphicon glyphicon-search"></span></button>
+                        </span>
+                    </div>
+                </form>
+            </div>          
+            <div class="col-md-3">
+                <div class="align-right">
+                {% if object_list %}
+                <!--FORM DE CHECKS (Acaba en las ListViews )-->    
+                <form action="." method="POST">{% csrf_token %}
+                {% if not notbuttonlist %}
+                    <div class="btn-group">
+                        <button type="submit" name="accion" onclick="this.form.target='_blank'; return true;" value="A pdf" class="btn btn-info btn-sm">A pdf</button>
+                        <button type="button" class="btn btn-info dropdown-toggle btn-sm" data-toggle="dropdown">
+                            <span class="caret"></span>
+                            <span class="sr-only">Toggle Dropdown</span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu">
+                            <li>
+                                <button class="btn-input" type="submit" name="accion" onclick="this.form.target='_blank'; return true;" value="A pdf">
+                                    <!-- <a class="a-input" href="#"> -->A pdf<!-- </a> -->
+                                </button>
+                            </li>
+                            <li>
+                                <button class="btn-input" type="submit" name="accion" value="A csv">
+                                    <!--<a class="a-input" href="#">-->A csv<!--</a>-->
+                                </button>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <button class="btn-input" type="submit" name="accion" value="Eliminar">
+                                    <!--<a class="a-input" href="#">--><span class="glyphicon glyphicon-warning-sign"></span> Eliminar
+                                </button>
+                            </li>
+                        </ul>
+                    </div>                
+                {% endif %}
+
+                {% endif %}
+                <a href="addPlanPago" class="btn btn-primary btn-sm" role="button"><span class="glyphicon glyphicon-plus"></span> Agregar {{ object_list|queryset_verbose_name|capfirst }}</a>
+                </div>
+            </div>          
+        </div>
+    </div>
+    {% if object_list %}
+        {% render_table table "base/mytable.html" %}
+        </form><!--IMPORTANTE FORM DE LAS ACCIONES-->
+    {% else %}
+        <div id="paginador">
+            <ul class="paginfo">
+                <li><small>0 {{ object_list|queryset_verbose_name_plural|capfirst }}</small></li>
+            </ul>
+        </div>
+    {% endif %}
+
+{% endblock content %}
+<!--globos de ayuda-->
+{% block scripts %}
+    <script type="text/javascript">
+/*        $(document).ready(function() {
+            $('.checkboxList').click(function() {
+                if ($(this).prop('checked')) {
+                    $(this).parent().parent().css("background", "#FDF887");
+                }else{
+                    $(this).parent().parent().css("background", "None");
+                };
+            });
+            $('#todosLosCheck').click(function() {
+                if ($(this).prop('checked')) {
+                    $('.odd').css("background", "#FDF887");
+                    $('.even').css("background", "#FDF887");
+                }else{
+                    $('.odd').css("background", "None");
+                    $('.even').css("background", "None");
+                };
+            }); 
+        });*/
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        });
+    </script>
+{% endblock scripts %}

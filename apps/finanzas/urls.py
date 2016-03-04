@@ -67,7 +67,7 @@ urlpatterns = patterns('',
     url(r'^get_materias_ajax', 'apps.finanzas.views.get_materias_ajax', name='get_materias'),
 
 
-    url(r'^cursos/$', custom_permission_required('catedras.list_cursos')(CursoExtractoSingleTableView.as_view()), name ='lst_curso'),
+    url(r'^cursos/$', custom_permission_required('catedras.list_curso')(CursoExtractoSingleTableView.as_view()), name ='lst_curso'),
     url(r'^cursos/addCurso/$', custom_permission_required('catedras.add_curso')(CursoCreateView.as_view()), name ='add_curso'),
     url(r'^cursos/detCurso/(?P<pk>[\d]+)$', custom_permission_required('catedras.det_curso')(CursoDetailView.as_view()), name ='det_curso'),
     

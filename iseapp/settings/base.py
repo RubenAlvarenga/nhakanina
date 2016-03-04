@@ -6,6 +6,7 @@ BASE_DIR=Path(__file__).ancestor(3)
 
 SECRET_KEY = 'f*e+*z@m(1)uy!u*=jwu(bqnu^lvoey18rfc2^f&b0kyxk)#l6'
 
+
 DJANGO_APPS = (
     'django.contrib.admin',
     'django.contrib.auth',

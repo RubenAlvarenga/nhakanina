@@ -44,6 +44,7 @@ class Materia(models.Model):
     def __unicode__(self):
         return u'%s' % (self.nombre)
 
+
 class Semana(models.Model):
     nombre = models.CharField(max_length=50, verbose_name='Nombre', unique=True)
     class Meta:
@@ -52,14 +53,36 @@ class Semana(models.Model):
     def __unicode__(self):
         return u'%s' % (self.nombre)
 
+
+class Turno(models.Model):
+    nombre = models.CharField(max_length=50, verbose_name='Nombre', unique=True)
+    class Meta:
+        verbose_name = 'Turno'
+        verbose_name_plural = 'Turnos'
+    def __unicode__(self):
+        return u'%s' % (self.nombre)
+
+
+
 from django.core.exceptions import ValidationError
 from django.core.exceptions import ObjectDoesNotExist
 class Curso(models.Model):
+    PERIODO = (
+        ('ANU', 'Anual'),
+        ('SEM', 'Semestral'),
+    )
     carrera = models.ForeignKey(Carrera, verbose_name='Carrera', on_delete=models.PROTECT)
     inicio = models.DateField(verbose_name='Inicio')
     fin = models.DateField(verbose_name='Fin', blank=True, null=True)
     dias = models.ManyToManyField(Semana, verbose_name='Dias de Clase',)
     turno = models.CharField(max_length=100, verbose_name='Turno - Seccion')
+
+    turnos = models.ManyToManyField(Turno, verbose_name='Turnos')
+
+    etapa = models.DecimalField(max_digits=2, decimal_places=0, verbose_name='Etapa', blank=True, null=True)
+
+    tipo_periodo = models.CharField(max_length=3, choices=PERIODO,  verbose_name='Tipo Periodo', blank=True, null=True)
+
 
     matricula = models.ForeignKey(Arancel, verbose_name='Matricula Normal', help_text='Periodo Ordinario de Matriculacion', on_delete=models.PROTECT)
     matricula_fpo = models.ForeignKey(Arancel, verbose_name='Matricula FPO', related_name='arancel_matricula_fpo', help_text='Fuera del Periodo Ordinario de Matriculacion [*Si Aplica]', blank=True, null=True, on_delete=models.PROTECT)
@@ -86,7 +109,9 @@ class Curso(models.Model):
     def get_alumnos(self):
         return CursoAlumno.objects.filter(curso=self)
 
-
+    @property
+    def get_turnos(self):
+        return ', '.join([x.nombre for x in self.turnos.all()])
 
     
     # @property

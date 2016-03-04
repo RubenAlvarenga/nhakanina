@@ -1,7 +1,7 @@
 # !/usr/bin/env python
 # -*- coding: utf-8 -*-
 from django.contrib import admin
-from .models import Grupo, Carrera, Curso, CursoAlumno, Materia, CursoMateria, Semana
+from .models import Grupo, Carrera, Curso, CursoAlumno, Materia, CursoMateria, Semana, Turno
 from apps.aranceles.models import Arancel
 from apps.finanzas.models import PlanPago
 from .forms import CursoForm
@@ -76,7 +76,7 @@ admin.site.register(Materia, MateriaAdmin)
 admin.site.register(Carrera, CarreraAdmin)
 admin.site.register(CursoAlumno, CursoAlumnoAdmin)
 admin.site.register(CursoMateria)
-
+admin.site.register(Turno)
 
 
 

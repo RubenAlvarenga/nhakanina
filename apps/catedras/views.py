@@ -13,7 +13,7 @@ from datetime import datetime
 from django.forms.extras.widgets import SelectDateWidget
 from .models import Curso, Materia, CursoMateria, CursoAlumno, Carrera
 from .tables import CursosTable, CursosTablePDF, CarrerasTable, CarrerasTablePDF, MateriasTable, MateriasTablePDF, CursoAlumnoTable 
-from .forms import CursoForm, CursoAlumnoForm, CarreraForm, MateriaForm, updCursoAlumnoForm
+from .forms import CursoForm, CursoAlumnoForm, CarreraForm, MateriaForm, updCursoAlumnoForm, filterCursoForm
 from apps.aranceles.models import Arancel
 from apps.functions import msg_render
 from wkhtmltopdf.views import PDFTemplateResponse
@@ -238,18 +238,30 @@ class CursoDeleteView(SuccessMessageMixin, DeleteView):
 
 
 class CursoSingleTableView(SingleTableView):
-    template_name='base/generic_list.html'
+    template_name='catedras/lstCurso.html'
     model = Curso
     table_class = CursosTable
     def get_queryset(self):
         table = super(CursoSingleTableView, self).get_queryset()
-        q=self.request.GET.get("q")
-        if q: return table.filter(carrera__nombre__icontains=q)#.order_by(sort)
+        if self.request.GET:
+            if self.request.GET.get('tipo_carrera') and not self.request.GET.get('tipo_carrera')=='0' : table = table.filter(carrera__tipo__id=int(self.request.GET.get('tipo_carrera')))
+            if self.request.GET.get('anho'): table = table.filter(inicio__year=int(self.request.GET.get('anho')))
+      
+            if self.request.GET.get('habilitado') == 'on':table = table.filter(estado=True)
+      
+
+            if self.request.GET.get('q'): table = table.filter(carrera__nombre__icontains=self.request.GET.get('q'))
+            return table
         else: return table
 
     def get_context_data(self, **kwargs):
         context = super(CursoSingleTableView, self).get_context_data(**kwargs)
         context['sort']= self.request.GET.get("sort")
+        context['formFilter'] = filterCursoForm()
+        return context
+
+
+
         return context
 
     def post(self, request, *args, **kwargs):
@@ -335,23 +347,29 @@ class CursoUpdateView(SuccessMessageMixin, UpdateView):
         new_examen_extra = form.cleaned_data['examen_extra']
         new_aranceles = form.cleaned_data['aranceles']
         new_dias = form.cleaned_data['dias']
+        new_turnos = form.cleaned_data['turnos']
+
 
         old_materias = self.object.materias.all()
         old_examen_extra = self.object.examen_extra.all()
         old_aranceles = self.object.aranceles.all()
         old_dias = self.object.dias.all()
+        old_turnos = self.object.turnos.all()
 
 
         aborrar_materias = set(old_materias) - set(new_materias)
         aborrar_examen_extra = set(old_examen_extra) -set(new_examen_extra)
         aborrar_aranceles = set(old_aranceles) - set(new_aranceles)
         aborrar_dias = set(old_dias) - set(new_dias)
+        aborrar_turnos = set(old_turnos) - set(new_turnos)
 
 
         aagregar_materias = set(new_materias) - set(old_materias) 
         aagregar_examen_extra = set(new_examen_extra) - set(old_examen_extra)
         aagregar_aranceles = set(new_aranceles) - set(old_aranceles) 
-        aagregar_dias = set(new_dias) - set(old_dias) 
+        aagregar_dias = set(new_dias) - set(old_dias)        
+        aagregar_turnos = set(new_turnos) - set(old_turnos) 
+
 
 
 
@@ -365,6 +383,8 @@ class CursoUpdateView(SuccessMessageMixin, UpdateView):
             curso_materia.delete()
         for dia in aborrar_dias:
             self.object.dias.remove(dia)
+        for turno in aborrar_turnos:
+            self.object.turnos.remove(turno)
 
 
         for examen_arancel in aagregar_examen_extra:
@@ -378,6 +398,8 @@ class CursoUpdateView(SuccessMessageMixin, UpdateView):
                 curso_materia.save()
         for dia in aagregar_dias: 
             instance.dias.add(dia)        
+        for turno in aagregar_turnos: 
+            instance.turnos.add(turno)        
         
         instance.save()
         #return HttpResponseRedirect(self.success_url)
@@ -416,10 +438,13 @@ class CursoCreateView(SuccessMessageMixin, CreateView):
         examen_extra = form.cleaned_data['examen_extra']
         aranceles = form.cleaned_data['aranceles']
         dias = form.cleaned_data['dias']
+        turnos = form.cleaned_data['turnos']
         instance.save()
 
         for dia in dias: 
             instance.dias.add(dia)
+        for turno in turnos: 
+            instance.turnos.add(turno)
         for examen_arancel in examen_extra: 
             instance.examen_extra.add(examen_arancel)
         for arancel in aranceles: 

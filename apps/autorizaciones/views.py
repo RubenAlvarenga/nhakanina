@@ -208,7 +208,6 @@ class UserUpdateView(SuccessMessageMixin, UpdateView):
         form = super(UserUpdateView, self).get_form(form_class) #instantiate using parent
         try : impresora = Perfil.objects.get(user_id=self.object.id).impresora
         except : impresora = 'Ninguna'
-        import pdb; pdb.set_trace()
         form.fields['impresora'].initial = impresora
         return form
 

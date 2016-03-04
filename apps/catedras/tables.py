@@ -19,13 +19,19 @@ class CursosTable(tables.Table):
     ver     = EnlaceColumn( accessor="id", verbose_name=" ", attrs={"td": {"width": "2%"}, "url":"detCurso/", "icono":"glyphicon-eye-open" }, )
     editar  = EnlaceColumn( accessor="id", verbose_name=" ", attrs={"td": {"width": "2%"}, "url":"updCurso/", "icono":"glyphicon-pencil" }, )
     borrar  = EnlaceColumn( accessor="id", verbose_name=" ", attrs={"td": {"width": "2%"}, "url":"delCurso/", "icono":"glyphicon-remove" }, )
+    turnos = tables.Column(verbose_name='turnos', accessor="id")
+    estado=tables.BooleanColumn(verbose_name='hab')
+
     class Meta:
         model = Curso
         exclude = ('inicio', 'fin', 'matricula', 'matricula_fpo', 'fecha_tope_matriculacion', 'monto_cuota', 'cantidad_cuotas', 'examen_ordinario')
         per_page=ITEM_POR_PAGINA
         attrs = {"class": "table table-striped table-hover" }
-        sequence = ("selection", "anho", "id", "...", "ver", "editar", "borrar" )
+        sequence = ("selection", "anho", "id", "...", "turnos", "ver", "editar", "borrar" )
 
+
+    def render_turnos(self, record):
+        return (''.join([ i.nombre[0:3]+', ' for i in record.turnos.get_queryset() ]))[0:-2]
 
 
 class CursosTablePDF(tables.Table):
