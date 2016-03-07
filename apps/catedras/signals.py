@@ -55,7 +55,7 @@ def esInscripto(sender, **kwargs):
     if not PlanPago.objects.filter(curso_alumno=p_curso_alumno, concepto__in=Arancel.objects.filter(concepto__tipo_concepto__tipo_concepto=1) ):
 
         if p_curso_alumno.curso.fecha_tope_matriculacion and p_curso_alumno.curso.matricula_fpo:
-            if p_curso_alumno.curso.fecha_tope_matriculacion > date.today():
+            if p_curso_alumno.curso.fecha_tope_matriculacion < date.today():
                 concepto = p_curso_alumno.curso.matricula_fpo
             else:
                 concepto = p_curso_alumno.curso.matricula

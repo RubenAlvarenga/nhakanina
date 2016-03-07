@@ -69,7 +69,7 @@ urlpatterns = patterns('',
 
     url(r'^cursos/$', custom_permission_required('catedras.list_curso')(CursoExtractoSingleTableView.as_view()), name ='lst_curso'),
     url(r'^cursos/addCurso/$', custom_permission_required('catedras.add_curso')(CursoCreateView.as_view()), name ='add_curso'),
-    url(r'^cursos/detCurso/(?P<pk>[\d]+)$', custom_permission_required('catedras.det_curso')(CursoDetailView.as_view()), name ='det_curso'),
+    url(r'^cursos/detCurso/(?P<pk>[\d]+)$', custom_permission_required('catedras.view_curso')(CursoDetailView.as_view()), name ='det_curso'),
     
     #imprimir
     url(r'^alumnos/prtExtracto/$', ('apps.finanzas.views.imprimirExtracto'), name ='prt_extracto'),
